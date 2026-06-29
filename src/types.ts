@@ -13,6 +13,12 @@ export interface PlannerTask {
   hours: number;
   completed: boolean;
   subtasks?: string[];
+  phase?: string;
+  priority?: string;
+  references?: string[];
+  learningObjectives?: string[];
+  selfCheckQuestion?: string;
+  selfCheckAnswer?: string;
 }
 
 export interface StudyPlan {

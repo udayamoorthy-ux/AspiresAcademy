@@ -137,6 +137,19 @@ export default function NotesGeneratorView({ selectedExam, onVoicePlay }: NotesG
     }
   }, []);
 
+  // Handle prefilled topics from Study Planner
+  useEffect(() => {
+    const prefill = localStorage.getItem('notes_topic_prefill');
+    if (prefill) {
+      setTopic(prefill);
+      setKeywords('Syllabus deep dive, key pointers, standard references');
+      localStorage.removeItem('notes_topic_prefill');
+      setTimeout(() => {
+        handleGenerateNotes(prefill, 'Syllabus deep dive, key pointers, standard references');
+      }, 300);
+    }
+  }, [selectedExam]);
+
   const handleGenerateNotes = async (customTopic?: string, customKeywords?: string) => {
     const targetTopic = customTopic || topic;
     const targetKeywords = customKeywords !== undefined ? customKeywords : keywords;

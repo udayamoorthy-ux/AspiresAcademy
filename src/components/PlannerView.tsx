@@ -5,13 +5,14 @@
 
 import React, { useState, useEffect } from 'react';
 import { ExamType, StudyPlan, PlannerTask } from '../types';
-import { Calendar, Clock, Sparkles, CheckCircle2, ChevronRight, RefreshCw, Layers, PlusCircle, Trash2 } from 'lucide-react';
+import { Calendar, Clock, Sparkles, CheckCircle2, ChevronRight, RefreshCw, Layers, PlusCircle, Trash2, ChevronDown, ChevronUp, BookOpen, Brain, Lightbulb, ArrowRight, Flame } from 'lucide-react';
 
 interface PlannerViewProps {
   selectedExam: ExamType;
+  setActiveTab?: (tab: any) => void;
 }
 
-export default function PlannerView({ selectedExam }: PlannerViewProps) {
+export default function PlannerView({ selectedExam, setActiveTab }: PlannerViewProps) {
   const [loading, setLoading] = useState<boolean>(false);
   const [totalDays, setTotalDays] = useState<number>(30);
   const [dailyHours, setDailyHours] = useState<number>(6);
@@ -27,6 +28,10 @@ export default function PlannerView({ selectedExam }: PlannerViewProps) {
   
   const [studyPlan, setStudyPlan] = useState<StudyPlan | null>(null);
   
+  // Expanded task tracking for detailed interactive study plan view
+  const [expandedTaskId, setExpandedTaskId] = useState<string | null>(null);
+  const [revealAnswers, setRevealAnswers] = useState<Record<string, boolean>>({});
+
   // Custom added tasks
   const [customTopic, setCustomTopic] = useState<string>('');
   const [customSubject, setCustomSubject] = useState<string>('General Studies');
@@ -81,7 +86,13 @@ export default function PlannerView({ selectedExam }: PlannerViewProps) {
           subject: t.subject || 'Syllabus',
           hours: t.hours || dailyHours,
           completed: false,
-          subtasks: t.subtasks || []
+          subtasks: t.subtasks || [],
+          phase: t.phase,
+          priority: t.priority,
+          references: t.references,
+          learningObjectives: t.learningObjectives,
+          selfCheckQuestion: t.selfCheckQuestion,
+          selfCheckAnswer: t.selfCheckAnswer
         }));
 
         const newPlan: StudyPlan = {
@@ -150,6 +161,28 @@ export default function PlannerView({ selectedExam }: PlannerViewProps) {
       setStudyPlan(null);
       localStorage.removeItem(`study_plan_${selectedExam}`);
     }
+  };
+
+  const handleDiscussWithCoach = (task: PlannerTask) => {
+    if (setActiveTab) {
+      const prompt = `Hi Coach! I am on Day ${task.day} of my study plan studying "${task.topic}" for ${selectedExam}. Can you explain more about this topic, ask me a challenging practice question, and guide my study?`;
+      localStorage.setItem('mentor_chat_prefill', prompt);
+      setActiveTab('mentor');
+    }
+  };
+
+  const handleGenerateNotesShortcut = (task: PlannerTask) => {
+    if (setActiveTab) {
+      localStorage.setItem('notes_topic_prefill', task.topic);
+      setActiveTab('notes');
+    }
+  };
+
+  const toggleRevealAnswer = (taskId: string) => {
+    setRevealAnswers(prev => ({
+      ...prev,
+      [taskId]: !prev[taskId]
+    }));
   };
 
   // Calculations
@@ -350,21 +383,34 @@ export default function PlannerView({ selectedExam }: PlannerViewProps) {
                             {task.hours} hrs recommended
                           </span>
                         </div>
-                        <h4 className={`font-extrabold text-sm md:text-base text-slate-800 ${task.completed ? 'line-through text-slate-400 font-normal' : ''}`}>
+                        <h4 
+                          onClick={() => setExpandedTaskId(expandedTaskId === task.id ? null : task.id)}
+                          className={`font-extrabold text-sm md:text-base text-slate-800 cursor-pointer hover:text-amber-600 transition-colors ${task.completed ? 'line-through text-slate-400 font-normal' : ''}`}
+                        >
                           {task.topic}
                         </h4>
                       </div>
                     </div>
 
-                    {task.id.startsWith('task-custom-') && (
+                    <div className="flex items-center gap-2">
                       <button
-                        onClick={() => deleteCustomTask(task.id)}
-                        className="text-slate-400 hover:text-rose-600 p-1.5 rounded-lg hover:bg-slate-50 transition-colors"
-                        title="Delete custom task"
+                        onClick={() => setExpandedTaskId(expandedTaskId === task.id ? null : task.id)}
+                        className="text-slate-400 hover:text-amber-500 p-1.5 rounded-lg hover:bg-slate-50 transition-colors"
+                        title={expandedTaskId === task.id ? "Collapse Details" : "Expand Details"}
                       >
-                        <Trash2 className="h-4 w-4" />
+                        {expandedTaskId === task.id ? <ChevronUp className="h-4.5 w-4.5" /> : <ChevronDown className="h-4.5 w-4.5" />}
                       </button>
-                    )}
+                      
+                      {task.id.startsWith('task-custom-') && (
+                        <button
+                          onClick={() => deleteCustomTask(task.id)}
+                          className="text-slate-400 hover:text-rose-600 p-1.5 rounded-lg hover:bg-slate-50 transition-colors"
+                          title="Delete custom task"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      )}
+                    </div>
                   </div>
 
                   {/* Subtasks or action checklists */}
@@ -379,6 +425,144 @@ export default function PlannerView({ selectedExam }: PlannerViewProps) {
                           </li>
                         ))}
                       </ul>
+                    </div>
+                  )}
+
+                  {/* Expanding toggle trigger */}
+                  <div className="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500 pl-8">
+                    <button
+                      onClick={() => setExpandedTaskId(expandedTaskId === task.id ? null : task.id)}
+                      className="flex items-center gap-1 font-semibold hover:text-amber-600 transition-colors"
+                    >
+                      {expandedTaskId === task.id ? (
+                        <>
+                          <ChevronUp className="h-3.5 w-3.5" />
+                          <span>Hide Syllabus Breakdown</span>
+                        </>
+                      ) : (
+                        <>
+                          <ChevronDown className="h-3.5 w-3.5" />
+                          <span>Show Detailed Syllabus Breakdown & Active Recall</span>
+                        </>
+                      )}
+                    </button>
+                    {task.phase && (
+                      <span className="text-[10px] font-medium text-slate-400 bg-slate-50 border border-slate-150 px-2 py-0.5 rounded-full">
+                        {task.phase}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Expanded Advanced Information */}
+                  {expandedTaskId === task.id && (
+                    <div className="mt-4 pt-4 border-t border-slate-150 pl-8 space-y-4 text-slate-850">
+                      {/* Phase and Priority */}
+                      <div className="flex flex-wrap items-center gap-3">
+                        {task.phase && (
+                          <div className="flex items-center gap-1 text-xs font-semibold bg-indigo-50 border border-indigo-100 text-indigo-700 px-2.5 py-1 rounded-lg">
+                            <Layers className="h-3.5 w-3.5 text-indigo-500" />
+                            <span>{task.phase}</span>
+                          </div>
+                        )}
+                        {task.priority && (
+                          <div className={`flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-lg border ${
+                            task.priority === 'High'
+                              ? 'bg-rose-50 border-rose-100 text-rose-700'
+                              : task.priority === 'Medium'
+                                ? 'bg-amber-50 border-amber-100 text-amber-700'
+                                : 'bg-slate-50 border-slate-100 text-slate-700'
+                          }`}>
+                            <Flame className="h-3.5 w-3.5" />
+                            <span>{task.priority} Priority Focus</span>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Reference Books mapping */}
+                      {task.references && task.references.length > 0 && (
+                        <div className="space-y-1.5">
+                          <h5 className="text-[11px] font-extrabold uppercase tracking-wider text-slate-450 flex items-center gap-1">
+                            <BookOpen className="h-3.5 w-3.5 text-amber-500" />
+                            Core Reference Texts & Chapters:
+                          </h5>
+                          <ul className="grid grid-cols-1 md:grid-cols-2 gap-1.5">
+                            {task.references.map((ref, rIdx) => (
+                              <li key={rIdx} className="text-xs text-slate-700 bg-slate-50 border border-slate-200/60 p-2 rounded-lg flex items-center gap-2">
+                                <span className="h-1.5 w-1.5 rounded-full bg-slate-400 flex-shrink-0" />
+                                <span className="font-medium text-slate-800">{ref}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+
+                      {/* Learning Objectives */}
+                      {task.learningObjectives && task.learningObjectives.length > 0 && (
+                        <div className="space-y-1.5">
+                          <h5 className="text-[11px] font-extrabold uppercase tracking-wider text-slate-450 flex items-center gap-1">
+                            <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
+                            Targeted Cognitive Milestones (Self-Recall checklist):
+                          </h5>
+                          <ul className="space-y-1 bg-emerald-50/10 border border-emerald-500/10 p-3 rounded-lg">
+                            {task.learningObjectives.map((obj, oIdx) => (
+                              <li key={oIdx} className="text-xs text-slate-600 flex items-start gap-1.5">
+                                <span className="text-emerald-500 font-bold mt-0.5">✓</span>
+                                <span>{obj}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+
+                      {/* Active Recall Interactive Card */}
+                      {task.selfCheckQuestion && (
+                        <div className="bg-amber-500/5 border border-amber-500/20 rounded-xl p-4 space-y-3">
+                          <div className="flex items-center gap-2 text-xs font-bold text-slate-800">
+                            <Brain className="h-4 w-4 text-amber-600" />
+                            <span>Active Recall Self-Assessment Challenge</span>
+                          </div>
+                          <p className="text-xs font-semibold text-slate-800 leading-relaxed bg-white p-2.5 rounded-lg border border-slate-200">
+                            {task.selfCheckQuestion}
+                          </p>
+                          
+                          <div className="space-y-2">
+                            <button
+                              onClick={() => toggleRevealAnswer(task.id)}
+                              className="w-full sm:w-auto text-[11px] font-bold text-amber-700 hover:text-amber-800 bg-amber-500/10 hover:bg-amber-500/15 border border-amber-500/25 px-3 py-1.5 rounded-lg flex items-center justify-center gap-1.5 transition-colors"
+                            >
+                              <Lightbulb className="h-3.5 w-3.5" />
+                              {revealAnswers[task.id] ? "Hide Solution" : "Reveal Verified Model Answer"}
+                            </button>
+
+                            {revealAnswers[task.id] && (
+                              <div className="text-xs text-slate-700 leading-relaxed bg-amber-50/30 p-3 rounded-lg border border-amber-500/10 animate-fadeIn">
+                                <strong className="block text-amber-800 font-bold text-[10px] uppercase tracking-wider mb-1">Model Outline:</strong>
+                                {task.selfCheckAnswer}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Cohesive tab triggers */}
+                      {setActiveTab && (
+                        <div className="pt-2 border-t border-slate-150 flex flex-wrap gap-2.5">
+                          <button
+                            onClick={() => handleDiscussWithCoach(task)}
+                            className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs px-3.5 py-2 rounded-lg flex items-center gap-1.5 active:scale-98 transition-all"
+                          >
+                            <Brain className="h-4 w-4 text-slate-950" />
+                            Discuss this Topic with Personal AI Coach
+                          </button>
+                          <button
+                            onClick={() => handleGenerateNotesShortcut(task)}
+                            className="bg-white hover:bg-slate-50 border border-slate-200 hover:border-slate-300 text-slate-700 hover:text-slate-900 font-bold text-xs px-3.5 py-2 rounded-lg flex items-center gap-1.5 active:scale-98 transition-all"
+                          >
+                            <Layers className="h-4 w-4 text-slate-500" />
+                            Generate Custom Deep Study Notes
+                          </button>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>

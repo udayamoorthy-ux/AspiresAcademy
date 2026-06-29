@@ -244,7 +244,8 @@ export default function App() {
             {React.createElement(ActiveComponent as any, {
               selectedExam,
               onSelectExam: handleSelectExam,
-              onVoicePlay: handleVoicePlay
+              onVoicePlay: handleVoicePlay,
+              setActiveTab: setActiveTab
             })}
           </div>
 

@@ -42,6 +42,17 @@ export default function MentorChatView({ selectedExam }: MentorChatViewProps) {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  // Handle prefilled query from Study Planner
+  useEffect(() => {
+    const prefill = localStorage.getItem('mentor_chat_prefill');
+    if (prefill) {
+      localStorage.removeItem('mentor_chat_prefill');
+      setTimeout(() => {
+        handleSendMessage(prefill);
+      }, 300);
+    }
+  }, [selectedExam]);
+
   const handleSendMessage = async (textToSend?: string) => {
     const text = textToSend || inputValue;
     if (!text.trim() || loading) return;

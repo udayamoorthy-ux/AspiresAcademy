@@ -96,8 +96,19 @@ app.post('/api/study-planner', async (req, res) => {
 
   if (aiClient) {
     try {
-      const prompt = `Generate a comprehensive study task list for the ${examLabel} starting from ${startDate || 'today'} to ${targetDate || 'target date'} (spanning exactly ${totalDays} days), studying ${dailyHours} hours per day.
-      Return a structured list of study tasks. Spread the tasks across days evenly (provide between 5 to 10 milestone tasks representing key milestone days or sequences, e.g. Day 1, Day 3, Day 5, etc., up to the total days). Make sure the tasks are highly realistic, including subject, specific topics matching the official syllabus, daily hours, and subtasks (specific study items like books, chapters, or practice areas).`;
+      const prompt = `Generate an extremely comprehensive, high-yield, and detailed study task list for the ${examLabel} starting from ${startDate || 'today'} to ${targetDate || 'target date'} (spanning exactly ${totalDays} days), studying ${dailyHours} hours per day.
+      Provide exactly 10 to 14 milestone tasks representing key progression points spaced evenly across the days (e.g. Day 1, Day 3, Day 6, Day 9, Day 12, etc.).
+      Each milestone task MUST be highly realistic and include:
+      - subject: Broad subject (e.g. Polity, History, Economy, General Tamil, Aptitude)
+      - topic: Highly specific syllabus topic (e.g., 'Fundamental Rights & Judicial Review', 'Sangam Literature & Social Stratification')
+      - hours: Recommended study hours
+      - subtasks: 3-5 precise, highly actionable checklist subtasks referring to standard books
+      - phase: Broad preparation phase, e.g., 'Phase 1: Foundation Building', 'Phase 2: Core Syllabus Mastery', 'Phase 3: Integration & Answer Writing', 'Phase 4: High-Yield Revision'
+      - priority: Priority level: 'High', 'Medium', or 'Low'
+      - references: Real textbook references, e.g., ['M. Laxmikanth - Indian Polity Chapter 7', 'NCERT Class XI Indian Constitution at Work']
+      - learningObjectives: 3 key conceptual learning objectives the student should be able to recall
+      - selfCheckQuestion: A highly challenging, conceptual Active Recall self-check question based on the topic
+      - selfCheckAnswer: The exact, detailed factual answer to the self-check question.`;
 
       const response = await callGeminiWithRetry(() => aiClient!.models.generateContent({
         model: 'gemini-3.5-flash',
@@ -121,9 +132,23 @@ app.post('/api/study-planner', async (req, res) => {
                       type: Type.ARRAY,
                       items: { type: Type.STRING },
                       description: "List of actionable subtasks or study references"
-                    }
+                    },
+                    phase: { type: Type.STRING, description: "The study phase name, e.g. 'Phase 1: Foundation Building', 'Phase 2: Core Syllabus Mastery'" },
+                    priority: { type: Type.STRING, description: "The priority level: 'High', 'Medium', or 'Low'" },
+                    references: {
+                      type: Type.ARRAY,
+                      items: { type: Type.STRING },
+                      description: "List of real textbook and chapter references"
+                    },
+                    learningObjectives: {
+                      type: Type.ARRAY,
+                      items: { type: Type.STRING },
+                      description: "3 key conceptual learning objectives the student should recall"
+                    },
+                    selfCheckQuestion: { type: Type.STRING, description: "Active recall self-check question" },
+                    selfCheckAnswer: { type: Type.STRING, description: "Factual answer to the self-check question" }
                   },
-                  required: ["day", "topic", "subject", "hours"]
+                  required: ["day", "topic", "subject", "hours", "subtasks", "phase", "priority", "references", "learningObjectives", "selfCheckQuestion", "selfCheckAnswer"]
                 }
               }
             },
@@ -143,52 +168,324 @@ app.post('/api/study-planner', async (req, res) => {
   }
 
   // Fallback Schedule Generator (Realistic, Mock/Offline Mode)
-  console.log("Generating offline smart schedule...");
-  const subjectsByExam: Record<string, string[]> = {
-    UPSC: ['Polity', 'History', 'Economy', 'Geography', 'Environment', 'CSAT'],
-    TNPSC_G1: ['History & Culture', 'Tamil Heritage', 'Development Admin', 'Geography', 'Polity', 'Aptitude'],
-    TNPSC_G2: ['General Tamil/English', 'Aptitude', 'Tamil Heritage', 'Economy', 'Polity'],
-    TNPSC_G4: ['General Tamil', 'Aptitude', 'History & Civics', 'Geography', 'Science']
-  };
-
-  const selectedSubjects = subjectsByExam[exam] || ['General Studies', 'Aptitude'];
+  console.log("Generating offline smart schedule with high details...");
+  
   const generatedTasks = [];
-  const taskCount = Math.min(8, totalDays);
+  const taskCount = 10; // Spatially dense, high info
 
+  // Rich database of offline high-yield items
+  const upscPlanPool = [
+    {
+      topic: "Preamble & Salient Features of the Constitution",
+      subject: "Polity",
+      phase: "Phase 1: Foundation Building",
+      priority: "High",
+      references: ["M. Laxmikanth Chapters 3 & 4", "NCERT Class XI: Indian Constitution at Work Chapter 1"],
+      learningObjectives: [
+        "Explain the significance of 'Sovereign Socialist Secular Democratic Republic'",
+        "Define whether the Preamble is a part of the Constitution based on Kesavananda Bharati case",
+        "Recall the amendment that inserted 'Socialist, Secular, Integrity'"
+      ],
+      selfCheckQuestion: "Is the Preamble amendable under Article 368? What was the Supreme Court's ruling on this in the Kesavananda Bharati Case (1973)?",
+      selfCheckAnswer: "Yes, the Supreme Court ruled in the Kesavananda Bharati case (1973) that the Preamble is an integral part of the Constitution and can be amended under Article 368, provided that the 'Basic Structure' of the Constitution is not destroyed or altered. It has been amended only once so far, by the 42nd Amendment in 1976."
+    },
+    {
+      topic: "Fundamental Rights (Articles 14 to 18)",
+      subject: "Polity",
+      phase: "Phase 1: Foundation Building",
+      priority: "High",
+      references: ["M. Laxmikanth Chapter 7", "Indian Constitution Articles 14, 15, 16, 17, 18"],
+      learningObjectives: [
+        "Differentiate between 'Equality before Law' and 'Equal Protection of Laws'",
+        "Deconstruct the exceptions to Article 15 & 16 for reservation policies",
+        "Understand why Article 17 is absolute and has no exceptions"
+      ],
+      selfCheckQuestion: "Explain the difference between 'Equality before Law' (borrowed from UK) and 'Equal Protection of Laws' (borrowed from USA).",
+      selfCheckAnswer: "'Equality before Law' is a negative concept of British origin implying the absence of any special privileges and equal subjection of all persons to ordinary law. 'Equal Protection of Laws' is a positive concept of American origin implying equal treatment under equal circumstances, allowing the state to make reasonable classifications for affirmative action."
+    },
+    {
+      topic: "Indian Freedom Struggle: The Gandhian Phase (1915-1930)",
+      subject: "History",
+      phase: "Phase 2: Core Syllabus Mastery",
+      priority: "High",
+      references: ["Spectrum Modern India Chapter 15 & 16", "NCERT Class XII: Themes in Indian History Part III"],
+      learningObjectives: [
+        "Trace Mahatma Gandhi's early Satyagrahas: Champaran, Kheda, Ahmedabad",
+        "Deconstruct the causes, events, and suspension of the Non-Cooperation Movement",
+        "Explain the strategic shift to Civil Disobedience and the Salt March (1930)"
+      ],
+      selfCheckQuestion: "What was the immediate cause for Gandhi to suspend the Non-Cooperation Movement in February 1922?",
+      selfCheckAnswer: "Mahatma Gandhi suspended the Non-Cooperation Movement following the Chauri Chaura incident in February 1922, where an angry mob set fire to a police station, burning alive 22 policemen. Since Gandhi was strictly committed to absolute Non-Violence (Ahimsa), he deemed the country not yet ready for a mass struggle."
+    },
+    {
+      topic: "Monetary Policy Committee & Inflation Targeting",
+      subject: "Economy",
+      phase: "Phase 2: Core Syllabus Mastery",
+      priority: "High",
+      references: ["Ramesh Singh - Indian Economy Chapter 12", "RBI Official Website Monetary Policy FAQ"],
+      learningObjectives: [
+        "Understand the composition and voting rules of the Monetary Policy Committee (MPC)",
+        "Differentiate between Headline inflation and Core inflation",
+        "Explain how Repo Rate and Reverse Repo Rate control liquidity"
+      ],
+      selfCheckQuestion: "What is the statutory inflation target for the Reserve Bank of India, and who constitutes the Monetary Policy Committee?",
+      selfCheckAnswer: "The statutory inflation target is 4% with a tolerance band of +/- 2% (i.e., 2% to 6%). The MPC consists of 6 members: 3 from the RBI (including the Governor as ex-officio Chairperson) and 3 external members appointed by the Government of India."
+    },
+    {
+      topic: "Physiographic Divisions of India & Himalayan Rivers",
+      subject: "Geography",
+      phase: "Phase 1: Foundation Building",
+      priority: "Medium",
+      references: ["NCERT Class XI: India Physical Environment Chapter 2 & 3"],
+      learningObjectives: [
+        "Compare the geological origin of Himalayas vs Peninsular Plateau",
+        "Trace the courses, tributaries, and basins of the Indus, Ganga, and Brahmaputra",
+        "Identify major mountain passes (Zoji La, Shipki La, Nathu La) and their strategic relevance"
+      ],
+      selfCheckQuestion: "Which major tributary of the Indus originates near the Rohtang Pass, and what major hydroelectric project is situated on it?",
+      selfCheckAnswer: "The Sutlej and Beas originate near the Rohtang Pass (Beas Kund specifically for the Beas River, while the Sutlej enters India from Tibet through Shipki La). The Beas River merges with Sutlej at Harike. The famous Bhakra-Nangal dam complex is built on the Sutlej river."
+    },
+    {
+      topic: "Biodiversity Conservation: National Parks & Wildlife Protection Act",
+      subject: "Environment",
+      phase: "Phase 3: Integration & Answer Writing",
+      priority: "High",
+      references: ["Shankar IAS Environment Book Chapters 5 & 10", "Wildlife Protection Act, 1972 Schedules"],
+      learningObjectives: [
+        "Contrast the legal protection differences between National Parks, Wildlife Sanctuaries, and Biosphere Reserves",
+        "Understand the recent 2022 amendments to the WPA, reducing schedules from six to four",
+        "Locate key critically endangered species and their habitats (e.g., Hangul, Sangai Deer, Great Indian Bustard)"
+      ],
+      selfCheckQuestion: "What is the key difference between a National Park and a Wildlife Sanctuary regarding human activities?",
+      selfCheckAnswer: "In a National Park, no human activities (like grazing, forestry, or habitat settlement) are permitted at all. In a Wildlife Sanctuary, certain limited human activities and traditional rights (like collection of minor forest produce or grazing) are allowed, subject to regulation by the Chief Wildlife Warden."
+    },
+    {
+      topic: "CSAT: Quantitative Aptitude - Percentages & Profit-Loss",
+      subject: "CSAT",
+      phase: "Phase 3: Integration & Answer Writing",
+      priority: "Medium",
+      references: ["RS Aggarwal - Quantitative Aptitude Chapter 10 & 11", "UPSC CSAT Past 10 Years Question Papers"],
+      learningObjectives: [
+        "Master percentage formula conversions and successive increase/decrease models",
+        "Solve complex profit, loss, and marked price problems with high accuracy",
+        "Apply shortcut ratios to increase speed during the exam"
+      ],
+      selfCheckQuestion: "If a merchant sells an item at a profit of 20% after giving a discount of 10% on the marked price, find the ratio of Cost Price to Marked Price.",
+      selfCheckAnswer: "Let Cost Price be CP and Marked Price be MP. Selling Price (SP) = CP * 1.2 and SP = MP * 0.9. Therefore, CP * 1.2 = MP * 0.9 => CP/MP = 0.9 / 1.2 = 3/4. The ratio is 3:4."
+    },
+    {
+      topic: "Mains GS2 Answer Writing: Cooperative Federalism & Interstate disputes",
+      subject: "Polity",
+      phase: "Phase 3: Integration & Answer Writing",
+      priority: "High",
+      references: ["Sarkaria Commission Report Summary", "M. Laxmikanth Chapter 14", "Constitution of India Article 262 & 263"],
+      learningObjectives: [
+        "Recall constitutional mechanisms for resolving interstate water disputes (Article 262)",
+        "Evaluate the effectiveness of the Inter-State Council (Article 263)",
+        "Formulate a balanced administrative recommendation for central-state cooperation"
+      ],
+      selfCheckQuestion: "Under which Article can the President establish an Inter-State Council to investigate and discuss subjects of common interest?",
+      selfCheckAnswer: "Under Article 263 of the Constitution of India, the President can establish an Inter-State Council. It was first established in 1990 on the recommendation of the Sarkaria Commission."
+    },
+    {
+      topic: "Major Government Schemes for Rural Development",
+      subject: "Economy",
+      phase: "Phase 4: High-Yield Revision",
+      priority: "Medium",
+      references: ["Yojana Magazine Issues", "Kurukshetra Journal summaries", "Ministry of Rural Development briefs"],
+      learningObjectives: [
+        "Outline the goals and wage structure of MGNREGA",
+        "Recall components of PM Awas Yojana (Gramin)",
+        "Analyze the impact of digital land records integration (SVAMITVA Scheme)"
+      ],
+      selfCheckQuestion: "What is the legal guarantee provided under the MGNREGA Act regarding employment days?",
+      selfCheckAnswer: "The MGNREGA Act legally guarantees at least 100 days of wage employment in a financial year to every rural household whose adult members volunteer to do unskilled manual work."
+    },
+    {
+      topic: "High-Yield Prelims Mock Test & Last Minute Revision",
+      subject: "General Studies Core",
+      phase: "Phase 4: High-Yield Revision",
+      priority: "High",
+      references: ["Aspires Academy Full Length Prelims Papers 1-5", "Syllabus Review Checklists"],
+      learningObjectives: [
+        "Simulate exact 2-hour exam condition for General Studies Paper I",
+        "Review mistake logs to eliminate conceptual traps and factual gaps",
+        "Practice tactical elimination techniques for uncertain questions"
+      ],
+      selfCheckQuestion: "How should you manage your exam attempts if you are unsure about several 50-50 options?",
+      selfCheckAnswer: "For questions where you can confidently eliminate exactly 2 options (leaving a 50-50 choice), the laws of probability dictate you should attempt them, as the positive marking (+2) outweighs the negative penalty (-0.66) over a larger sample of questions."
+    }
+  ];
+
+  const tnpscPlanPool = [
+    {
+      topic: "Thirukkural: Role in Ethics, Modern Administration & Humanity",
+      subject: "Tamil Heritage",
+      phase: "Phase 1: Foundation Building",
+      priority: "High",
+      references: ["Samacheer Kalvi Class 11 & 12 Special Tamil", "Unit 8 TNPSC Syllabus Guide"],
+      learningObjectives: [
+        "Explain Thiruvalluvar's concepts of secular administration (Porutpal)",
+        "Analyze how Thirukkural addresses social equity, equality, and compassion",
+        "Write custom ethical explanations of major Kurals related to governance"
+      ],
+      selfCheckQuestion: "How does Thirukkural define a ideal King/State in the 'Iraimatchi' (Greatness of King) chapter?",
+      selfCheckAnswer: "In the Kural 'Murai Seythu Kaapaatrum...', Valluvar states that a ruler who administers justice and protects his subjects is regarded as a divine leader. The state must excel in four actions: creating wealth, acquiring it, safeguarding it, and distributing it equitably."
+    },
+    {
+      topic: "Justice Party Rule & Non-Brahmin Movement (1916-1944)",
+      subject: "History & Culture",
+      phase: "Phase 1: Foundation Building",
+      priority: "High",
+      references: ["Social Transformation in Tamil Nadu - Samacheer Class 10 Unit 10", "Unit 8 History textbook"],
+      learningObjectives: [
+        "Deconstruct the formation of South Indian Liberal Federation (SILF) / Justice Party in 1916",
+        "List key achievements of the Justice Party rule (e.g., Communal G.O of 1921 & 1922, Staff Selection Board, Mid-day meals)",
+        "Trace the transformation into Dravidar Kazhagam under Periyar in 1944"
+      ],
+      selfCheckQuestion: "Which major social welfare scheme was pioneered by the Justice Party in Madras Corporation in 1920?",
+      selfCheckAnswer: "The Madras Corporation under Justice Party rule pioneered the Mid-day Meal Scheme in a corporation school at Thousand Lights, Chennai, in 1920. This was the historical precursor to the massive noon-meal systems of today."
+    },
+    {
+      topic: "Aptitude: Simplification & HCF and LCM formulas",
+      subject: "Aptitude",
+      phase: "Phase 2: Core Syllabus Mastery",
+      priority: "High",
+      references: ["Samacheer Kalvi Maths textbooks Classes 6 to 10", "TNPSC Aptitude Past Papers"],
+      learningObjectives: [
+        "Master BODMAS rules, algebraic identities, and square/cube roots calculation",
+        "Establish the relationship between two numbers and their HCF and LCM: Product = HCF * LCM",
+        "Solve real-world application problems involving traffic lights, bells, or tile layouts"
+      ],
+      selfCheckQuestion: "If the product of two numbers is 2025 and their LCM is 135, find their HCF.",
+      selfCheckAnswer: "Using the formula: Product of two numbers = HCF * LCM, we get 2025 = HCF * 135. Therefore, HCF = 2025 / 135 = 15."
+    },
+    {
+      topic: "Social Reform Movements: Self-Respect Movement & Periyar",
+      subject: "Tamil Heritage",
+      phase: "Phase 2: Core Syllabus Mastery",
+      priority: "High",
+      references: ["Socio-Religious Reform Movements of 19th and 20th Century", "Unit 8/9 TNPSC guidelines"],
+      learningObjectives: [
+        "Detail Periyar E.V.R.'s key philosophies on self-respect, rationalism, and women's liberation",
+        "Recall landmark conferences (Chengalpattu 1929, Erode 1930) and their resolutions",
+        "Explain Periyar's contributions to the Vaikom Satyagraha and title 'Thanthai Periyar'"
+      ],
+      selfCheckQuestion: "Who conferred the title 'Periyar' (The Great One) on E. V. Ramasamy, and in which year?",
+      selfCheckAnswer: "The title 'Periyar' was conferred on E. V. Ramasamy by the Madras Province Women's Association during a historic conference in Chennai on November 13, 1938, led by Dr. Dharmambal and other prominent women activists."
+    },
+    {
+      topic: "Physical Geography of Tamil Nadu & Monsoon Cycles",
+      subject: "Geography",
+      phase: "Phase 1: Foundation Building",
+      priority: "Medium",
+      references: ["Samacheer Kalvi Class 10 Social Science Geography of Tamil Nadu Unit 6 & 7"],
+      learningObjectives: [
+        "Detail the structural differences between Western Ghats and Eastern Ghats in Tamil Nadu",
+        "Analyze why Tamil Nadu receives the bulk of its rainfall from the Northeast Monsoon (Retreating Monsoon)",
+        "Map key rivers (Cauvery, Vaigai, Thamirabarani) and major irrigation canals"
+      ],
+      selfCheckQuestion: "Why does Tamil Nadu receive more rainfall during the Northeast Monsoon compared to the Southwest Monsoon?",
+      selfCheckAnswer: "During the Southwest Monsoon, Tamil Nadu lies in the rain-shadow region of the Western Ghats. In contrast, during the Northeast Monsoon (October to December), the retreating winds pick up moisture from the Bay of Bengal and hit the eastern coast directly, bringing heavy rainfall."
+    },
+    {
+      topic: "Development Administration: Welfare Schemes of Tamil Nadu",
+      subject: "Development Admin",
+      phase: "Phase 2: Core Syllabus Mastery",
+      priority: "High",
+      references: ["TNPSC Unit 9 Development Administration Syllabus", "Tamil Nadu State Budget Highlight summaries"],
+      learningObjectives: [
+        "Explain the historical evolution and success of Tamil Nadu's reservation model (69% quota)",
+        "Recall details of iconic welfare schemes (e.g., Pudhumai Penn, Moovalur Ramamirtham Ammaiyar, Illam Thedi Kalvi)",
+        "Highlight state health indicators compared to National averages"
+      ],
+      selfCheckQuestion: "What is the Pudhumai Penn Scheme, and what incentive does it offer to female students?",
+      selfCheckAnswer: "The Pudhumai Penn Scheme (Moovalur Ramamirtham Ammaiyar Higher Education Assurance Scheme) provides a monthly financial assistance of ₹1,000 to girl students who studied from Class 6 to 12 in government schools and are pursuing higher education."
+    },
+    {
+      topic: "Aptitude: Ratio and Proportion & Time and Work",
+      subject: "Aptitude",
+      phase: "Phase 3: Integration & Answer Writing",
+      priority: "High",
+      references: ["Samacheer Kalvi Class 7 & 8 Mathematics", "TNPSC Aptitude Solved Question Papers"],
+      learningObjectives: [
+        "Deconstruct problems on direct and inverse proportions",
+        "Solve 'Time and Work' equations using the unitary or LCM efficiency method",
+        "Apply formula: M1 * D1 * H1 / W1 = M2 * D2 * H2 / W2 for compound work"
+      ],
+      selfCheckQuestion: "If 12 men can build a wall in 20 days, working 8 hours a day, in how many days can 15 men build the same wall working 10 hours a day?",
+      selfCheckAnswer: "Using the work formula: M1 * D1 * H1 = M2 * D2 * H2 => 12 * 20 * 8 = 15 * D2 * 10 => 1920 = 150 * D2 => D2 = 1920 / 150 = 12.8 days."
+    },
+    {
+      topic: "Indian Polity: State Legislature & Role of Governor",
+      subject: "Polity",
+      phase: "Phase 2: Core Syllabus Mastery",
+      priority: "High",
+      references: ["M. Laxmikanth Chapters 30 & 31", "Constitution of India Articles 153 to 167"],
+      learningObjectives: [
+        "Examine the discretionary powers of the Governor (Article 163)",
+        "Compare legislative power differences between Legislative Assembly and Legislative Council",
+        "Analyze central-state federal frictions regarding assent to bills (Article 200)"
+      ],
+      selfCheckQuestion: "Under which Article of the Constitution can a Governor reserve a state bill for the consideration of the President?",
+      selfCheckAnswer: "Under Article 200 of the Indian Constitution, the Governor has the power to reserve a bill passed by the state legislature for the consideration of the President."
+    },
+    {
+      topic: "Economy of Tamil Nadu: Industrial Clusters & Economy Indicators",
+      subject: "Economy",
+      phase: "Phase 4: High-Yield Revision",
+      priority: "Medium",
+      references: ["Samacheer Kalvi Class 11 Economics Chapter 11 on Tamil Nadu Economy"],
+      learningObjectives: [
+        "Detail why Tamil Nadu is called the 'Detroit of Southern Asia'",
+        "Trace geographical clusters: Tiruppur (garments), Sivakasi (fireworks), Karur (coach building), Salem (steel)",
+        "Acknowledge the success of the state in renewable energy (Muppandal wind farm)"
+      ],
+      selfCheckQuestion: "Which town in Tamil Nadu is famously nicknamed 'Little Japan' due to its massive production of printing, matches, and fireworks?",
+      selfCheckAnswer: "Sivakasi in Virudhunagar district is nicknamed 'Little Japan' (by Jawaharlal Nehru) because it contributes around 90% of India's fireworks production and 80% of safety matches."
+    },
+    {
+      topic: "Comprehensive Revision & Mock Test on General Tamil & General Studies",
+      subject: "General Studies Core",
+      phase: "Phase 4: High-Yield Revision",
+      priority: "High",
+      references: ["TNPSC Group I/II/IV Full Model Tests", "Aptitude formula sheet review"],
+      learningObjectives: [
+        "Solve 200 MCQ questions in exactly 3 hours",
+        "Verify grammar errors in General Tamil (e.g. Porutham, Ezuthu, Sol)",
+        "Fine-tune time allocation: 1 hour for Tamil, 45 mins for Aptitude, 1 hour 15 mins for GS"
+      ],
+      selfCheckQuestion: "What is the recommended order of sections to attempt in a 200-question TNPSC exam?",
+      selfCheckAnswer: "Most high-scoring candidates recommend attempting General Tamil (or Language Eligibility) first to complete 100 questions within 45-55 minutes, followed immediately by General Studies (75 questions) for 75 minutes, leaving the final 50-60 minutes dedicated to solving the 25 Aptitude questions with complete scratchpad sanity."
+    }
+  ];
+
+  // Select pool based on exam
+  const activePool = exam.startsWith('TNPSC') ? tnpscPlanPool : upscPlanPool;
+  
   for (let i = 0; i < taskCount; i++) {
     const dayNum = Math.round(((i + 1) / taskCount) * totalDays);
-    const subject = selectedSubjects[i % selectedSubjects.length];
+    const poolItem = activePool[i % activePool.length];
     
-    // Customize topics based on exam & subject
-    let topic = `Core Concepts of ${subject}`;
-    let subtasks = [`Read standard reference textbook`, `Draft summary notes`, `Solve 10 practice questions`];
-
-    if (exam === 'UPSC') {
-      if (subject === 'Polity') {
-        topic = 'Fundamental Rights & Preamble';
-        subtasks = ['Read Laxmikanth Chapters 7-10', 'Analyze landmark Supreme Court rulings (Kesavananda, Maneka)', 'Attempt past year questions'];
-      } else if (subject === 'History') {
-        topic = 'Indian Freedom Struggle (1915-1947)';
-        subtasks = ['Spectrum Modern History chapters on Gandhian Phase', 'Study key resolutions of INC sessions', 'Analyze Mains GS1 questions'];
-      }
-    } else if (exam.startsWith('TNPSC')) {
-      if (subject === 'Tamil Heritage' || subject === 'General Tamil') {
-        topic = 'Thirukkural - Study of Ethics & Governance';
-        subtasks = ['Study chapters on leadership, wisdom and integrity', 'Write explanations for 5 major Kurals', 'Review past TNPSC questions'];
-      } else if (subject === 'Aptitude') {
-        topic = 'Simplification, Percentage, & HCF-LCM';
-        subtasks = ['Practice formula sheet', 'Solve 30 past TNPSC questions', 'Take a 15-minute quick test'];
-      }
-    }
-
     generatedTasks.push({
-      id: `task-offline-${i}`,
+      id: `task-offline-${i}-${Date.now()}`,
       day: dayNum,
-      topic,
-      subject,
+      topic: poolItem.topic,
+      subject: poolItem.subject,
       hours: parseFloat(dailyHours),
       completed: false,
-      subtasks
+      subtasks: [
+        `Read official textbooks/material: ${poolItem.references[0]}`,
+        `Fulfill active recall objectives (listed in detailed planner expansion panel)`,
+        `Solve past board papers matching "${poolItem.topic}"`,
+        `Consult with Personal AI Coach if any conceptual doubts persist`
+      ],
+      phase: poolItem.phase,
+      priority: poolItem.priority,
+      references: poolItem.references,
+      learningObjectives: poolItem.learningObjectives,
+      selfCheckQuestion: poolItem.selfCheckQuestion,
+      selfCheckAnswer: poolItem.selfCheckAnswer
     });
   }
 
