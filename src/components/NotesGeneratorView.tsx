@@ -57,7 +57,7 @@ function FormattedContent({ text }: { text: string }) {
         // Headers ###
         if (trimmed.startsWith('###')) {
           return (
-            <h4 key={idx} className="text-sm font-extrabold text-slate-900 mt-4 pt-2 border-b border-slate-100 pb-1 uppercase tracking-wider font-mono">
+            <h4 key={idx} className="text-base font-extrabold text-slate-950 mt-5 pt-2 border-b border-slate-200 pb-1.5 uppercase tracking-wider font-mono">
               {trimmed.replace(/^###\s*/, '')}
             </h4>
           );
@@ -66,8 +66,8 @@ function FormattedContent({ text }: { text: string }) {
         // Headers ##
         if (trimmed.startsWith('##')) {
           return (
-            <h3 key={idx} className="text-base font-black text-slate-900 mt-5 pt-3 flex items-center gap-2">
-              <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
+            <h3 key={idx} className="text-lg font-extrabold text-slate-950 mt-6 pt-4 flex items-center gap-2 font-display">
+              <span className="h-2 w-2 rounded-full bg-emerald-600" />
               {trimmed.replace(/^##\s*/, '')}
             </h3>
           );
@@ -77,7 +77,7 @@ function FormattedContent({ text }: { text: string }) {
         if (trimmed.startsWith('*') || trimmed.startsWith('-')) {
           const content = trimmed.replace(/^[\*\-]\s*/, '');
           return (
-            <li key={idx} className="ml-4 list-disc pl-1 text-slate-700">
+            <li key={idx} className="ml-4 list-disc pl-1.5 text-slate-800 text-sm md:text-base leading-relaxed">
               {renderBoldText(content)}
             </li>
           );
@@ -88,18 +88,18 @@ function FormattedContent({ text }: { text: string }) {
           const content = trimmed.replace(/^\d+\.\s*/, '');
           const num = trimmed.match(/^\d+/)?.[0] || '1';
           return (
-            <div key={idx} className="flex gap-2 pl-2">
-              <span className="font-mono font-bold text-amber-600">{num}.</span>
-              <p className="text-slate-700 flex-1">{renderBoldText(content)}</p>
+            <div key={idx} className="flex gap-2.5 pl-2 text-sm md:text-base leading-relaxed">
+              <span className="font-mono font-bold text-emerald-600">{num}.</span>
+              <p className="text-slate-800 flex-1">{renderBoldText(content)}</p>
             </div>
           );
         }
         
         if (trimmed === '') {
-          return <div key={idx} className="h-2" />;
+          return <div key={idx} className="h-3" />;
         }
         
-        return <p key={idx} className="text-slate-700">{renderBoldText(trimmed)}</p>;
+        return <p key={idx} className="text-slate-800 text-sm md:text-base leading-relaxed">{renderBoldText(trimmed)}</p>;
       })}
     </div>
   );
@@ -110,7 +110,7 @@ function renderBoldText(rawText: string) {
   return parts.map((part, index) => {
     // Odd indexes represent the captured text inside **
     if (index % 2 === 1) {
-      return <strong key={index} className="font-bold text-slate-950 bg-amber-500/10 px-0.5 rounded">{part}</strong>;
+      return <strong key={index} className="font-bold text-slate-950 bg-emerald-500/10 px-1 rounded">{part}</strong>;
     }
     return part;
   });
@@ -297,17 +297,17 @@ ${note.activeRecallQuestions.map((q, idx) => `### Q${idx + 1}: ${q.question}\n**
       )}
 
       {/* Header Panel */}
-      <div className="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="space-y-1">
-          <h3 className="text-base font-extrabold text-slate-900 flex items-center gap-2">
-            <BrainCircuit className="h-5 w-5 text-amber-500" />
+      <div className="bg-white border border-slate-200 p-6 md:p-8 rounded-2xl shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="space-y-1.5">
+          <h3 className="text-xl md:text-2xl font-extrabold text-slate-950 flex items-center gap-2.5 font-display">
+            <BrainCircuit className="h-6.5 w-6.5 text-emerald-600" />
             AI High-Yield Notes & Recall Cards
           </h3>
-          <p className="text-xs text-slate-500 leading-relaxed">
+          <p className="text-sm md:text-base text-slate-500 leading-relaxed">
             Convert any syllabus topic or specialized keywords into formatted micro-notes, active recall testing cards, and speech lectures.
           </p>
         </div>
-        <span className="text-[10px] uppercase font-mono font-bold px-2 py-1 rounded bg-amber-100 border border-amber-300 text-amber-800 self-start sm:self-auto">
+        <span className="text-xs uppercase font-mono font-bold px-3 py-1.5 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-700 self-start sm:self-auto">
           Active: {selectedExam} Syllabus Mapping
         </span>
       </div>
@@ -319,39 +319,39 @@ ${note.activeRecallQuestions.map((q, idx) => `### Q${idx + 1}: ${q.question}\n**
         <div className="lg:col-span-5 space-y-6">
           
           {/* Custom Notes Form */}
-          <div className="bg-white border border-slate-200 p-5 rounded-2xl shadow-sm space-y-4">
-            <h4 className="text-xs font-extrabold text-slate-950 uppercase tracking-widest font-mono flex items-center gap-1.5">
-              <Sparkles className="h-4 w-4 text-amber-500" />
+          <div className="bg-white border border-slate-200 p-5 md:p-6 rounded-2xl shadow-sm space-y-4.5">
+            <h4 className="text-sm font-extrabold text-slate-950 uppercase tracking-widest font-mono flex items-center gap-1.5">
+              <Sparkles className="h-4.5 w-4.5 text-emerald-600" />
               Compile Study Notes
             </h4>
 
-            <div className="space-y-3">
-              <div className="space-y-1">
-                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Topic Focus</label>
+            <div className="space-y-4">
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider block">Topic Focus</label>
                 <input
                   type="text"
                   value={topic}
                   onChange={(e) => setTopic(e.target.value)}
                   placeholder="e.g. Fundamental Rights, Sangam Social Structure, simple interest"
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 focus:outline-none focus:bg-white focus:border-amber-500 transition-colors"
+                  className="w-full bg-slate-50 border border-slate-250 rounded-xl px-4 py-3 text-sm text-slate-800 focus:outline-none focus:bg-white focus:border-emerald-500 transition-colors"
                 />
               </div>
 
-              <div className="space-y-1">
-                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Specific Sub-Keywords (Optional)</label>
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider block">Specific Sub-Keywords (Optional)</label>
                 <textarea
                   value={keywords}
                   onChange={(e) => setKeywords(e.target.value)}
                   placeholder="e.g. Writ jurisdiction Article 32, Habeas Corpus, reasonable restrictions (comma separated)"
-                  rows={2}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 focus:outline-none focus:bg-white focus:border-amber-500 transition-colors resize-none"
+                  rows={2.5}
+                  className="w-full bg-slate-50 border border-slate-250 rounded-xl px-4 py-3 text-sm text-slate-800 focus:outline-none focus:bg-white focus:border-emerald-500 transition-colors resize-none"
                 />
               </div>
 
               <button
                 onClick={() => handleGenerateNotes()}
                 disabled={loading}
-                className="w-full bg-amber-500 hover:bg-amber-400 disabled:opacity-50 text-slate-950 font-extrabold text-xs py-3 rounded-xl transition-all shadow-sm shadow-amber-500/15 flex items-center justify-center gap-2"
+                className="w-full bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-bold text-sm py-3.5 rounded-xl transition-all shadow-md shadow-emerald-500/10 flex items-center justify-center gap-2 cursor-pointer"
               >
                 {loading ? (
                   <>
@@ -369,19 +369,19 @@ ${note.activeRecallQuestions.map((q, idx) => `### Q${idx + 1}: ${q.question}\n**
           </div>
 
           {/* Preset Topics */}
-          <div className="bg-white border border-slate-200 p-5 rounded-2xl shadow-sm space-y-3">
-            <h4 className="text-xs font-extrabold text-slate-950 uppercase tracking-widest font-mono flex items-center gap-1.5">
-              <BookOpen className="h-4 w-4 text-amber-600" />
+          <div className="bg-white border border-slate-200 p-5 rounded-2xl shadow-sm space-y-3.5">
+            <h4 className="text-sm font-extrabold text-slate-950 uppercase tracking-widest font-mono flex items-center gap-1.5">
+              <BookOpen className="h-4.5 w-4.5 text-emerald-600" />
               Syllabus Presets
             </h4>
-            <p className="text-[11px] text-slate-400">Click a recommended topic from the official {selectedExam} syllabus to generate instant summaries:</p>
+            <p className="text-xs text-slate-500">Click a recommended topic from the official {selectedExam} syllabus to generate instant summaries:</p>
             
             <div className="flex flex-wrap gap-2">
               {activePresets.map((preset, idx) => (
                 <button
                   key={idx}
                   onClick={() => loadPreset(preset)}
-                  className="bg-slate-50 hover:bg-amber-500/10 hover:text-amber-800 border border-slate-200 hover:border-amber-500/30 text-slate-700 text-[11px] font-semibold px-3 py-1.5 rounded-lg transition-all"
+                  className="bg-slate-50 hover:bg-emerald-50 hover:text-emerald-800 border border-slate-200 hover:border-emerald-200 text-slate-700 text-xs font-bold px-3.5 py-2 rounded-xl transition-all cursor-pointer"
                 >
                   {preset.topic}
                 </button>
@@ -414,15 +414,15 @@ ${note.activeRecallQuestions.map((q, idx) => `### Q${idx + 1}: ${q.question}\n**
                         setActiveNote(note);
                         setRevealedCardIndex(null);
                       }}
-                      className={`group p-3 rounded-xl border text-left cursor-pointer transition-all flex items-center justify-between gap-3 ${
+                      className={`group p-3.5 rounded-xl border text-left cursor-pointer transition-all flex items-center justify-between gap-3 ${
                         isActive
-                          ? 'bg-amber-500/5 border-amber-300 text-amber-900 shadow-sm'
+                          ? 'bg-emerald-50 border-emerald-200 text-emerald-900 shadow-sm'
                           : 'bg-white hover:bg-slate-50 border-slate-150 text-slate-700'
                       }`}
                     >
-                      <div className="space-y-0.5 min-w-0">
-                        <h5 className="font-bold text-xs truncate group-hover:text-amber-700">{note.title}</h5>
-                        <p className="text-[10px] text-slate-400 truncate">{note.syllabusSubject}</p>
+                      <div className="space-y-1 min-w-0">
+                        <h5 className="font-bold text-sm truncate group-hover:text-emerald-800">{note.title}</h5>
+                        <p className="text-xs text-slate-500 truncate">{note.syllabusSubject}</p>
                       </div>
                       <div className="flex items-center gap-1">
                         <button
@@ -458,13 +458,13 @@ ${note.activeRecallQuestions.map((q, idx) => `### Q${idx + 1}: ${q.question}\n**
             <div className="space-y-6">
               
               {/* Revision Desk Header */}
-              <div className="bg-white border border-slate-200 p-5 rounded-2xl shadow-sm space-y-4">
+              <div className="bg-white border border-slate-200 p-5 md:p-6 rounded-2xl shadow-sm space-y-4">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-slate-100 pb-3">
-                  <div className="space-y-1">
-                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-amber-700 bg-amber-100 px-2.5 py-0.5 rounded border border-amber-200">
+                  <div className="space-y-1.5">
+                    <span className="text-xs font-mono font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200">
                       {activeNote.syllabusSubject}
                     </span>
-                    <h3 className="text-base font-extrabold text-slate-900 pt-0.5">
+                    <h3 className="text-lg md:text-xl font-extrabold text-slate-950 pt-1 font-display">
                       {activeNote.title}
                     </h3>
                   </div>
@@ -474,7 +474,7 @@ ${note.activeRecallQuestions.map((q, idx) => `### Q${idx + 1}: ${q.question}\n**
                     {onVoicePlay && (
                       <button
                         onClick={handleListenNote}
-                        className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-xs px-3.5 py-2 rounded-xl transition-all flex items-center gap-1.5"
+                        className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs md:text-sm px-4.5 py-2.5 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer shadow-sm shadow-emerald-500/10"
                         title="Read this note using AI Voice Teacher"
                       >
                         <Volume2 className="h-4 w-4" />
@@ -565,20 +565,20 @@ ${note.activeRecallQuestions.map((q, idx) => `### Q${idx + 1}: ${q.question}\n**
 
             </div>
           ) : (
-            <div className="bg-white border border-slate-200/80 rounded-2xl p-12 text-center flex flex-col items-center justify-center space-y-4 shadow-sm h-full min-h-[380px]">
-              <div className="h-14 w-14 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-500">
-                <BrainCircuit className="h-7 w-7" />
+            <div className="bg-white border border-slate-200/80 rounded-2xl p-12 text-center flex flex-col items-center justify-center space-y-5 shadow-sm h-full min-h-[380px]">
+              <div className="h-16 w-16 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600">
+                <BrainCircuit className="h-8 w-8" />
               </div>
-              <div className="space-y-1 max-w-sm">
-                <h4 className="font-extrabold text-sm text-slate-900">Awaiting Study Selection</h4>
-                <p className="text-xs text-slate-400 leading-relaxed">
+              <div className="space-y-1.5 max-w-sm">
+                <h4 className="font-extrabold text-base text-slate-900 font-display">Awaiting Study Selection</h4>
+                <p className="text-xs md:text-sm text-slate-500 leading-relaxed">
                   Generate a custom study note or select one from your saved list on the left to activate the interactive recall desk and audio teacher reader.
                 </p>
               </div>
               <div className="flex gap-2">
                 <button
                   onClick={() => loadPreset(activePresets[0])}
-                  className="bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 text-xs font-bold px-4 py-2 rounded-xl transition-all"
+                  className="bg-emerald-600 hover:bg-emerald-500 text-white text-xs md:text-sm font-bold px-5 py-2.5 rounded-xl transition-all cursor-pointer shadow-sm shadow-emerald-500/10"
                 >
                   Load {activePresets[0]?.topic || 'Preset'}
                 </button>

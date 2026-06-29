@@ -278,7 +278,7 @@ export default function PerformanceAnalyticsView({ selectedExam, onVoicePlay }: 
         <div className="bg-white border border-slate-200 p-5 rounded-2xl shadow-sm space-y-3 relative overflow-hidden">
           <div className="flex justify-between items-start">
             <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400">Mains Writing Index</span>
-            <span className="h-8 w-8 rounded-xl bg-blue-500/10 text-blue-600 flex items-center justify-center">
+            <span className="h-8 w-8 rounded-xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center">
               <FileText className="h-4.5 w-4.5" />
             </span>
           </div>
@@ -438,7 +438,7 @@ export default function PerformanceAnalyticsView({ selectedExam, onVoicePlay }: 
         <div className="lg:col-span-5 bg-white border border-slate-200 p-5 rounded-2xl shadow-sm space-y-4">
           <div className="border-b border-slate-100 pb-3">
             <h4 className="font-extrabold text-xs text-slate-950 uppercase tracking-widest font-mono flex items-center gap-1.5">
-              <FileText className="h-4 w-4 text-blue-500" />
+              <FileText className="h-4 w-4 text-emerald-500" />
               Mains Writing Self-Assessment Index
             </h4>
             <p className="text-[10px] text-slate-400">Map your subjective performance from essay assessments</p>
@@ -454,7 +454,7 @@ export default function PerformanceAnalyticsView({ selectedExam, onVoicePlay }: 
               <div key={m.key} className="space-y-1">
                 <div className="flex justify-between items-center text-xs font-bold text-slate-750">
                   <span>{m.label}</span>
-                  <span className="font-mono text-blue-600">{essayScores[m.key as keyof typeof essayScores]}%</span>
+                  <span className="font-mono text-emerald-600">{essayScores[m.key as keyof typeof essayScores]}%</span>
                 </div>
                 <input
                   type="range"
@@ -462,7 +462,7 @@ export default function PerformanceAnalyticsView({ selectedExam, onVoicePlay }: 
                   max="100"
                   value={essayScores[m.key as keyof typeof essayScores]}
                   onChange={(e) => handleUpdateEssayMetric(m.key as keyof typeof essayScores, parseInt(e.target.value))}
-                  className="w-full h-1 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-blue-600"
+                  className="w-full h-1 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-emerald-600"
                 />
               </div>
             ))}
