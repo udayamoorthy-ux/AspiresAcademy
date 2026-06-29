@@ -112,7 +112,7 @@ export default function App() {
             </div>
             <div>
               <h1 className="text-lg md:text-xl font-extrabold text-slate-900 tracking-tight flex items-center gap-1.5">
-                Aspires Acadmey
+                Aspires Academy
                 <span className="text-[9px] uppercase font-bold px-1.5 py-0.5 rounded bg-amber-500/10 border border-amber-500/20 text-amber-700 font-mono">
                   AI-Powered
                 </span>
@@ -254,7 +254,7 @@ export default function App() {
 
       {/* Aesthetic Slate Footer */}
       <footer className="border-t border-slate-200 bg-white text-center py-8 text-xs text-slate-500 space-y-4 mt-16 shadow-inner" id="portal-footer">
-        <p className="font-mono text-slate-700 font-bold text-sm">Aspires Acadmey</p>
+        <p className="font-mono text-slate-700 font-bold text-sm">Aspires Academy</p>
         <p className="text-[10px] text-slate-500 font-semibold uppercase tracking-widest font-mono">tnpsc,upsc aspirants • Mapped to official civil service syllabi</p>
         
         {/* Support Us trigger button in the footer */}
@@ -279,7 +279,7 @@ export default function App() {
         </div>
 
         <p className="text-[10.5px] text-slate-400 max-w-4xl mx-auto px-6 leading-relaxed">
-          <strong>Disclaimer:</strong> Aspires Acadmey is an independent educational portal. We are not affiliated, associated, authorized, or in any way officially connected with the Union Public Service Commission (UPSC), Tamil Nadu Public Service Commission (TNPSC), or any other government agency. Official notifications can be verified at upsc.gov.in and tnpsc.gov.in.
+          <strong>Disclaimer:</strong> Aspires Academy is an independent educational portal. We are not affiliated, associated, authorized, or in any way officially connected with the Union Public Service Commission (UPSC), Tamil Nadu Public Service Commission (TNPSC), or any other government agency. Official notifications can be verified at upsc.gov.in and tnpsc.gov.in.
         </p>
         <p className="text-[9px] text-slate-400 font-mono">All student schedules, checked off tasks, and custom parameters are securely preserved within local standard cache engines.</p>
       </footer>

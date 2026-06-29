@@ -91,10 +91,10 @@ export default function GPaySupportCard({ isOpen, onClose, onVoicePlay }: GPaySu
     const finalAmt = getFinalAmount();
     if (finalAmt > 0) {
       const senderName = supporterName.trim() || 'Aspirant';
-      const note = `Aspires Acadmey contribution`;
+      const note = `Aspires Academy contribution`;
       
       // Standard UPI deep link
-      const link = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent('Aspires Acadmey')}&am=${finalAmt}&cu=INR&tn=${encodeURIComponent(note)}`;
+      const link = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent('Aspires Academy')}&am=${finalAmt}&cu=INR&tn=${encodeURIComponent(note)}`;
       setUpiLink(link);
       
       // Dynamic QR Code generation with api.qrserver.com
@@ -169,7 +169,7 @@ export default function GPaySupportCard({ isOpen, onClose, onVoicePlay }: GPaySu
             </div>
             <div>
               <div className="flex items-center gap-1.5">
-                <h4 className="font-extrabold text-xs text-slate-800 uppercase tracking-wider font-mono">Aspires Acadmey Portal</h4>
+                <h4 className="font-extrabold text-xs text-slate-800 uppercase tracking-wider font-mono">Aspires Academy Portal</h4>
                 <span className="text-[8px] font-black px-1.5 py-0.5 rounded bg-red-500/10 border border-red-500/20 text-red-600 animate-pulse font-mono uppercase">SUPPORT WINDOW</span>
               </div>
               <div className="flex items-center gap-1 mt-0.5">
@@ -400,7 +400,7 @@ export default function GPaySupportCard({ isOpen, onClose, onVoicePlay }: GPaySu
             id="modal-btn-trigger-disclaimer"
           >
             <Info className="h-3 w-3 text-slate-400" />
-            <span>Aspires Acadmey Notice & Board Policy</span>
+            <span>Aspires Academy Notice & Board Policy</span>
           </button>
           
           <button
@@ -432,7 +432,7 @@ export default function GPaySupportCard({ isOpen, onClose, onVoicePlay }: GPaySu
                 </div>
                 <div>
                   <h4 className="text-xs font-black text-slate-900">Official Disclaimer</h4>
-                  <p className="text-[8px] font-mono text-slate-400 uppercase tracking-widest">Aspires Acadmey Notice</p>
+                  <p className="text-[8px] font-mono text-slate-400 uppercase tracking-widest">Aspires Academy Notice</p>
                 </div>
               </div>
               <button
@@ -447,7 +447,7 @@ export default function GPaySupportCard({ isOpen, onClose, onVoicePlay }: GPaySu
             {/* Content body */}
             <div className="space-y-2.5 text-[11px] text-slate-600 leading-relaxed max-h-[250px] overflow-y-auto pr-1 font-sans">
               <p className="font-bold text-slate-800">
-                Aspires Acadmey is an independent self-guided preparation and AI educational platform dedicated to assisting public service exam students.
+                Aspires Academy is an independent self-guided preparation and AI educational platform dedicated to assisting public service exam students.
               </p>
               
               <p>
