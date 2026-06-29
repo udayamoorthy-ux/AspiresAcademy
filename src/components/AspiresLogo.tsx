@@ -12,9 +12,9 @@ interface AspiresLogoProps {
 }
 
 export default function AspiresLogo({ className = '', size = 120, showText = true }: AspiresLogoProps) {
-  // We use viewbox 0 0 500 500 for the full logo with text, or 0 0 500 280 for just the crest icon
-  const viewBox = showText ? "0 0 500 500" : "0 0 500 285";
-  const height = showText ? size : Math.round(size * 0.57);
+  // We use viewbox 0 0 500 500 for the full logo with text, or 100 50 300 240 for just the crest icon (zoomed in to remove blank padding)
+  const viewBox = showText ? "0 0 500 500" : "100 50 300 240";
+  const height = showText ? size : Math.round(size * 0.8);
 
   // Generate unique IDs for SVG definitions to prevent conflicts when multiple logos exist on the page
   const uniqueId = useId();
@@ -66,21 +66,21 @@ export default function AspiresLogo({ className = '', size = 120, showText = tru
         {/* ========================================== */}
         {/* 2. GOLDEN LAUREL BRANCHES (LEFT & RIGHT)   */}
         {/* ========================================== */}
-        {/* Left Laurel Leaves with solid paint server fallbacks */}
-        <path d="M 140,240 Q 120,230 115,200 Q 130,210 140,240 Z" fill={`url(#${goldGradId}) #B58920`} />
-        <path d="M 125,210 Q 110,195 105,170 Q 120,180 125,210 Z" fill={`url(#${goldGradId}) #B58920`} />
-        <path d="M 115,180 Q 105,160 105,135 Q 118,148 115,180 Z" fill={`url(#${goldGradId}) #B58920`} />
-        <path d="M 112,145 Q 105,120 115,100 Q 122,118 112,145 Z" fill={`url(#${goldGradId}) #B58920`} />
-        <path d="M 120,115 Q 115,90 130,75 Q 132,95 120,115 Z" fill={`url(#${goldGradId}) #B58920`} />
-        <path d="M 135,90 Q 135,70 155,60 Q 152,80 135,90 Z" fill={`url(#${goldGradId}) #B58920`} />
+        {/* Left Laurel Leaves */}
+        <path d="M 140,240 Q 120,230 115,200 Q 130,210 140,240 Z" fill={`url(#${goldGradId})`} />
+        <path d="M 125,210 Q 110,195 105,170 Q 120,180 125,210 Z" fill={`url(#${goldGradId})`} />
+        <path d="M 115,180 Q 105,160 105,135 Q 118,148 115,180 Z" fill={`url(#${goldGradId})`} />
+        <path d="M 112,145 Q 105,120 115,100 Q 122,118 112,145 Z" fill={`url(#${goldGradId})`} />
+        <path d="M 120,115 Q 115,90 130,75 Q 132,95 120,115 Z" fill={`url(#${goldGradId})`} />
+        <path d="M 135,90 Q 135,70 155,60 Q 152,80 135,90 Z" fill={`url(#${goldGradId})`} />
 
-        {/* Right Laurel Leaves with solid paint server fallbacks */}
-        <path d="M 360,240 Q 380,230 385,200 Q 370,210 360,240 Z" fill={`url(#${goldGradId}) #B58920`} />
-        <path d="M 375,210 Q 390,195 395,170 Q 380,180 375,210 Z" fill={`url(#${goldGradId}) #B58920`} />
-        <path d="M 385,180 Q 395,160 395,135 Q 382,148 385,180 Z" fill={`url(#${goldGradId}) #B58920`} />
-        <path d="M 388,145 Q 395,120 385,100 Q 378,118 388,145 Z" fill={`url(#${goldGradId}) #B58920`} />
-        <path d="M 380,115 Q 385,90 370,75 Q 368,95 380,115 Z" fill={`url(#${goldGradId}) #B58920`} />
-        <path d="M 365,90 Q 365,70 345,60 Q 348,80 365,90 Z" fill={`url(#${goldGradId}) #B58920`} />
+        {/* Right Laurel Leaves */}
+        <path d="M 360,240 Q 380,230 385,200 Q 370,210 360,240 Z" fill={`url(#${goldGradId})`} />
+        <path d="M 375,210 Q 390,195 395,170 Q 380,180 375,210 Z" fill={`url(#${goldGradId})`} />
+        <path d="M 385,180 Q 395,160 395,135 Q 382,148 385,180 Z" fill={`url(#${goldGradId})`} />
+        <path d="M 388,145 Q 395,120 385,100 Q 378,118 388,145 Z" fill={`url(#${goldGradId})`} />
+        <path d="M 380,115 Q 385,90 370,75 Q 368,95 380,115 Z" fill={`url(#${goldGradId})`} />
+        <path d="M 365,90 Q 365,70 345,60 Q 348,80 365,90 Z" fill={`url(#${goldGradId})`} />
 
 
         {/* ========================================== */}
@@ -102,8 +102,8 @@ export default function AspiresLogo({ className = '', size = 120, showText = tru
         <path d="M 250,260 C 280,245 320,245 355,260 L 355,225 C 320,210 280,210 250,225 Z" fill="#002B49" />
 
         {/* Thick golden edges for open book premium aesthetic */}
-        <path d="M 250,267 C 220,252 180,252 140,267 L 140,262 C 180,247 220,247 250,262 Z" fill={`url(#${goldGradId}) #B58920`} />
-        <path d="M 250,267 C 280,252 320,252 360,267 L 360,262 C 320,247 280,247 250,262 Z" fill={`url(#${goldGradId}) #B58920`} />
+        <path d="M 250,267 C 220,252 180,252 140,267 L 140,262 C 180,247 220,247 250,262 Z" fill={`url(#${goldGradId})`} />
+        <path d="M 250,267 C 280,252 320,252 360,267 L 360,262 C 320,247 280,247 250,262 Z" fill={`url(#${goldGradId})`} />
 
         {/* Additional outline depth below pages */}
         <path d="M 134,272 L 250,285 L 366,272 L 358,266 L 250,277 L 142,266 Z" fill="#002B49" />
@@ -121,13 +121,13 @@ export default function AspiresLogo({ className = '', size = 120, showText = tru
         {/* Tapered Torch Bowl */}
         <path d="M 235,155 L 265,155 C 265,163 260,167 257,167 L 243,167 C 240,167 235,163 235,155 Z" fill="#002B49" />
         {/* Gold Accent Ring on Torch Rim */}
-        <ellipse cx="250" cy="155" rx="15" ry="2" fill={`url(#${goldGradId}) #B58920`} />
+        <ellipse cx="250" cy="155" rx="15" ry="2" fill={`url(#${goldGradId})`} />
 
         {/* Dynamic Multi-layered Flame */}
         {/* Outer Flame (Orange-Red) */}
         <path 
           d="M 250,95 C 230,123 235,145 240,154 C 242,156 258,156 260,154 C 265,145 270,123 250,95 Z" 
-          fill={`url(#${flameGradId}) #EA4335`} 
+          fill={`url(#${flameGradId})`} 
         />
         {/* Inner core flame (Vibrant Yellow) */}
         <path 
@@ -162,7 +162,7 @@ export default function AspiresLogo({ className = '', size = 120, showText = tru
               y1="358" 
               x2="150" 
               y2="358" 
-              stroke={`url(#${goldGradId}) #B58920`} 
+              stroke={`url(#${goldGradId})`} 
               strokeWidth="3.5" 
               strokeLinecap="round" 
             />
@@ -172,7 +172,7 @@ export default function AspiresLogo({ className = '', size = 120, showText = tru
               fontFamily="'Inter', 'Outfit', sans-serif" 
               fontWeight="800" 
               fontSize="28" 
-              fill={`url(#${goldGradId}) #B58920`} 
+              fill={`url(#${goldGradId})`} 
               textAnchor="middle" 
               letterSpacing="8"
             >
@@ -183,7 +183,7 @@ export default function AspiresLogo({ className = '', size = 120, showText = tru
               y1="358" 
               x2="435" 
               y2="358" 
-              stroke={`url(#${goldGradId}) #B58920`} 
+              stroke={`url(#${goldGradId})`} 
               strokeWidth="3.5" 
               strokeLinecap="round" 
             />
@@ -213,7 +213,7 @@ export default function AspiresLogo({ className = '', size = 120, showText = tru
             />
             <polygon 
               points="250,413 252.5,417.5 257.5,417.5 253.5,420.5 255,425 250,422.5 245,425 246.5,420.5 242.5,417.5 247.5,417.5" 
-              fill={`url(#${goldGradId}) #B58920`} 
+              fill={`url(#${goldGradId})`} 
             />
 
             {/* Three Column Footer Boards Mapped */}
@@ -247,7 +247,7 @@ export default function AspiresLogo({ className = '', size = 120, showText = tru
             
             {/* Tiny flag and staff */}
             <line x1="250" y1="433" x2="250" y2="426" stroke="#002B49" strokeWidth="1" />
-            <polygon points="250,426 258,428 250,430" fill={`url(#${goldGradId}) #B58920`} />
+            <polygon points="250,426 258,428 250,430" fill={`url(#${goldGradId})`} />
 
             {/* Right Column: UPSC */}
             <text x="345" y="449" fontFamily="'Inter', sans-serif" fontWeight="900" fontSize="19" fill="#002B49" textAnchor="middle" letterSpacing="1.5">UPSC</text>
