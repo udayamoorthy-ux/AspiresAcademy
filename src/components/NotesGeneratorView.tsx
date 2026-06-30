@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Sparkles, BookOpen, Volume2, Download, Trash2, HelpCircle, CheckCircle, BrainCircuit, RefreshCw, Layers } from 'lucide-react';
+import { Sparkles, BookOpen, Volume2, Download, Trash2, HelpCircle, CheckCircle, BrainCircuit, RefreshCw, Layers, Crown } from 'lucide-react';
 import { ExamType } from '../types';
 
 interface NoteData {
@@ -15,6 +15,8 @@ interface NoteData {
 interface NotesGeneratorViewProps {
   selectedExam: ExamType;
   onVoicePlay?: (text: string, title: string) => void;
+  isPremium?: boolean;
+  onPremiumClick?: () => void;
 }
 
 const PRESET_TOPICS: Record<ExamType, { topic: string; keywords: string }[]> = {
@@ -116,7 +118,12 @@ function renderBoldText(rawText: string) {
   });
 }
 
-export default function NotesGeneratorView({ selectedExam, onVoicePlay }: NotesGeneratorViewProps) {
+export default function NotesGeneratorView({ 
+  selectedExam, 
+  onVoicePlay, 
+  isPremium = false, 
+  onPremiumClick 
+}: NotesGeneratorViewProps) {
   const [topic, setTopic] = useState('');
   const [keywords, setKeywords] = useState('');
   const [loading, setLoading] = useState(false);
@@ -124,6 +131,12 @@ export default function NotesGeneratorView({ selectedExam, onVoicePlay }: NotesG
   const [savedNotes, setSavedNotes] = useState<NoteData[]>([]);
   const [revealedCardIndex, setRevealedCardIndex] = useState<number | null>(null);
   const [toast, setToast] = useState<string | null>(null);
+
+  // Free Tier Usage Counting state
+  const [notesCount, setNotesCount] = useState<number>(() => {
+    const val = localStorage.getItem('aspires_notes_gen_count');
+    return val ? parseInt(val, 10) : 0;
+  });
 
   useEffect(() => {
     // Load saved notes from localStorage
@@ -156,6 +169,12 @@ export default function NotesGeneratorView({ selectedExam, onVoicePlay }: NotesG
 
     if (!targetTopic.trim()) {
       alert('Please provide a study topic name.');
+      return;
+    }
+
+    if (!isPremium && notesCount >= 2) {
+      alert("Free Tier Limit Reached: You have reached your daily limit of 2 AI Notes generations. Upgrade to ASPIRES Premium via Google Pay to unlock unlimited custom notes & recall cards!");
+      onPremiumClick?.();
       return;
     }
 
@@ -193,6 +212,12 @@ export default function NotesGeneratorView({ selectedExam, onVoicePlay }: NotesG
       
       // Auto-save to list
       saveNoteToList(updatedNote);
+
+      if (!isPremium) {
+        const newCount = notesCount + 1;
+        setNotesCount(newCount);
+        localStorage.setItem('aspires_notes_gen_count', String(newCount));
+      }
 
     } catch (err) {
       console.error(err);
@@ -324,6 +349,21 @@ ${note.activeRecallQuestions.map((q, idx) => `### Q${idx + 1}: ${q.question}\n**
               <Sparkles className="h-4.5 w-4.5 text-emerald-600" />
               Compile Study Notes
             </h4>
+
+            {!isPremium && (
+              <div className="bg-amber-500/10 border border-amber-500/35 p-3 rounded-xl flex items-center justify-between gap-2.5 text-xs font-semibold text-slate-800 animate-fadeIn mb-2.5">
+                <div className="flex items-center gap-1.5">
+                  <Crown className="h-4 w-4 text-amber-500 animate-bounce shrink-0" />
+                  <span>Free Notes: <strong className="text-amber-700">{notesCount} / 2</strong> generated.</span>
+                </div>
+                <button
+                  onClick={onPremiumClick}
+                  className="bg-amber-500 hover:bg-amber-600 text-slate-950 px-2.5 py-1 rounded-lg text-[9.5px] font-black shadow-sm transition-all cursor-pointer shrink-0"
+                >
+                  Go Unlimited 💎
+                </button>
+              </div>
+            )}
 
             <div className="space-y-4">
               <div className="space-y-1.5">

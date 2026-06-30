@@ -24,15 +24,23 @@ import {
   ArrowLeft, 
   ShieldCheck, 
   Layers,
-  FileText
+  FileText,
+  Crown
 } from 'lucide-react';
 
 interface QuizViewProps {
   selectedExam: ExamType;
   onVoicePlay?: (text: string, title: string) => void;
+  isPremium?: boolean;
+  onPremiumClick?: () => void;
 }
 
-export default function QuizView({ selectedExam, onVoicePlay }: QuizViewProps) {
+export default function QuizView({ 
+  selectedExam, 
+  onVoicePlay,
+  isPremium = false,
+  onPremiumClick
+}: QuizViewProps) {
   const [activeTab, setActiveTab] = useState<'pyqs' | 'ai-compiler' | 'diagnostics'>('pyqs');
   const [session, setSession] = useState<QuizSession | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -41,8 +49,34 @@ export default function QuizView({ selectedExam, onVoicePlay }: QuizViewProps) {
   const [hasAnswered, setHasAnswered] = useState<boolean>(false);
   const [activePYQFilter, setActivePYQFilter] = useState<'ALL' | 'UPSC' | 'TNPSC'>('ALL');
 
+  // Free Tier Usage Counting state for Mock Tests
+  const [mockTestCount, setMockTestCount] = useState<number>(() => {
+    const val = localStorage.getItem('aspires_mock_test_count');
+    return val ? parseInt(val, 10) : 0;
+  });
+
+  const checkLimit = (): boolean => {
+    if (isPremium) return true;
+    if (session !== null) return true; // Already inside an active session, let them adapt/restart
+    if (mockTestCount >= 1) {
+      alert("Free Tier Limit Reached: You have reached your limit of 1 free mock test. Upgrade to ASPIRES Premium via Google Pay to unlock unlimited practice tests and dynamic mock exams!");
+      onPremiumClick?.();
+      return false;
+    }
+    return true;
+  };
+
+  const incrementLimit = () => {
+    if (!isPremium) {
+      const newCount = mockTestCount + 1;
+      setMockTestCount(newCount);
+      localStorage.setItem('aspires_mock_test_count', String(newCount));
+    }
+  };
+
   // Load diagnostic preset
   const startStaticQuiz = () => {
+    if (!checkLimit()) return;
     const questions = STATIC_QUIZ_QUESTIONS[selectedExam] || [];
     if (questions.length === 0) return;
 
@@ -57,10 +91,12 @@ export default function QuizView({ selectedExam, onVoicePlay }: QuizViewProps) {
     });
     setSelectedAnswerIndex(null);
     setHasAnswered(false);
+    incrementLimit();
   };
 
   // Launch a selected Official PYQ Practice Test
   const startPracticeTest = (test: PracticeTest) => {
+    if (!checkLimit()) return;
     setSession({
       id: `practice-${test.id}-${Date.now()}`,
       title: test.title,
@@ -72,10 +108,12 @@ export default function QuizView({ selectedExam, onVoicePlay }: QuizViewProps) {
     });
     setSelectedAnswerIndex(null);
     setHasAnswered(false);
+    incrementLimit();
   };
 
   // Generate dynamically using Gemini
   const generateAIQuiz = async () => {
+    if (!checkLimit()) return;
     setLoading(true);
     try {
       const response = await fetch('/api/generate-quiz', {
@@ -101,6 +139,7 @@ export default function QuizView({ selectedExam, onVoicePlay }: QuizViewProps) {
         });
         setSelectedAnswerIndex(null);
         setHasAnswered(false);
+        incrementLimit();
       }
     } catch (error) {
       console.warn("Issue compiling AI Quiz:", error);
@@ -239,6 +278,22 @@ export default function QuizView({ selectedExam, onVoicePlay }: QuizViewProps) {
   return (
     <div className="space-y-6" id="quiz-view-dashboard">
       
+      {/* Premium Info / Limit Notification banner */}
+      {!isPremium && !session && (
+        <div className="bg-amber-500/10 border border-amber-500/35 p-4 rounded-2xl flex items-center justify-between gap-4 text-xs font-semibold text-slate-800 animate-fadeIn" id="quiz-limit-banner">
+          <div className="flex items-center gap-2">
+            <Crown className="h-4.5 w-4.5 text-amber-500 animate-bounce shrink-0" />
+            <span>Practice Center Free Limit: <strong className="text-amber-700">{mockTestCount} / 1</strong> mock test used. Upgrade to unlock all 15+ full-length PYQs & infinite AI mock compilations!</span>
+          </div>
+          <button
+            onClick={onPremiumClick}
+            className="bg-amber-500 hover:bg-amber-600 text-slate-950 px-3.5 py-1.5 rounded-xl text-[10.5px] font-black shadow-sm transition-all cursor-pointer whitespace-nowrap shrink-0"
+          >
+            Unlock Unlimited 💎
+          </button>
+        </div>
+      )}
+
       {/* Tab Switcher - Only display if not in an active quiz session */}
       {!session && (
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-4 border border-slate-200 rounded-2xl shadow-sm" id="quiz-tab-switcher">
@@ -270,6 +325,7 @@ export default function QuizView({ selectedExam, onVoicePlay }: QuizViewProps) {
             </button>
             <button
               onClick={() => {
+                if (!checkLimit()) return;
                 setActiveTab('diagnostics');
                 startStaticQuiz();
               }}

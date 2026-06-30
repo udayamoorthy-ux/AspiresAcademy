@@ -6,14 +6,25 @@
 import React, { useState } from 'react';
 import { EssayPrompt, EssayEvaluation } from '../types';
 import { DEFAULT_ESSAY_PROMPTS } from '../data';
-import { Award, Sparkles, Send, FileText, CheckCircle2, ChevronRight, HelpCircle, Loader2 } from 'lucide-react';
+import { Award, Sparkles, Send, FileText, CheckCircle2, ChevronRight, HelpCircle, Loader2, Crown } from 'lucide-react';
 
-export default function EssayEvaluatorView() {
+interface EssayEvaluatorViewProps {
+  isPremium?: boolean;
+  onPremiumClick?: () => void;
+}
+
+export default function EssayEvaluatorView({ isPremium = false, onPremiumClick }: EssayEvaluatorViewProps) {
   const [prompts, setPrompts] = useState<EssayPrompt[]>(DEFAULT_ESSAY_PROMPTS);
   const [selectedPrompt, setSelectedPrompt] = useState<EssayPrompt>(DEFAULT_ESSAY_PROMPTS[0]);
   const [essayText, setEssayText] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [evaluation, setEvaluation] = useState<EssayEvaluation | null>(null);
+
+  // Free Tier Usage Counting state
+  const [evalCount, setEvalCount] = useState<number>(() => {
+    const val = localStorage.getItem('aspires_essay_eval_count');
+    return val ? parseInt(val, 10) : 0;
+  });
 
   // Custom prompt input
   const [customTitle, setCustomTitle] = useState<string>('');
@@ -53,6 +64,12 @@ export default function EssayEvaluatorView() {
   const handleEvaluateEssay = async () => {
     if (!essayText.trim() || loading) return;
 
+    if (!isPremium && evalCount >= 1) {
+      alert("Free Tier Limit Reached: You have reached your daily limit of 1 essay evaluation. Upgrade to ASPIRES Premium via Google Pay to get instant unlimited gradings!");
+      onPremiumClick?.();
+      return;
+    }
+
     setLoading(true);
     setEvaluation(null);
 
@@ -71,6 +88,11 @@ export default function EssayEvaluatorView() {
       const data = await response.json();
       if (data) {
         setEvaluation(data);
+        if (!isPremium) {
+          const newCount = evalCount + 1;
+          setEvalCount(newCount);
+          localStorage.setItem('aspires_essay_eval_count', String(newCount));
+        }
       }
     } catch (error) {
       console.warn("Mains answer evaluation fallback warning:", error);
@@ -200,6 +222,22 @@ export default function EssayEvaluatorView() {
               </p>
             </div>
           </div>
+
+          {/* Premium Info / Limit Notification banner */}
+          {!isPremium && (
+            <div className="bg-amber-500/10 border border-amber-500/30 p-3 rounded-xl flex items-center justify-between gap-4 text-xs font-semibold text-slate-800 animate-fadeIn mb-1">
+              <div className="flex items-center gap-2">
+                <Crown className="h-4 w-4 text-amber-500 animate-bounce shrink-0" />
+                <span>Free Daily Limit: <strong className="text-amber-700">{evalCount} / 1</strong> evaluation used.</span>
+              </div>
+              <button
+                onClick={onPremiumClick}
+                className="bg-amber-500 hover:bg-amber-600 text-slate-950 px-3 py-1 rounded-lg text-[10px] font-black shadow-sm transition-all cursor-pointer"
+              >
+                Go Unlimited 💎
+              </button>
+            </div>
+          )}
 
           <textarea
             id="essay-textarea"

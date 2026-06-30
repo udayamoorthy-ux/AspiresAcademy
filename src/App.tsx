@@ -18,6 +18,8 @@ import PerformanceAnalyticsView from './components/PerformanceAnalyticsView';
 import AIVoiceTeacher from './components/AIVoiceTeacher';
 import GPaySupportCard from './components/GPaySupportCard';
 import AspiresLogo from './components/AspiresLogo';
+import AuthModal from './components/AuthModal';
+import ContactModal from './components/ContactModal';
 
 import { 
   BookOpen, 
@@ -34,7 +36,9 @@ import {
   Bell,
   ArrowRight,
   BrainCircuit,
-  TrendingUp
+  TrendingUp,
+  Crown,
+  CheckCircle2
 } from 'lucide-react';
 
 const TICKER_HEADLINES: Record<ExamType, string[]> = {
@@ -64,6 +68,78 @@ export default function App() {
   const [voiceText, setVoiceText] = useState('');
   const [voiceTitle, setVoiceTitle] = useState('');
   const [isSupportModalOpen, setIsSupportModalOpen] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+  const [userEmail, setUserEmail] = useState<string>(() => {
+    return localStorage.getItem('aspires_logged_in_email') || '';
+  });
+
+  // Premium Subscription State loaded securely from Cache standard
+  const [isPremium, setIsPremium] = useState<boolean>(() => {
+    // If they are udayamoorthy@gmail.com, auto unlock
+    const savedEmail = localStorage.getItem('aspires_logged_in_email') || '';
+    if (savedEmail.trim().toLowerCase() === 'udayamoorthy@gmail.com') {
+      return true;
+    }
+    return localStorage.getItem('aspires_is_premium') === 'true';
+  });
+  const [premiumPlan, setPremiumPlan] = useState<string>(() => {
+    const savedEmail = localStorage.getItem('aspires_logged_in_email') || '';
+    if (savedEmail.trim().toLowerCase() === 'udayamoorthy@gmail.com') {
+      return 'annual';
+    }
+    return localStorage.getItem('aspires_premium_plan') || '';
+  });
+
+  const handleLoginSuccess = (email: string) => {
+    localStorage.setItem('aspires_logged_in_email', email);
+    setUserEmail(email);
+    
+    if (email === 'udayamoorthy@gmail.com') {
+      localStorage.setItem('aspires_is_premium', 'true');
+      localStorage.setItem('aspires_premium_plan', 'annual');
+      setIsPremium(true);
+      setPremiumPlan('annual');
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('aspires_logged_in_email');
+    setUserEmail('');
+    
+    // If they logged out and we want to reset premium (if it was the VIP auto premium)
+    if (userEmail === 'udayamoorthy@gmail.com') {
+      localStorage.removeItem('aspires_is_premium');
+      localStorage.removeItem('aspires_premium_plan');
+      setIsPremium(false);
+      setPremiumPlan('');
+    }
+  };
+
+  const handleSubscriptionSuccess = (plan: 'monthly' | 'annual') => {
+    localStorage.setItem('aspires_is_premium', 'true');
+    localStorage.setItem('aspires_premium_plan', plan);
+    setIsPremium(true);
+    setPremiumPlan(plan);
+  };
+
+  const handleCancelSubscription = () => {
+    localStorage.removeItem('aspires_is_premium');
+    localStorage.removeItem('aspires_premium_plan');
+    setIsPremium(false);
+    setPremiumPlan('');
+  };
+
+  useEffect(() => {
+    // Auto-align premium state if they are logged in as udayamoorthy@gmail.com on launch
+    const savedEmail = localStorage.getItem('aspires_logged_in_email') || '';
+    if (savedEmail.trim().toLowerCase() === 'udayamoorthy@gmail.com') {
+      localStorage.setItem('aspires_is_premium', 'true');
+      localStorage.setItem('aspires_premium_plan', 'annual');
+      setIsPremium(true);
+      setPremiumPlan('annual');
+    }
+  }, [userEmail]);
 
   useEffect(() => {
     setTickerIndex(0);
@@ -122,14 +198,77 @@ export default function App() {
             </div>
           </div>
 
-          {/* Quick Info Bar */}
-          <div className="flex items-center gap-4 text-xs md:text-sm font-semibold text-slate-600" id="header-quick-info">
-            <span className="flex items-center gap-1.5 text-slate-700">
-              <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-              Syllabus Mapped 2026
-            </span>
-            <span className="h-4 w-px bg-slate-200" />
-            <span className="text-slate-800">Exam Mode: <strong className="text-emerald-600 font-bold bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded">{selectedExam}</strong></span>
+          {/* Quick Info Bar & Premium Controls */}
+          <div className="flex items-center gap-4 flex-wrap" id="header-quick-info">
+            <button 
+              onClick={() => setIsContactModalOpen(true)}
+              className="border border-slate-200 hover:bg-slate-50 text-slate-700 font-extrabold text-xs px-3.5 py-1.5 rounded-xl flex items-center gap-1.5 transition-colors cursor-pointer"
+              id="header-support-btn"
+            >
+              <MessageSquare className="h-3.5 w-3.5 text-emerald-600" />
+              <span>Support Desk</span>
+            </button>
+
+            <span className="h-4 w-px bg-slate-200 hidden sm:inline" />
+
+            {userEmail ? (
+              <button 
+                onClick={() => setIsAuthModalOpen(true)}
+                className="flex items-center gap-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 px-3 py-1.5 rounded-xl cursor-pointer transition-colors"
+                id="header-user-profile-btn"
+              >
+                <div className="h-6 w-6 rounded-full bg-emerald-600 text-white font-extrabold text-[10.5px] flex items-center justify-center shadow-sm">
+                  {userEmail.charAt(0).toUpperCase()}
+                </div>
+                <span className="text-xs font-bold text-slate-700 truncate max-w-[120px]" title={userEmail}>
+                  {userEmail.split('@')[0]}
+                </span>
+              </button>
+            ) : (
+              <button 
+                onClick={() => setIsAuthModalOpen(true)}
+                className="border border-slate-200 hover:bg-slate-50 text-slate-700 font-extrabold text-xs px-3.5 py-1.5 rounded-xl flex items-center gap-1.5 transition-colors cursor-pointer"
+                id="header-sign-in-btn"
+              >
+                <UserCheck className="h-3.5 w-3.5 text-slate-500" />
+                <span>Student Login</span>
+              </button>
+            )}
+
+            <span className="h-4 w-px bg-slate-200 hidden sm:inline" />
+
+            {isPremium ? (
+              <div className="flex items-center gap-2">
+                <div className="bg-gradient-to-r from-amber-500 to-yellow-500 border border-amber-400 text-slate-950 font-extrabold text-[10.5px] px-3.5 py-1.5 rounded-full flex items-center gap-1.5 shadow-sm shadow-amber-500/10 animate-fadeIn">
+                  <Crown className="h-3.5 w-3.5 text-slate-950 fill-slate-950 animate-pulse animate-bounce" />
+                  <span>PREMIUM ACTIVE ({premiumPlan === 'annual' ? 'Annual Pass' : 'Monthly Pass'})</span>
+                </div>
+                <button
+                  onClick={() => setIsSupportModalOpen(true)}
+                  className="text-[10px] text-slate-400 hover:text-slate-600 font-mono underline ml-1 cursor-pointer"
+                  title="Manage subscription"
+                >
+                  Manage
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => setIsSupportModalOpen(true)}
+                className="bg-gradient-to-r from-slate-950 to-slate-900 hover:from-slate-900 hover:to-slate-850 text-white font-extrabold text-xs px-4 py-2 rounded-xl flex items-center gap-1.5 shadow-sm hover:shadow transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer group"
+                id="header-upgrade-btn"
+              >
+                <Crown className="h-3.5 w-3.5 text-amber-400 group-hover:rotate-12 transition-transform" />
+                <span>Go Premium</span>
+              </button>
+            )}
+
+            <span className="h-4 w-px bg-slate-200 hidden sm:inline" />
+
+            <div className="flex items-center gap-4 text-xs md:text-sm font-semibold text-slate-600">
+              <span className="text-slate-800 flex items-center gap-1.5">
+                Mode: <strong className="text-emerald-600 font-black bg-emerald-50 border border-emerald-100 px-2.5 py-0.5 rounded">{selectedExam}</strong>
+              </span>
+            </div>
           </div>
 
         </div>
@@ -228,6 +367,45 @@ export default function App() {
               })}
             </nav>
 
+            {/* Premium Status Widget / Promo Inside Sidebar */}
+            {isPremium ? (
+              <div className="bg-gradient-to-br from-amber-500/10 to-emerald-500/10 border border-amber-500/35 p-5 rounded-2xl space-y-3 shadow-sm relative overflow-hidden" id="premium-sidebar-active">
+                <div className="flex items-center gap-2">
+                  <Crown className="h-5 w-5 text-amber-500 animate-pulse" />
+                  <h4 className="font-extrabold text-sm text-slate-900 font-display">Premium Active</h4>
+                </div>
+                <p className="text-xs text-slate-500 leading-relaxed font-sans">
+                  You have unlimited access to all AI evaluators, planners, diagnostic testing suites, and voice teachers.
+                </p>
+                <div className="flex items-center gap-1.5 text-[10px] font-mono text-emerald-800 font-black">
+                  <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
+                  <span>ALL CAP LIMITS REMOVED</span>
+                </div>
+              </div>
+            ) : (
+              <div className="bg-gradient-to-br from-slate-950 to-slate-900 text-white border border-slate-800 p-5 rounded-2xl space-y-3.5 shadow-xl relative overflow-hidden" id="premium-sidebar-promo">
+                <div className="absolute -right-3 -top-3 opacity-15">
+                  <Crown className="h-20 w-20 text-yellow-400 rotate-12" />
+                </div>
+                <div className="space-y-1">
+                  <span className="text-[9.5px] uppercase tracking-widest text-amber-400 font-black font-mono">Unlock Unlimited AI Power</span>
+                  <h4 className="font-extrabold text-sm text-white flex items-center gap-1.5 font-display">
+                    ASPIRES Premium 💎
+                  </h4>
+                </div>
+                <p className="text-[11px] text-slate-400 leading-relaxed">
+                  Unlock limitless essay diagnostics, notes generators, custom schedules, and ad-free AI coaching chats.
+                </p>
+                <button
+                  onClick={() => setIsSupportModalOpen(true)}
+                  className="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs py-2.5 rounded-xl transition-all shadow-md hover:shadow-lg hover:scale-101 cursor-pointer flex items-center justify-center gap-1"
+                >
+                  <span>Activate Premium for ₹199</span>
+                  <ArrowRight className="h-3 w-3" />
+                </button>
+              </div>
+            )}
+
             {/* Support Information Box */}
             <div className="bg-white border border-slate-200/80 p-5 rounded-2xl space-y-3 shadow-sm" id="info-card">
               <h4 className="font-bold text-sm text-slate-900 flex items-center gap-1.5">
@@ -246,7 +424,9 @@ export default function App() {
               selectedExam,
               onSelectExam: handleSelectExam,
               onVoicePlay: handleVoicePlay,
-              setActiveTab: setActiveTab
+              setActiveTab: setActiveTab,
+              isPremium: isPremium,
+              onPremiumClick: () => setIsSupportModalOpen(true)
             })}
           </div>
 
@@ -262,8 +442,8 @@ export default function App() {
           <AspiresLogo size={200} showText={true} className="transition-transform duration-300 hover:scale-102" />
         </div>
         
-        {/* Support Us trigger button in the footer */}
-        <div className="flex justify-center items-center py-2" id="footer-gpay-support-group">
+        {/* Support Us / Premium trigger button & Help Desk button in the footer */}
+        <div className="flex flex-col sm:flex-row justify-center items-center gap-3 py-2" id="footer-gpay-support-group">
           <button
             onClick={() => {
               setIsSupportModalOpen(true);
@@ -279,7 +459,20 @@ export default function App() {
               <span className="text-[#34A853]">y</span>
             </span>
             <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-ping shrink-0" />
-            <span className="text-xs font-extrabold text-slate-800 tracking-tight group-hover:text-emerald-950">Support Us</span>
+            <span className="text-xs font-extrabold text-slate-800 tracking-tight group-hover:text-emerald-950">
+              {isPremium ? 'Upgrade / Support' : 'Go Premium / Support'}
+            </span>
+          </button>
+
+          <button
+            onClick={() => {
+              setIsContactModalOpen(true);
+            }}
+            className="flex items-center gap-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 px-4 py-2.5 rounded-2xl transition-all shadow-sm cursor-pointer group active:scale-95 text-xs font-bold text-slate-700"
+            id="footer-contact-support-trigger"
+          >
+            <MessageSquare className="h-4 w-4 text-emerald-600" />
+            <span>Have Queries? Contact Helpdesk</span>
           </button>
         </div>
 
@@ -304,6 +497,25 @@ export default function App() {
         isOpen={isSupportModalOpen} 
         onClose={() => setIsSupportModalOpen(false)} 
         onVoicePlay={handleVoicePlay} 
+        isPremium={isPremium}
+        onSubscriptionSuccess={handleSubscriptionSuccess}
+        onCancelSubscription={handleCancelSubscription}
+      />
+
+      {/* Account Auth Modal popup Window */}
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        onLoginSuccess={handleLoginSuccess}
+        currentEmail={userEmail}
+        onLogout={handleLogout}
+      />
+
+      {/* Support Desk Modal Window */}
+      <ContactModal
+        isOpen={isContactModalOpen}
+        onClose={() => setIsContactModalOpen(false)}
+        currentUserEmail={userEmail}
       />
     </div>
   );

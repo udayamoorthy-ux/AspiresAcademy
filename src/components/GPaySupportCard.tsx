@@ -1,10 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { Heart, CheckCircle2, ShieldAlert, Sparkles, Loader2, X, Info, QrCode, ArrowRight, Check, Users, GraduationCap } from 'lucide-react';
+import React, { useState, useEffect, useId } from 'react';
+import { Heart, CheckCircle2, ShieldAlert, Sparkles, Loader2, X, Info, QrCode, ArrowRight, Check, Users, GraduationCap, Award, Crown } from 'lucide-react';
 
 interface GPaySupportCardProps {
   isOpen: boolean;
   onClose: () => void;
   onVoicePlay?: (text: string, title: string) => void;
+  isPremium?: boolean;
+  onSubscriptionSuccess?: (plan: 'monthly' | 'annual') => void;
+  onCancelSubscription?: () => void;
 }
 
 interface Supporter {
@@ -19,34 +22,43 @@ const PRE_SEEDED_SUPPORTERS: Supporter[] = [
   {
     id: 's1',
     name: 'Priya Dharshini',
-    amount: 150,
+    amount: 199,
     message: 'The Mains Essay Evaluator has been a lifesaver for my TNPSC Group 1 prep!',
     timestamp: '2 hours ago'
   },
   {
     id: 's2',
     name: 'Karthik Raja S',
-    amount: 50,
-    message: 'Excellent syllabus tracker. Ad-free clean study portal, supporting to keep it running.',
+    amount: 999,
+    message: 'Excellent syllabus tracker and AI coach. Subscribed to Annual Pass to keep it going.',
     timestamp: '5 hours ago'
   },
   {
     id: 's3',
     name: 'Amit Sharma (UPSC Aspirant)',
-    amount: 250,
+    amount: 199,
     message: 'The AI voice lecture summaries of policy briefs on CURRENT AFFAIRS are absolute gold.',
     timestamp: 'Yesterday'
   },
   {
     id: 's4',
     name: 'Nandhini Murugesan',
-    amount: 100,
+    amount: 199,
     message: 'Customizable planners combined with mock tests help me target weak topics. Thank you!',
     timestamp: '2 days ago'
   }
 ];
 
-export default function GPaySupportCard({ isOpen, onClose, onVoicePlay }: GPaySupportCardProps) {
+export default function GPaySupportCard({ 
+  isOpen, 
+  onClose, 
+  onVoicePlay, 
+  isPremium = false, 
+  onSubscriptionSuccess, 
+  onCancelSubscription 
+}: GPaySupportCardProps) {
+  const [paymentMode, setPaymentMode] = useState<'subscription' | 'donation'>('subscription');
+  const [selectedPlan, setSelectedPlan] = useState<'monthly' | 'annual'>('monthly');
   const [amount, setAmount] = useState<number>(100);
   const [customAmount, setCustomAmount] = useState<string>('');
   
@@ -68,6 +80,12 @@ export default function GPaySupportCard({ isOpen, onClose, onVoicePlay }: GPaySu
 
   const quickAmounts = [20, 50, 100, 200];
 
+  // Generate unique IDs for SVG definitions to prevent conflicts when multiple logos exist on the page
+  const uniqueId = useId();
+  const safeId = uniqueId.replace(/:/g, '-');
+  const flameGradId = `flame-grad-${safeId}`;
+  const goldGradId = `gold-grad-${safeId}`;
+
   // Load saved supporters on mount
   useEffect(() => {
     const savedSupporters = localStorage.getItem('gpay_supporters_list');
@@ -83,6 +101,9 @@ export default function GPaySupportCard({ isOpen, onClose, onVoicePlay }: GPaySu
   }, []);
 
   const getFinalAmount = () => {
+    if (paymentMode === 'subscription') {
+      return selectedPlan === 'monthly' ? 199 : 999;
+    }
     return customAmount ? parseFloat(customAmount) : amount;
   };
 
@@ -91,7 +112,9 @@ export default function GPaySupportCard({ isOpen, onClose, onVoicePlay }: GPaySu
     const finalAmt = getFinalAmount();
     if (finalAmt > 0) {
       const senderName = supporterName.trim() || 'Aspirant';
-      const note = `ASPIRES ACADEMY contribution`;
+      const note = paymentMode === 'subscription' 
+        ? `ASPIRES PREMIUM ${selectedPlan.toUpperCase()} subscription`
+        : `ASPIRES ACADEMY contribution`;
       
       // Standard UPI deep link
       const link = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent('ASPIRES ACADEMY')}&am=${finalAmt}&cu=INR&tn=${encodeURIComponent(note)}`;
@@ -104,7 +127,7 @@ export default function GPaySupportCard({ isOpen, onClose, onVoicePlay }: GPaySu
       setUpiLink('');
       setQrCodeUrl('');
     }
-  }, [amount, customAmount, supporterName]);
+  }, [amount, customAmount, supporterName, paymentMode, selectedPlan]);
 
   const handleConfirmPaid = () => {
     const finalAmount = getFinalAmount();
@@ -120,17 +143,22 @@ export default function GPaySupportCard({ isOpen, onClose, onVoicePlay }: GPaySu
       setShowConfirmation(false);
       setJustAddedSelf(true);
 
-      const newSupporter: Supporter = {
-        id: 'user_' + Date.now(),
-        name: supporterName.trim() || 'Anonymous Aspirant',
-        amount: finalAmount,
-        message: supporterMessage.trim() || 'Supported free server infrastructure!',
-        timestamp: 'Just now'
-      };
+      if (paymentMode === 'subscription') {
+        // Trigger subscription success
+        onSubscriptionSuccess?.(selectedPlan);
+      } else {
+        const newSupporter: Supporter = {
+          id: 'user_' + Date.now(),
+          name: supporterName.trim() || 'Anonymous Aspirant',
+          amount: finalAmount,
+          message: supporterMessage.trim() || 'Supported free server infrastructure!',
+          timestamp: 'Just now'
+        };
 
-      const updated = [newSupporter, ...supportersList];
-      setSupportersList(updated);
-      localStorage.setItem('gpay_supporters_list', JSON.stringify(updated));
+        const updated = [newSupporter, ...supportersList];
+        setSupportersList(updated);
+        localStorage.setItem('gpay_supporters_list', JSON.stringify(updated));
+      }
 
       // Reset
       setCustomAmount('');
@@ -195,68 +223,228 @@ export default function GPaySupportCard({ isOpen, onClose, onVoicePlay }: GPaySu
 
         {/* Scrollable Container */}
         <div className="p-5 overflow-y-auto space-y-5">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
-            
-            {/* Column 1: Header and Description & Amount select */}
-            <div className="lg:col-span-5 space-y-4">
-              <div className="space-y-1.5">
-                <h3 className="text-sm font-black text-slate-800">Support Our Server Infrastructure</h3>
-                <p className="text-[11px] text-slate-500 leading-relaxed">
-                  We provide high-quality AI study planners, essay evaluations, and mock tests completely free and ad-free. Support our AI server costs to keep this portal accessible to everyone!
-                </p>
+          
+          {/* If already Premium, show a glorious membership banner */}
+          {isPremium && (
+            <div className="bg-gradient-to-r from-amber-500/15 via-yellow-500/10 to-emerald-500/10 border border-amber-300/60 p-4.5 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm animate-fadeIn">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-full bg-amber-500 flex items-center justify-center text-white shadow-md shadow-amber-500/25">
+                  <Crown className="h-5.5 w-5.5 animate-bounce" />
+                </div>
+                <div className="space-y-0.5 text-center sm:text-left">
+                  <h4 className="text-sm font-black text-slate-900 flex items-center justify-center sm:justify-start gap-1.5 font-display">
+                    ASPIRES Premium Plan is Active
+                    <span className="text-[9px] font-black px-1.5 py-0.5 rounded bg-emerald-600 text-white font-mono">LIVE</span>
+                  </h4>
+                  <p className="text-xs text-slate-500">Unlimited Essay Evaluations, AI Notes, and Mentor Chat fully unlocked!</p>
+                </div>
               </div>
-
-              {/* Success Notification */}
-              {justAddedSelf && (
-                <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 text-[10px] px-3 py-2 rounded-xl flex items-center gap-1.5 animate-fadeIn">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
-                  <span>Thank you! Your simulated contribution has been added to our board below.</span>
-                </div>
-              )}
-
-              {/* Quick Preset Selector */}
-              <div className="space-y-2">
-                <span className="text-[9px] font-mono font-extrabold text-slate-400 uppercase tracking-wider block">1. Choose Support Amount</span>
-                <div className="grid grid-cols-4 gap-1.5">
-                  {quickAmounts.map((amt) => (
-                    <button
-                      key={amt}
-                      type="button"
-                      onClick={() => {
-                        setAmount(amt);
-                        setCustomAmount('');
-                      }}
-                      className={`py-2 rounded-lg text-[10.5px] font-extrabold font-mono transition-all border ${
-                        amount === amt && !customAmount
-                          ? 'bg-amber-500 border-amber-500 text-slate-950 shadow-sm'
-                          : 'bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-600 hover:text-slate-900'
-                      }`}
-                    >
-                      ₹{amt}
-                    </button>
-                  ))}
-                </div>
-
-                <div className="relative">
-                  <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[10px] font-mono font-bold text-slate-400">₹</span>
-                  <input
-                    type="number"
-                    placeholder="Or enter custom amount..."
-                    value={customAmount}
-                    onChange={(e) => {
-                      setCustomAmount(e.target.value);
-                      setAmount(0);
-                    }}
-                    className="w-full pl-6 pr-3 py-2 bg-slate-50/50 border border-slate-200 rounded-xl text-xs text-slate-800 placeholder-slate-400 font-mono focus:outline-none focus:border-amber-500 focus:bg-white transition-colors"
-                  />
-                </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => {
+                    if (confirm("Are you sure you want to cancel your ASPIRES ACADEMY Premium subscription? Daily limits will be restored.")) {
+                      onCancelSubscription?.();
+                    }
+                  }}
+                  className="px-3.5 py-2 border border-red-200 text-red-600 hover:bg-red-50 text-[10.5px] font-bold rounded-xl transition-all"
+                  id="btn-cancel-subscription"
+                >
+                  Cancel Subscription
+                </button>
               </div>
             </div>
+          )}
 
-            {/* Column 2: Optional Supporter Details */}
+          {/* Core Action Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            
+            {/* Column 1: Mode Selection & Tier Configurations */}
+            <div className="lg:col-span-5 space-y-4">
+              
+              {/* Selector segmented button */}
+              <div className="grid grid-cols-2 gap-1.5 bg-slate-100 p-1.5 rounded-2xl" id="payment-mode-tabs">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setPaymentMode('subscription');
+                    setShowConfirmation(false);
+                  }}
+                  className={`py-2 px-3 rounded-xl text-xs font-extrabold transition-all flex items-center justify-center gap-1.5 ${
+                    paymentMode === 'subscription'
+                      ? 'bg-emerald-600 text-white shadow-sm'
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/50'
+                  }`}
+                  id="tab-payment-subscription"
+                >
+                  <Sparkles className="h-3.5 w-3.5" />
+                  <span>Premium Plans</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setPaymentMode('donation');
+                    setShowConfirmation(false);
+                  }}
+                  className={`py-2 px-3 rounded-xl text-xs font-extrabold transition-all flex items-center justify-center gap-1.5 ${
+                    paymentMode === 'donation'
+                      ? 'bg-emerald-600 text-white shadow-sm'
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/50'
+                  }`}
+                  id="tab-payment-donation"
+                >
+                  <Heart className="h-3.5 w-3.5" />
+                  <span>One-time Support</span>
+                </button>
+              </div>
+
+              {/* Mode 1: Subscription Options */}
+              {paymentMode === 'subscription' ? (
+                <div className="space-y-3.5" id="subscription-plans-area">
+                  <div className="space-y-1">
+                    <h3 className="text-sm font-black text-slate-800 flex items-center gap-1.5">
+                      <Crown className="h-4 w-4 text-amber-500" />
+                      Select Your Subscription Term
+                    </h3>
+                    <p className="text-[10.5px] text-slate-500 leading-relaxed">
+                      Upgrade to unlock permanent access to state-of-the-art civil service guidance pipelines. Scan with Google Pay to simulate immediate enrollment.
+                    </p>
+                  </div>
+
+                  {/* Plan Cards */}
+                  <div className="grid grid-cols-2 gap-2.5">
+                    {/* Plan A: Monthly */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSelectedPlan('monthly');
+                        setShowConfirmation(false);
+                      }}
+                      className={`p-3 rounded-2xl border text-left flex flex-col justify-between gap-2.5 transition-all relative ${
+                        selectedPlan === 'monthly'
+                          ? 'bg-emerald-50/40 border-emerald-500 ring-1 ring-emerald-500 shadow-sm'
+                          : 'bg-white hover:bg-slate-50 border-slate-200'
+                      }`}
+                      id="plan-monthly"
+                    >
+                      <div>
+                        <span className="text-[8px] uppercase tracking-wider font-mono font-black text-slate-400">Monthly Pass</span>
+                        <h4 className="font-extrabold text-slate-900 text-xs mt-0.5">Standard Premium</h4>
+                      </div>
+                      <div>
+                        <span className="text-base font-black text-slate-900">₹199</span>
+                        <span className="text-[10px] text-slate-500 font-medium"> / mo</span>
+                      </div>
+                    </button>
+
+                    {/* Plan B: Annual */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSelectedPlan('annual');
+                        setShowConfirmation(false);
+                      }}
+                      className={`p-3 rounded-2xl border text-left flex flex-col justify-between gap-2.5 transition-all relative ${
+                        selectedPlan === 'annual'
+                          ? 'bg-emerald-50/40 border-emerald-500 ring-1 ring-emerald-500 shadow-sm'
+                          : 'bg-white hover:bg-slate-50 border-slate-200'
+                      }`}
+                      id="plan-annual"
+                    >
+                      <span className="absolute -top-2 right-2 bg-amber-500 text-slate-950 font-black text-[7.5px] uppercase tracking-wider px-1.5 py-0.5 rounded-full border border-amber-600/20 shadow-sm">
+                        Best Value (Save 58%)
+                      </span>
+                      <div>
+                        <span className="text-[8px] uppercase tracking-wider font-mono font-black text-slate-400">Annual Pass</span>
+                        <h4 className="font-extrabold text-slate-900 text-xs mt-0.5">Elite Preparatory</h4>
+                      </div>
+                      <div>
+                        <span className="text-base font-black text-slate-900">₹999</span>
+                        <span className="text-[10px] text-slate-500 font-medium"> / yr</span>
+                      </div>
+                    </button>
+                  </div>
+
+                  {/* Bullet points of Premium features */}
+                  <div className="bg-slate-50 border border-slate-200/50 rounded-2xl p-3.5 space-y-2">
+                    <span className="text-[8.5px] uppercase font-mono font-black tracking-wider text-slate-400 block">Premium Feature Highlights</span>
+                    <ul className="space-y-1.5 text-[10.5px] text-slate-600 font-semibold">
+                      <li className="flex items-center gap-2">
+                        <Check className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
+                        <span>Unlimited AI Essay Evaluations with rubrics</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <Check className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
+                        <span>Unlimited Notes and recall deck generations</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <Check className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
+                        <span>Unlimited 24/7 Coaching chats with study targets</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <Check className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
+                        <span>Unlimited diagnostic tests mapped directly to exams</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              ) : (
+                // Mode 2: One-Time Donation Options
+                <div className="space-y-4" id="one-time-donation-area">
+                  <div className="space-y-1">
+                    <h3 className="text-sm font-black text-slate-800 flex items-center gap-1.5">
+                      <Heart className="h-4 w-4 text-red-500 animate-pulse" />
+                      One-time Support Contribution
+                    </h3>
+                    <p className="text-[10.5px] text-slate-500 leading-relaxed">
+                      Love our dynamic free trackers? Support our API and cloud database operations directly by contributing any voluntary amount with Google Pay.
+                    </p>
+                  </div>
+
+                  {/* Quick Preset Selector */}
+                  <div className="space-y-2.5">
+                    <span className="text-[9px] font-mono font-extrabold text-slate-400 uppercase tracking-wider block">1. Choose Support Amount</span>
+                    <div className="grid grid-cols-4 gap-1.5">
+                      {quickAmounts.map((amt) => (
+                        <button
+                          key={amt}
+                          type="button"
+                          onClick={() => {
+                            setAmount(amt);
+                            setCustomAmount('');
+                          }}
+                          className={`py-2 rounded-lg text-[10.5px] font-extrabold font-mono transition-all border ${
+                            amount === amt && !customAmount
+                              ? 'bg-emerald-600 border-emerald-600 text-white shadow-sm'
+                              : 'bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-600 hover:text-slate-900'
+                          }`}
+                        >
+                          ₹{amt}
+                        </button>
+                      ))}
+                    </div>
+
+                    <div className="relative">
+                      <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[10px] font-mono font-bold text-slate-400">₹</span>
+                      <input
+                        type="number"
+                        placeholder="Or enter custom amount..."
+                        value={customAmount}
+                        onChange={(e) => {
+                          setCustomAmount(e.target.value);
+                          setAmount(0);
+                        }}
+                        className="w-full pl-6 pr-3 py-2 bg-slate-50/50 border border-slate-200 rounded-xl text-xs text-slate-800 placeholder-slate-400 font-mono focus:outline-none focus:border-emerald-500 focus:bg-white transition-colors"
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Column 2: Optional Info and Action Triggers */}
             <div className="lg:col-span-4 space-y-4 self-center">
               <div className="space-y-2">
-                <span className="text-[9px] font-mono font-extrabold text-slate-400 uppercase tracking-wider block">2. Supporter Info (Optional)</span>
+                <span className="text-[9px] font-mono font-extrabold text-slate-400 uppercase tracking-wider block">Supporter Registration</span>
                 
                 <div className="space-y-2">
                   <input
@@ -264,47 +452,60 @@ export default function GPaySupportCard({ isOpen, onClose, onVoicePlay }: GPaySu
                     placeholder="Your Name (e.g. Priya S.)"
                     value={supporterName}
                     onChange={(e) => setSupporterName(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-50/50 border border-slate-200 rounded-xl text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-amber-500 focus:bg-white transition-colors"
+                    className="w-full px-3 py-2 bg-slate-50/50 border border-slate-200 rounded-xl text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-emerald-500 focus:bg-white transition-colors"
                   />
                   <input
                     type="text"
-                    placeholder="Short encouraging note..."
+                    placeholder={paymentMode === 'subscription' ? 'Optional subscriber notes...' : 'Short encouraging note...'}
                     value={supporterMessage}
                     onChange={(e) => setSupporterMessage(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-50/50 border border-slate-200 rounded-xl text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-amber-500 focus:bg-white transition-colors"
+                    className="w-full px-3 py-2 bg-slate-50/50 border border-slate-200 rounded-xl text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-emerald-500 focus:bg-white transition-colors"
                   />
                 </div>
               </div>
 
               {/* Action Simulation Confirm */}
               <div className="pt-1">
+                {justAddedSelf && (
+                  <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 text-[10px] p-2.5 rounded-xl flex items-center gap-1.5 animate-fadeIn mb-2">
+                    <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
+                    <span>
+                      {paymentMode === 'subscription' 
+                        ? 'Successfully Subscribed! Welcome to ASPIRES Premium. 👑' 
+                        : 'Simulated contribution recorded on the community board! Thank you!'}
+                    </span>
+                  </div>
+                )}
+
                 {!showConfirmation ? (
                   <button
                     onClick={() => {
                       setShowConfirmation(true);
                     }}
                     className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-[10.5px] py-2.5 rounded-xl transition-all shadow-sm flex items-center justify-center gap-1 cursor-pointer"
+                    id="btn-confirm-gpay-intent"
                   >
-                    <span>Confirm Scan Contribution</span>
+                    <span>{paymentMode === 'subscription' ? 'Activate Premium via GPay' : 'Confirm Scan Contribution'}</span>
                     <ArrowRight className="h-3.5 w-3.5" />
                   </button>
                 ) : (
                   <div className="bg-amber-50 border border-amber-200 p-2.5 rounded-xl space-y-1.5 animate-fadeIn">
                     <p className="text-[9.5px] text-amber-800 font-bold leading-normal">
-                      Confirm simulation of your scan?
+                      Confirm simulated Google Pay payment for ₹{getFinalAmount()}?
                     </p>
                     <div className="flex gap-1.5">
                       <button
                         onClick={handleConfirmPaid}
                         disabled={isProcessing}
-                        className="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-[9px] py-1.5 rounded-lg transition-all flex items-center justify-center gap-0.5"
+                        className="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-[9px] py-1.5 rounded-lg transition-all flex items-center justify-center gap-0.5 cursor-pointer"
+                        id="btn-simulated-paid-success"
                       >
                         {isProcessing ? <Loader2 className="h-3 w-3 animate-spin" /> : <Check className="h-3 w-3" />}
-                        <span>Paid & Simulated</span>
+                        <span>Simulate GPay Success</span>
                       </button>
                       <button
                         onClick={() => setShowConfirmation(false)}
-                        className="px-2 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-[9px] py-1.5 rounded-lg transition-all"
+                        className="px-2 bg-slate-150 hover:bg-slate-200 text-slate-600 font-bold text-[9px] py-1.5 rounded-lg transition-all"
                       >
                         Cancel
                       </button>
@@ -314,9 +515,10 @@ export default function GPaySupportCard({ isOpen, onClose, onVoicePlay }: GPaySu
               </div>
             </div>
 
-            {/* Column 3: ONLY the Pristine QR Code Container (NO visible UPI ID text!) */}
+            {/* Column 3: Dynamic GPay Scanner QR Code */}
             <div className="lg:col-span-3 flex flex-col items-center justify-center text-center p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-2 relative min-h-[200px]">
               <span className="text-[8px] font-mono font-bold text-slate-400 uppercase tracking-widest absolute top-2.5 left-2.5">GPay Scanner</span>
+
               
               {qrCodeUrl ? (
                 <div className="bg-white p-2 rounded-xl border border-slate-200 shadow-sm flex flex-col items-center gap-1 mt-1 transition-transform duration-300 hover:scale-105">

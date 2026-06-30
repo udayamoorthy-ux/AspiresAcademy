@@ -5,17 +5,25 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { ExamType, ChatMessage } from '../types';
-import { Send, Sparkles, HelpCircle, User, MessageCircle, AlertCircle, Loader2 } from 'lucide-react';
+import { Send, Sparkles, HelpCircle, User, MessageCircle, AlertCircle, Loader2, Crown } from 'lucide-react';
 
 interface MentorChatViewProps {
   selectedExam: ExamType;
+  isPremium?: boolean;
+  onPremiumClick?: () => void;
 }
 
-export default function MentorChatView({ selectedExam }: MentorChatViewProps) {
+export default function MentorChatView({ selectedExam, isPremium = false, onPremiumClick }: MentorChatViewProps) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputValue, setInputValue] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
+
+  // Free Tier Usage Counting state
+  const [chatCount, setChatCount] = useState<number>(() => {
+    const val = localStorage.getItem('aspires_mentor_chat_count');
+    return val ? parseInt(val, 10) : 0;
+  });
 
   // Initialize with introductory welcome message
   useEffect(() => {
@@ -57,6 +65,12 @@ export default function MentorChatView({ selectedExam }: MentorChatViewProps) {
     const text = textToSend || inputValue;
     if (!text.trim() || loading) return;
 
+    if (!isPremium && chatCount >= 3) {
+      alert("Free Tier Limit Reached: You have reached your limit of 3 free daily interactions with the AI Personal Coach. Upgrade to ASPIRES Premium via Google Pay to get unlimited expert mentorship!");
+      onPremiumClick?.();
+      return;
+    }
+
     const userMsg: ChatMessage = {
       id: `msg-user-${Date.now()}`,
       sender: 'user',
@@ -86,6 +100,12 @@ export default function MentorChatView({ selectedExam }: MentorChatViewProps) {
           text: data.reply,
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         }]);
+
+        if (!isPremium) {
+          const newCount = chatCount + 1;
+          setChatCount(newCount);
+          localStorage.setItem('aspires_mentor_chat_count', String(newCount));
+        }
       }
     } catch (error) {
       console.warn("AI Coach Chat fallback activated:", error);
@@ -200,7 +220,23 @@ export default function MentorChatView({ selectedExam }: MentorChatViewProps) {
       </div>
 
       {/* Input Form Footer */}
-      <div className="bg-slate-50 px-6 py-4 border-t border-slate-200" id="chat-input-bar">
+      <div className="bg-slate-50 px-6 py-4 border-t border-slate-200 space-y-3" id="chat-input-bar">
+        {!isPremium && (
+          <div className="bg-amber-500/10 border border-amber-500/30 px-3.5 py-2.5 rounded-xl flex items-center justify-between gap-4 text-xs font-semibold text-slate-800 animate-fadeIn">
+            <div className="flex items-center gap-1.5">
+              <Crown className="h-4 w-4 text-amber-500 animate-bounce shrink-0" />
+              <span>Personal Coach Free Daily Limit: <strong className="text-amber-700">{chatCount} / 3</strong> replies.</span>
+            </div>
+            <button
+              type="button"
+              onClick={onPremiumClick}
+              className="bg-amber-500 hover:bg-amber-600 text-slate-950 px-2.5 py-1 rounded-lg text-[10px] font-black shadow-sm transition-all cursor-pointer"
+            >
+              Go Unlimited 💎
+            </button>
+          </div>
+        )}
+
         <form
           onSubmit={(e) => {
             e.preventDefault();
