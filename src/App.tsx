@@ -20,6 +20,7 @@ import GPaySupportCard from './components/GPaySupportCard';
 import AspiresLogo from './components/AspiresLogo';
 import AuthModal from './components/AuthModal';
 import ContactModal from './components/ContactModal';
+import ReviewsView from './components/ReviewsView';
 
 import { 
   BookOpen, 
@@ -38,7 +39,8 @@ import {
   BrainCircuit,
   TrendingUp,
   Crown,
-  CheckCircle2
+  CheckCircle2,
+  Star
 } from 'lucide-react';
 
 const TICKER_HEADLINES: Record<ExamType, string[]> = {
@@ -63,7 +65,7 @@ const TICKER_HEADLINES: Record<ExamType, string[]> = {
 
 export default function App() {
   const [selectedExam, setSelectedExam] = useState<ExamType>('UPSC');
-  const [activeTab, setActiveTab] = useState<'syllabus' | 'planner' | 'quiz' | 'essay' | 'gk' | 'mentor' | 'materials' | 'notifications' | 'notes' | 'analytics'>('syllabus');
+  const [activeTab, setActiveTab] = useState<'syllabus' | 'planner' | 'quiz' | 'essay' | 'gk' | 'mentor' | 'materials' | 'notifications' | 'notes' | 'analytics' | 'reviews'>('syllabus');
   const [tickerIndex, setTickerIndex] = useState(0);
   const [voiceText, setVoiceText] = useState('');
   const [voiceTitle, setVoiceTitle] = useState('');
@@ -168,6 +170,7 @@ export default function App() {
     { id: 'notes', label: 'AI Notes Generator', icon: BrainCircuit, component: NotesGeneratorView },
     { id: 'analytics', label: 'Performance Analytics', icon: TrendingUp, component: PerformanceAnalyticsView },
     { id: 'mentor', label: 'Personal AI Coach', icon: MessageSquare, component: MentorChatView },
+    { id: 'reviews', label: 'Student Reviews & Ratings', icon: Star, component: ReviewsView },
   ] as const;
 
   const handleSelectExam = (exam: ExamType) => {
@@ -473,6 +476,18 @@ export default function App() {
           >
             <MessageSquare className="h-4 w-4 text-emerald-600" />
             <span>Have Queries? Contact Helpdesk</span>
+          </button>
+
+          <button
+            onClick={() => {
+              setActiveTab('reviews');
+              document.getElementById('portal-main-stage')?.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className="flex items-center gap-2 bg-amber-50/50 hover:bg-amber-100/70 border border-amber-200 px-4 py-2.5 rounded-2xl transition-all shadow-sm cursor-pointer group active:scale-95 text-xs font-bold text-slate-750"
+            id="footer-reviews-trigger"
+          >
+            <Star className="h-4 w-4 text-amber-500 fill-amber-500 animate-pulse" />
+            <span>Read & Write Reviews</span>
           </button>
         </div>
 
