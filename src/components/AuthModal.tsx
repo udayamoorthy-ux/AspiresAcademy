@@ -18,6 +18,7 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess, currentEmai
   const [success, setSuccess] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [copied, setCopied] = useState(false);
+  const [showSandboxHint, setShowSandboxHint] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
@@ -28,6 +29,7 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess, currentEmai
       setErrorMsg('');
       setGeneratedOtp('');
       setCopied(false);
+      setShowSandboxHint(false);
     }
   }, [isOpen, currentEmail]);
 
@@ -183,16 +185,18 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess, currentEmai
                   Signing in saves your schedules, mock quiz metrics, and evaluation history across devices. No password required.
                 </div>
 
-                {/* VIP Banner Notification */}
-                <div className="bg-amber-500/5 border border-amber-500/20 p-3 rounded-2xl flex items-start gap-2.5 text-[11px] font-medium text-slate-700">
-                  <Crown className="h-4 w-4 text-amber-500 shrink-0 mt-0.5" />
-                  <div className="space-y-0.5">
-                    <span className="font-bold text-slate-950">VIP Developer Sandbox Portal:</span>
-                    <p className="text-slate-500 leading-normal">
-                      Sign in using <code className="bg-amber-500/10 text-amber-800 px-1.5 py-0.5 rounded font-bold">udayamoorthy@gmail.com</code> to simulate logging in as an active premium subscriber automatically.
-                    </p>
+                {/* VIP Banner Notification - Conditional */}
+                {showSandboxHint && (
+                  <div className="bg-amber-500/5 border border-amber-500/20 p-3 rounded-2xl flex items-start gap-2.5 text-[11px] font-medium text-slate-700 animate-fadeIn">
+                    <Crown className="h-4 w-4 text-amber-500 shrink-0 mt-0.5" />
+                    <div className="space-y-0.5">
+                      <span className="font-bold text-slate-950">VIP Developer Sandbox Portal:</span>
+                      <p className="text-slate-500 leading-normal">
+                        Sign in using <code className="bg-amber-500/10 text-amber-800 px-1.5 py-0.5 rounded font-bold">udayamoorthy@gmail.com</code> to simulate logging in as an active premium subscriber automatically.
+                      </p>
+                    </div>
                   </div>
-                </div>
+                )}
 
                 {errorMsg && (
                   <div className="bg-red-50 border border-red-200 text-red-650 text-xs p-3 rounded-xl font-semibold">
@@ -311,6 +315,18 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess, currentEmai
                     </form>
                   </div>
                 )}
+
+                {/* Subtle Sandbox Toggle Link at the bottom */}
+                <div className="flex justify-center pt-2 border-t border-slate-100 mt-2">
+                  <button 
+                    type="button"
+                    onClick={() => setShowSandboxHint(!showSandboxHint)}
+                    className="text-[10px] text-slate-400 hover:text-emerald-600 font-mono transition-colors font-bold flex items-center gap-1 cursor-pointer hover:underline"
+                    id="sandbox-toggle-btn"
+                  >
+                    <span>{showSandboxHint ? 'Hide Sandbox Help' : '🔑 Show Developer / Sandbox Accounts'}</span>
+                  </button>
+                </div>
               </>
             )}
           </div>
