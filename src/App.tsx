@@ -429,6 +429,7 @@ export default function App() {
               onVoicePlay: handleVoicePlay,
               setActiveTab: setActiveTab,
               isPremium: isPremium,
+              userEmail: userEmail,
               onPremiumClick: () => setIsSupportModalOpen(true)
             })}
           </div>

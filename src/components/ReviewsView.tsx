@@ -73,12 +73,24 @@ const PRESEEDED_REVIEWS: Review[] = [
   }
 ];
 
-export default function ReviewsView() {
+interface ReviewsViewProps {
+  userEmail?: string;
+}
+
+export default function ReviewsView({ userEmail = '' }: ReviewsViewProps) {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedRating, setSelectedRating] = useState<number | 'all'>('all');
   const [selectedExamType, setSelectedExamType] = useState<string>('all');
   const [isAdminMode, setIsAdminMode] = useState(false);
+  
+  const isUserAdmin = userEmail.trim().toLowerCase() === 'udayamoorthy@gmail.com';
+
+  useEffect(() => {
+    if (!isUserAdmin) {
+      setIsAdminMode(false);
+    }
+  }, [userEmail, isUserAdmin]);
   
   // Form State
   const [formName, setFormName] = useState('');
@@ -147,12 +159,24 @@ export default function ReviewsView() {
   };
 
   const handleDeleteReview = (id: string) => {
+    const reviewToDelete = reviews.find(r => r.id === id);
+    if (!reviewToDelete) return;
+
+    if (!isAdminMode && !reviewToDelete.isLocal) {
+      alert("Unauthorized deletion request.");
+      return;
+    }
+
     const updated = reviews.filter(r => r.id !== id);
     localStorage.setItem('aspires_managed_reviews', JSON.stringify(updated));
     setReviews(updated);
   };
 
   const handleResetToDefault = () => {
+    if (!isUserAdmin) {
+      alert("Only an administrator can reset reviews to default.");
+      return;
+    }
     if (window.confirm('Are you sure you want to restore the default preseeded reviews? This will reset all current reviews.')) {
       localStorage.setItem('aspires_managed_reviews', JSON.stringify(PRESEEDED_REVIEWS));
       setReviews(PRESEEDED_REVIEWS);
@@ -273,17 +297,19 @@ export default function ReviewsView() {
 
               <div className="flex gap-2 items-center shrink-0">
                 {/* Admin Mode Toggle */}
-                <label className="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-xl text-xs font-bold text-slate-700 cursor-pointer select-none transition-colors border border-slate-200/60">
-                  <input
-                    type="checkbox"
-                    checked={isAdminMode}
-                    onChange={(e) => setIsAdminMode(e.target.checked)}
-                    className="rounded text-emerald-600 focus:ring-emerald-500 h-3.5 w-3.5 border-slate-300 cursor-pointer"
-                  />
-                  <span>Admin Panel</span>
-                </label>
+                {isUserAdmin && (
+                  <label className="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-xl text-xs font-bold text-slate-700 cursor-pointer select-none transition-colors border border-slate-200/60">
+                    <input
+                      type="checkbox"
+                      checked={isAdminMode}
+                      onChange={(e) => setIsAdminMode(e.target.checked)}
+                      className="rounded text-emerald-600 focus:ring-emerald-500 h-3.5 w-3.5 border-slate-300 cursor-pointer"
+                    />
+                    <span>Admin Panel</span>
+                  </label>
+                )}
 
-                {isAdminMode && (
+                {isUserAdmin && isAdminMode && (
                   <button
                     onClick={handleResetToDefault}
                     className="bg-slate-250 hover:bg-slate-200 text-slate-700 border border-slate-300/85 px-3 py-1.5 rounded-xl text-[10px] font-black tracking-tight cursor-pointer transition-all flex items-center gap-1 shrink-0"
