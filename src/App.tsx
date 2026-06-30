@@ -170,7 +170,7 @@ export default function App() {
     { id: 'notes', label: 'AI Notes Generator', icon: BrainCircuit, component: NotesGeneratorView },
     { id: 'analytics', label: 'Performance Analytics', icon: TrendingUp, component: PerformanceAnalyticsView },
     { id: 'mentor', label: 'Personal AI Coach', icon: MessageSquare, component: MentorChatView },
-    { id: 'reviews', label: 'Student Reviews & Ratings', icon: Star, component: ReviewsView },
+    { id: 'reviews', label: 'Reviews & Testimonials', icon: Star, component: ReviewsView },
   ] as const;
 
   const handleSelectExam = (exam: ExamType) => {
@@ -234,7 +234,7 @@ export default function App() {
                 id="header-sign-in-btn"
               >
                 <UserCheck className="h-3.5 w-3.5 text-slate-500" />
-                <span>Student Login</span>
+                <span>Login</span>
               </button>
             )}
 

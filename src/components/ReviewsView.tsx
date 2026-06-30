@@ -208,13 +208,13 @@ export default function ReviewsView({ userEmail = '' }: ReviewsViewProps) {
         <div>
           <span className="text-sm font-bold uppercase tracking-wider text-emerald-600 flex items-center gap-1.5">
             <Sparkles className="h-4 w-4 animate-pulse" />
-            Verified Student Desk
+            Verified Testimonials Desk
           </span>
           <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 mt-1 font-display leading-tight" id="reviews-main-title">
-            Student Success & Feedback
+            Success Stories & Feedback
           </h2>
           <p className="text-sm text-slate-500 mt-1 max-w-2xl font-sans">
-            Do the student reviews reflect on aspiresacademy.in? Yes! Read direct testimonials, verify real student outcomes, and submit your own feedback directly below.
+            Do these reviews reflect on aspiresacademy.in? Yes! Read direct testimonials, verify real outcomes, and submit your own feedback directly below.
           </p>
         </div>
         
@@ -417,7 +417,7 @@ export default function ReviewsView({ userEmail = '' }: ReviewsViewProps) {
                 <p className="font-bold flex items-center gap-1.5">
                   <CheckCircle2 className="h-4 w-4 text-emerald-600" /> Review Posted Successfully!
                 </p>
-                <p className="text-slate-500 font-medium">Your feedback is now visible directly in the local student desk list on the left.</p>
+                <p className="text-slate-500 font-medium">Your feedback is now visible directly in the local testimonials list on the left.</p>
               </div>
             )}
 

@@ -117,7 +117,7 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess, currentEmai
               <KeyRound className="h-4.5 w-4.5" />
             </div>
             <div>
-              <h4 className="font-extrabold text-sm text-slate-900 uppercase tracking-wider font-mono">Student Account Desk</h4>
+              <h4 className="font-extrabold text-sm text-slate-900 uppercase tracking-wider font-mono">Account Access Desk</h4>
               <p className="text-[10px] text-slate-400">Secure access to premium grading tools</p>
             </div>
           </div>
