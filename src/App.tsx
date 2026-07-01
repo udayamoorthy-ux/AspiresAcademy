@@ -164,7 +164,7 @@ export default function App() {
   };
 
   const tabDetails = [
-    { id: 'syllabus', label: 'Syllabus & Gap Analysis', icon: Compass, component: SyllabusView },
+    { id: 'syllabus', label: 'Official Exam Syllabus', icon: Compass, component: SyllabusView },
     { id: 'notifications', label: 'Govt Notification Desk', icon: Bell, component: FlashNewsDesk },
     { id: 'materials', label: 'Official References', icon: ShieldCheck, component: MaterialsLibraryView },
     { id: 'planner', label: 'AI Study Planner', icon: Calendar, component: PlannerView },
