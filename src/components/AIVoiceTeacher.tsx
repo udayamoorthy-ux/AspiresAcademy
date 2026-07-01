@@ -29,33 +29,98 @@ interface VoicePersona {
 
 const VOICE_PERSONAS: VoicePersona[] = [
   {
+    id: 'priya_didi',
+    name: 'Priya Didi',
+    role: 'Sassy & Supportive Mentor',
+    lang: 'en-IN',
+    rate: 0.95,
+    pitch: 1.05,
+    description: 'Warm, smart Indian sister persona. Frequently uses slang like "Arre Yaar", "Tension nakko", and "Simple na!" to make learning fun.'
+  },
+  {
     id: 'lakshmi',
     name: 'Mrs. Lakshmi',
     role: 'Indian Polity Specialist',
     lang: 'en-IN',
-    rate: 0.95,
-    pitch: 1.05,
-    description: 'Polite, precise, structured Indian English tutoring voice. Ideal for articles, cases, and summaries.'
+    rate: 0.90,
+    pitch: 1.00,
+    description: 'Loving but strict maternal Auntie. Uses classic motherly slang like "Beta", "Jaldi se", and "Aiyyo!" to keep you focused.'
   },
   {
-    id: 'david',
-    name: 'Dr. David',
-    role: 'Academic History Dean',
-    lang: 'en-GB',
-    rate: 0.85,
-    pitch: 0.95,
-    description: 'Received Pronunciation British English academic. Perfect for long historical summaries and timelines.'
-  },
-  {
-    id: 'aditi',
-    name: 'Aditi',
+    id: 'pooja',
+    name: 'Pooja',
     role: 'Fast Current Affairs Expert',
     lang: 'en-IN',
     rate: 1.15,
-    pitch: 1.1,
-    description: 'Expedited Indian English. Recommended for rapid reviews of current affairs and PIB notification briefs.'
+    pitch: 1.10,
+    description: 'Energetic fast-paced tutor. Uses modern slang like "Bas karo", "Sort out ho gaya", and "Superb!" for rapid revision.'
   }
 ];
+
+function injectSlang(text: string, personaId: string): string {
+  if (!text) return text;
+  
+  // Clean markdown a bit for speech synthesis
+  const cleanText = text
+    .replace(/[*#`_\-]/g, ' ') // remove markdown characters
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  const sentences = cleanText.split(/[.!?]+\s+/).filter(Boolean);
+  if (sentences.length === 0) return cleanText;
+
+  let result = "";
+
+  if (personaId === 'priya_didi') {
+    result = "Arre Yaar! Let's check out this topic together, chalo. ";
+    sentences.forEach((s, index) => {
+      if (index > 0) {
+        const slangs = [
+          " Simple na? Toh, ",
+          " Acha look here, ",
+          " Focus, okay? ",
+          " Hain na? So, "
+        ];
+        result += slangs[index % slangs.length];
+      }
+      result += s;
+    });
+    result += ". Superb na? Tension nakko lo, chalo study hard!";
+  } else if (personaId === 'lakshmi') {
+    result = "Suno Beta, pay attention jaldi se. ";
+    sentences.forEach((s, index) => {
+      if (index > 0) {
+        const slangs = [
+          " Aiyyo, hear this carefully. ",
+          " Acha? So listen, beta, ",
+          " Very important, beta. ",
+          " Understand this, "
+        ];
+        result += slangs[index % slangs.length];
+      }
+      result += s;
+    });
+    result += ". Do not forget this, beta! Revision is the key, acha?";
+  } else {
+    // pooja
+    result = "Hey yaar! Let's fast-track this topic right now, bas! ";
+    sentences.forEach((s, index) => {
+      if (index > 0) {
+        const slangs = [
+          " Basically, toh, ",
+          " And seriously, ",
+          " Simple na? ",
+          " Sorted now! So, "
+        ];
+        result += slangs[index % slangs.length];
+      }
+      result += s;
+    });
+    result += ". That is all you need to know, super simple na?";
+  }
+
+  return result;
+}
 
 interface AIVoiceTeacherProps {
   currentText: string;
@@ -135,7 +200,8 @@ export default function AIVoiceTeacher({ currentText, currentTitle, onClearText 
 
     synthRef.current.cancel(); // Clear any existing speech queue
 
-    const textToSpeak = customText.trim() || "Welcome back, aspirant. Input or select any study topic above, and let's begin our auditory lecture session.";
+    const rawText = customText.trim() || "Welcome back, aspirant. Input or select any study topic above, and let's begin our auditory lecture session.";
+    const textToSpeak = injectSlang(rawText, selectedPersona.id);
     const utterance = new SpeechSynthesisUtterance(textToSpeak);
     utteranceRef.current = utterance;
 

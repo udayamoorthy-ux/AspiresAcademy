@@ -22,6 +22,9 @@ import AuthModal from './components/AuthModal';
 import ContactModal from './components/ContactModal';
 import ReviewsView from './components/ReviewsView';
 import SubjectQuizView from './components/SubjectQuizView';
+import FlashcardsView from './components/FlashcardsView';
+import MainsSprintsView from './components/MainsSprintsView';
+import ConceptMindMapView from './components/ConceptMindMapView';
 
 import { 
   BookOpen, 
@@ -41,7 +44,10 @@ import {
   TrendingUp,
   Crown,
   CheckCircle2,
-  Star
+  Star,
+  FileText,
+  Headphones,
+  Network
 } from 'lucide-react';
 
 const TICKER_HEADLINES: Record<ExamType, string[]> = {
@@ -66,7 +72,7 @@ const TICKER_HEADLINES: Record<ExamType, string[]> = {
 
 export default function App() {
   const [selectedExam, setSelectedExam] = useState<ExamType>('UPSC');
-  const [activeTab, setActiveTab] = useState<'syllabus' | 'planner' | 'quiz' | 'subjectQuiz' | 'essay' | 'gk' | 'mentor' | 'materials' | 'notifications' | 'notes' | 'analytics' | 'reviews'>('syllabus');
+  const [activeTab, setActiveTab] = useState<'syllabus' | 'planner' | 'quiz' | 'subjectQuiz' | 'activeRecall' | 'mainsSprints' | 'mindMaps' | 'essay' | 'gk' | 'mentor' | 'materials' | 'notifications' | 'notes' | 'analytics' | 'reviews'>('syllabus');
   const [tickerIndex, setTickerIndex] = useState(0);
   const [voiceText, setVoiceText] = useState('');
   const [voiceTitle, setVoiceTitle] = useState('');
@@ -161,12 +167,15 @@ export default function App() {
   };
 
   const tabDetails = [
-    { id: 'syllabus', label: 'Syllabus & Stages', icon: Compass, component: SyllabusView },
+    { id: 'syllabus', label: 'Syllabus & Gap Analysis', icon: Compass, component: SyllabusView },
     { id: 'notifications', label: 'Govt Notification Desk', icon: Bell, component: FlashNewsDesk },
     { id: 'materials', label: 'Official References', icon: ShieldCheck, component: MaterialsLibraryView },
     { id: 'planner', label: 'AI Study Planner', icon: Calendar, component: PlannerView },
     { id: 'quiz', label: 'Practice Mock Tests', icon: Award, component: QuizView },
     { id: 'subjectQuiz', label: 'Syllabus Topic Quizzes', icon: Sparkles, component: SubjectQuizView },
+    { id: 'activeRecall', label: 'Active Recall SRS Deck', icon: Layers, component: FlashcardsView },
+    { id: 'mainsSprints', label: 'Mains Daily Sprints', icon: FileText, component: MainsSprintsView },
+    { id: 'mindMaps', label: 'Concept Connection Map', icon: Network, component: ConceptMindMapView },
     { id: 'essay', label: 'Mains Essay Evaluator', icon: GraduationCap, component: EssayEvaluatorView },
     { id: 'gk', label: 'Current Affairs Deep Dive', icon: Globe, component: GKFeedView },
     { id: 'notes', label: 'AI Notes Generator', icon: BrainCircuit, component: NotesGeneratorView },

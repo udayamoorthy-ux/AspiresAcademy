@@ -711,7 +711,7 @@ app.post('/api/mentor-chat', async (req, res) => {
         model: 'gemini-3.5-flash',
         contents: `The aspirant is preparing for the ${examLabel}.\nChat history:\n${chatHistoryFormatted}\n\nProvide the next response as the wise, encouraging Civil Services Mentor. Keep your answer highly helpful, structured, clear, and focused on specific syllabus guidelines, study tips, or explanations. All facts, historical timelines, and constitutional provisions must be 100% authentic and accurate. If you are unsure of any specific local data or statistics, state that they should check official government sources directly (e.g., PIB, Tamil Nadu Department of Archaeology, or Union Budget). Feel free to explain administrative concepts, historical milestones, or Thirukkural ethics, and write in Tamil or English as requested by the aspirant.`,
         config: {
-          systemInstruction: 'You are an inspiring, wise, highly knowledgeable UPSC and TNPSC civil services coach. Your guidance is clear, academic, motivational, and addresses subjects like Indian Polity, History, Tamil Heritage, Development Administration, and General Aptitude with ease. You maintain absolute factual integrity and never hallucinate or present unverified information as fact.',
+          systemInstruction: 'You are an inspiring, wise, highly knowledgeable UPSC and TNPSC civil services coach who acts as a caring but lively Indian sister/auntie mentor ("Priya Didi"). You MUST speak in a highly engaging tone, using popular Indian-English slang naturally and frequently (e.g., "Arre Yaar", "Beta", "Aiyyo", "Tension nakko lo", "Chalo", "simple na", "toh", "acha", "hain na", "yaar", "bas", "jaldi se", "Superb!"). While maintaining absolute factual accuracy and academic rigor for all Indian Polity, History, Tamil Heritage, and Aptitude topics, deliver your wisdom with this warm, sisterly Indian persona so the aspirant feels supported and motivated. Do not lose your casual, lovable slang style!',
         }
       }));
 
@@ -726,16 +726,16 @@ app.post('/api/mentor-chat', async (req, res) => {
 
   // Fallback offline reply
   const lastUserMsg = messages[messages.length - 1]?.text?.toLowerCase() || '';
-  let reply = "I am here to guide your civil services journey! Focus on building strong conceptual foundations. Read your newspaper daily, solve MCQs regularly, and practice answer writing.";
+  let reply = "Arre Beta! I am here to guide your civil services journey! Focus on building strong conceptual foundations, simple na? Read your newspaper daily, solve MCQs regularly, and practice answer writing. Tension nakko lo!";
 
   if (lastUserMsg.includes('tamil') || lastUserMsg.includes('தமிழ்')) {
-    reply = "நிச்சயமாக! டி.என்.பி.எஸ்.சி (TNPSC) தேர்வுகளில் பொதுத்தமிழ் மற்றும் தமிழ் மரபு மிகவும் முக்கியமானது. திருக்குறள், சங்க இலக்கியம், மற்றும் சமூக சீர்திருத்த இயக்கங்களை நன்கு படியுங்கள். நான் உங்களுக்கு உதவத் தயாராக உள்ளேன்!";
+    reply = "Aiyyo! நிச்சயமாக! டி.என்.பி.எஸ்.சி (TNPSC) தேர்வுகளில் பொதுத்தமிழ் மற்றும் தமிழ் மரபு மிகவும் முக்கியமானது, simple na? திருக்குறள், சங்க இலக்கியம், மற்றும் சமூக சீர்திருத்த இயக்கங்களை நன்கு படியுங்கள், super-ah score பண்ணலாம். நான் உங்களுக்கு உதவத் தயாராக உள்ளேன், chalo!";
   } else if (lastUserMsg.includes('polity') || lastUserMsg.includes('constitution')) {
-    reply = "For Indian Polity, M. Laxmikanth is the gold standard. Focus extensively on Fundamental Rights, DPSP, Parliament, Judicial Review, and Federalism. Understand both theoretical parts and recent Supreme Court judgments.";
+    reply = "Arre Yaar, for Indian Polity, M. Laxmikanth is the absolute gold standard! Focus extensively on Fundamental Rights, DPSP, Parliament, Judicial Review, and Federalism. Understand both theoretical parts and recent Supreme Court judgments, acha?";
   } else if (lastUserMsg.includes('syllabus') || lastUserMsg.includes('pattern')) {
-    reply = `For the ${examLabel}, understanding the syllabus is 50% of the preparation. Memorize key keywords of the syllabus so that when you read newspapers, you can filter and connect relevant articles. Let me know which specific subject you'd like to explore first!`;
+    reply = `Arre Beta, for the ${examLabel}, understanding the syllabus is 50% of the preparation, hain na? Memorize key keywords of the syllabus so that when you read newspapers, you can filter and connect relevant articles. Let me know which specific subject you'd like to explore first!`;
   } else if (lastUserMsg.includes('thirukkural') || lastUserMsg.includes('திருக்குறள்')) {
-    reply = "திருக்குறள் நிர்வாகத் தரம் மற்றும் அறநெறிகளுக்குச் சான்றாகும். TNPSC மற்றும் UPSC தேர்வுகளில், அறன் வலியுறுத்தல், ஒழுக்கமுடைமை, வாய்மை, மற்றும் பெரியாரைத் துணைக்கோடல் போன்ற அதிகாரங்கள் மிகவும் முக்கியமானவை.";
+    reply = "Aiyyo! திருக்குறள் நிர்வாகத் தரம் மற்றும் அறநெறிகளுக்குச் சான்றாகும், simple na? TNPSC மற்றும் UPSC தேர்வுகளில், அறன் வலியுறுத்தல், ஒழுக்கமுடைமை, வாய்மை, மற்றும் பெரியாரைத் துணைக்கோடல் போன்ற அதிகாரங்கள் மிகவும் முக்கியமானவை. Keep practicing, beta!";
   }
 
   res.json({ reply, isOffline: true });
