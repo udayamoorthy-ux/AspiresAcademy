@@ -63,12 +63,295 @@ interface InteractivePYQCase {
   citationDetails: string;
 }
 
+interface NcertBook {
+  id: string;
+  title: string;
+  class: string;
+  subject: 'polity' | 'history' | 'geography' | 'economy' | 'art-culture' | 'science-sociology';
+  description: string;
+  importance: string;
+  url: string;
+}
+
+const ncertBooksList: NcertBook[] = [
+  // HISTORY
+  {
+    id: 'nc-hist-6',
+    title: 'Our Pasts - I',
+    class: 'Class VI',
+    subject: 'history',
+    description: 'Deals with hunter-gatherers, early farming, first cities (Harappan), Vedas, mahajanapadas, Ashoka, and ancient literature.',
+    importance: 'Essential foundation for Ancient Indian History & archaeological sources.',
+    url: 'https://ncert.nic.in/textbook.php?fess1=0-10'
+  },
+  {
+    id: 'nc-hist-7',
+    title: 'Our Pasts - II',
+    class: 'Class VII',
+    subject: 'history',
+    description: 'Covers the medieval era, major dynasties (Cholas, Mughals, Delhi Sultanate), regional cultures, and devotional paths (Bhakti/Sufi).',
+    importance: 'Core syllabus anchor for Medieval Indian History and temple architecture.',
+    url: 'https://ncert.nic.in/textbook.php?gess1=0-8'
+  },
+  {
+    id: 'nc-hist-8',
+    title: 'Our Pasts - III',
+    class: 'Class VIII',
+    subject: 'history',
+    description: 'Explores British colonial expansion, rural life, tribal struggles, the 1857 revolt, women, caste reforms, and the national movement.',
+    importance: 'Crucial for Modern Indian History from traders to rulers.',
+    url: 'https://ncert.nic.in/textbook.php?hess1=0-8'
+  },
+  {
+    id: 'nc-hist-11',
+    title: 'Themes in World History',
+    class: 'Class XI',
+    subject: 'history',
+    description: 'Covers early societies, empires, nomadic empires, industrial revolution, and paths to modernization.',
+    importance: 'Useful context for UPSC Mains World History topics.',
+    url: 'https://ncert.nic.in/textbook.php?kehs1=0-7'
+  },
+  {
+    id: 'nc-hist-12-1',
+    title: 'Themes in Indian History - Part I',
+    class: 'Class XII',
+    subject: 'history',
+    description: 'Deep dive into Harappan civilization, early states (600 BCE to 600 CE), social history, and early philosophies/religions.',
+    importance: 'Extremely high weightage for Ancient India Prelims and Mains.',
+    url: 'https://ncert.nic.in/textbook.php?lehs1=0-4'
+  },
+  {
+    id: 'nc-hist-12-2',
+    title: 'Themes in Indian History - Part II',
+    class: 'Class XII',
+    subject: 'history',
+    description: 'Focuses on travelers accounts, Bhakti-Sufi traditions, Vijayanagara Empire, agrarian society, and the Mughal court.',
+    importance: 'One of the most frequently asked sources for Medieval Culture and Vijayanagara administration.',
+    url: 'https://ncert.nic.in/textbook.php?lehs2=0-5'
+  },
+  {
+    id: 'nc-hist-12-3',
+    title: 'Themes in Indian History - Part III',
+    class: 'Class XII',
+    subject: 'history',
+    description: 'Covers colonialism and the countryside, the 1857 rebellion, colonial cities, Mahatma Gandhi and the nationalist movement, partition, and framing of the Constitution.',
+    importance: 'Absolute must-read for Modern Indian History & National Movement.',
+    url: 'https://ncert.nic.in/textbook.php?lehs3=0-6'
+  },
+  // POLITY
+  {
+    id: 'nc-pol-9',
+    title: 'Democratic Politics - I',
+    class: 'Class IX',
+    subject: 'polity',
+    description: 'Introduces democracy, constitutional design, electoral politics, working of institutions, and democratic rights.',
+    importance: 'Lays down conceptual definitions of franchise, representation, and civil liberties.',
+    url: 'https://ncert.nic.in/textbook.php?iked1=0-5'
+  },
+  {
+    id: 'nc-pol-10',
+    title: 'Democratic Politics - II',
+    class: 'Class X',
+    subject: 'polity',
+    description: 'Covers power sharing, federalism, gender, religion, caste, political parties, and outcomes of democracy.',
+    importance: 'Essential for federal dynamics, regional politics, and social divisions.',
+    url: 'https://ncert.nic.in/textbook.php?jepd1=0-8'
+  },
+  {
+    id: 'nc-pol-11-1',
+    title: 'Indian Constitution at Work',
+    class: 'Class XI',
+    subject: 'polity',
+    description: 'Comprehensive analysis of the Constitution making, fundamental rights, executive, legislature, judiciary, federalism, local governments, and constitutional philosophy.',
+    importance: 'The most important textbook for UPSC GS II Polity and basic structure principles.',
+    url: 'https://ncert.nic.in/textbook.php?kepy1=0-10'
+  },
+  {
+    id: 'nc-pol-11-2',
+    title: 'Political Theory',
+    class: 'Class XI',
+    subject: 'polity',
+    description: 'Deals with core political concepts: liberty, equality, social justice, rights, citizenship, nationalism, secularism, and peace.',
+    importance: 'Crucial for conceptual clarity in Prelims and analytical arguments in Mains Paper II.',
+    url: 'https://ncert.nic.in/textbook.php?kepy2=0-8'
+  },
+  {
+    id: 'nc-pol-12-1',
+    title: 'Contemporary World Politics',
+    class: 'Class XII',
+    subject: 'polity',
+    description: 'Covers Cold War era, disintegration of USSR, US hegemony, alternative centers of power, contemporary South Asia, international organizations, and security.',
+    importance: 'Builds foundational context for International Relations (IR) in GS II.',
+    url: 'https://ncert.nic.in/textbook.php?lesy1=0-7'
+  },
+  {
+    id: 'nc-pol-12-2',
+    title: 'Politics in India Since Independence',
+    class: 'Class XII',
+    subject: 'polity',
+    description: 'Analyzes nation-building challenges, planned development, foreign relations, Congress system crises, democratic upsurge, regional aspirations, and recent trends.',
+    importance: 'Highly important for Post-Independence Consolidation and internal security dynamics.',
+    url: 'https://ncert.nic.in/textbook.php?lesy2=0-9'
+  },
+  // GEOGRAPHY
+  {
+    id: 'nc-geo-6',
+    title: 'The Earth: Our Habitat',
+    class: 'Class VI',
+    subject: 'geography',
+    description: 'Basics of solar system, latitudes/longitudes, rotations, maps, major domains of the Earth, and major landforms.',
+    importance: 'Fundamental terms for physical geography and globe reading.',
+    url: 'https://ncert.nic.in/textbook.php?fegy1=0-6'
+  },
+  {
+    id: 'nc-geo-7',
+    title: 'Our Environment',
+    class: 'Class VII',
+    subject: 'geography',
+    description: 'Our environment, interior of earth, changing earth, air, water, natural vegetation and wildlife, human environment settlements.',
+    importance: 'Key concepts for basic environment, climate zones, and atmospheric layers.',
+    url: 'https://ncert.nic.in/textbook.php?gegy1=0-7'
+  },
+  {
+    id: 'nc-geo-8',
+    title: 'Resources and Development',
+    class: 'Class VIII',
+    subject: 'geography',
+    description: 'Types of resources (land, soil, water), natural vegetation, mineral & power resources, agriculture, industries, and human resources.',
+    importance: 'Introduction to economic geography, agricultural seasons, and primary industries.',
+    url: 'https://ncert.nic.in/textbook.php?hegy1=0-5'
+  },
+  {
+    id: 'nc-geo-11-1',
+    title: 'Fundamentals of Physical Geography',
+    class: 'Class XI',
+    subject: 'geography',
+    description: 'Origin of earth, interior structure, plate tectonics, geomorphic processes, landforms, climatology (insolation, winds, cyclones), and oceanography.',
+    importance: 'Undeniably the most critical textbook for Physical Geography in both Prelims and Mains.',
+    url: 'https://ncert.nic.in/textbook.php?keph1=0-14'
+  },
+  {
+    id: 'nc-geo-11-2',
+    title: 'India: Physical Environment',
+    class: 'Class XI',
+    subject: 'geography',
+    description: 'India location, physiographic divisions (Himalayas, Peninsular Block), drainage systems, climate (monsoon mechanism), natural vegetation, and soils.',
+    importance: 'Extremely high frequency source for India-centric map questions and monsoon patterns.',
+    url: 'https://ncert.nic.in/textbook.php?keph2=0-6'
+  },
+  {
+    id: 'nc-geo-12-1',
+    title: 'Fundamentals of Human Geography',
+    class: 'Class XII',
+    subject: 'geography',
+    description: 'Human geography scope, world population distribution, density, human development, primary/secondary/tertiary activities, and transport/communication.',
+    importance: 'Essential for resource distribution and demographic theories.',
+    url: 'https://ncert.nic.in/textbook.php?lehp1=0-8'
+  },
+  {
+    id: 'nc-geo-12-2',
+    title: 'India: People and Economy',
+    class: 'Class XII',
+    subject: 'geography',
+    description: 'Population, migration, human development, human settlements, land resources & agriculture, water resources, mineral/energy resources, and planning.',
+    importance: 'Excellent material for Mains GS III agriculture, infrastructure, and resource planning sections.',
+    url: 'https://ncert.nic.in/textbook.php?lehp2=0-9'
+  },
+  // ECONOMY
+  {
+    id: 'nc-eco-9',
+    title: 'Economics',
+    class: 'Class IX',
+    subject: 'economy',
+    description: 'Introduction through stories of village production, human capital, poverty as a challenge, and food security in India.',
+    importance: 'Builds intuition for social economics, poverty lines, and PDS systems.',
+    url: 'https://ncert.nic.in/textbook.php?ieec1=0-4'
+  },
+  {
+    id: 'nc-eco-10',
+    title: 'Understanding Economic Development',
+    class: 'Class X',
+    subject: 'economy',
+    description: 'Explores ideas of development, sectors of the Indian economy, money and credit, globalization, and consumer rights.',
+    importance: 'Perfect baseline for understanding financial services and state-vs-market reforms.',
+    url: 'https://ncert.nic.in/textbook.php?jeec1=0-5'
+  },
+  {
+    id: 'nc-eco-11',
+    title: 'Indian Economic Development',
+    class: 'Class XI',
+    subject: 'economy',
+    description: 'Comprehensive historical view from post-independence planning, LPG reforms (1991), current challenges (employment, infrastructure, inflation), and comparative study with China/Pakistan.',
+    importance: 'One of the top 3 high-yield economics textbooks for GS Paper III & Prelims analysis.',
+    url: 'https://ncert.nic.in/textbook.php?keec1=0-10'
+  },
+  {
+    id: 'nc-eco-12-2',
+    title: 'Introductory Macroeconomics',
+    class: 'Class XII',
+    subject: 'economy',
+    description: 'National income accounting, money and banking, determination of income and employment, government budget, and open economy macroeconomics.',
+    importance: 'Provides critical formulas and frameworks for monetary policy, inflation, BOP, and fiscal indicators.',
+    url: 'https://ncert.nic.in/textbook.php?leec2=0-6'
+  },
+  // ART & CULTURE
+  {
+    id: 'nc-art-11',
+    title: 'An Introduction to Indian Art - Part I',
+    class: 'Class XI',
+    subject: 'art-culture',
+    description: 'Prehistoric rock paintings, Indus Valley arts, Mauryan/Post-Mauryan art, temple architecture, bronze sculpture traditions, and Indo-Islamic architecture.',
+    importance: 'Essential, highly dense resource for ancient art, temple styles (Nagara/Dravida), and mural paintings.',
+    url: 'https://ncert.nic.in/textbook.php?keia1=0-8'
+  },
+  // SCIENCE & SOCIOLOGY
+  {
+    id: 'nc-soc-12-1',
+    title: 'Indian Society',
+    class: 'Class XII',
+    subject: 'science-sociology',
+    description: 'Demographic structure of Indian society, social institutions (caste, tribe, family), market as a social institution, patterns of inequality, and cultural diversity.',
+    importance: 'Direct source for UPSC GS I Social issues and TNPSC social welfare chapters.',
+    url: 'https://ncert.nic.in/textbook.php?leso1=0-7'
+  },
+  {
+    id: 'nc-env-12-bio',
+    title: 'Biology Class XII - Ecology Unit (Chapters 13-16)',
+    class: 'Class XII',
+    subject: 'science-sociology',
+    description: 'Organisms and populations, ecosystem dynamics, biodiversity conservation, and environmental issues.',
+    importance: 'Extremely high yield source for environmental biology, food web concepts, and species interactions in Prelims.',
+    url: 'https://ncert.nic.in/textbook.php?lebo1=0-16'
+  }
+];
+
 export default function MaterialsLibraryView({ selectedExam }: MaterialsLibraryViewProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [activeCategoryFilter, setActiveCategoryFilter] = useState<string>('all');
   const [verifiedCheckmarks, setVerifiedCheckmarks] = useState<Record<string, boolean>>({});
-  const [subTab, setSubTab] = useState<'portals' | 'pyqs' | 'sample-tracker'>('portals');
+  const [subTab, setSubTab] = useState<'portals' | 'ncert-books' | 'pyqs' | 'sample-tracker'>('ncert-books');
   const [pyqExamFilter, setPyqExamFilter] = useState<'ALL' | 'UPSC' | 'TNPSC'>('ALL');
+  
+  // NCERT study tracker state
+  const [completedNcertBooks, setCompletedNcertBooks] = useState<string[]>(() => {
+    try {
+      const stored = localStorage.getItem('completed_ncert_books');
+      return stored ? JSON.parse(stored) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  const [ncertSubjectFilter, setNcertSubjectFilter] = useState<string>('all');
+  const [ncertClassFilter, setNcertClassFilter] = useState<string>('all');
+
+  const toggleNcertBookCompleted = (bookId: string) => {
+    setCompletedNcertBooks(prev => {
+      const next = prev.includes(bookId) ? prev.filter(id => id !== bookId) : [...prev, bookId];
+      localStorage.setItem('completed_ncert_books', JSON.stringify(next));
+      return next;
+    });
+  };
 
   // Authoritative learning resources
   const resources: ResourceItem[] = [
@@ -380,10 +663,21 @@ export default function MaterialsLibraryView({ selectedExam }: MaterialsLibraryV
       </div>
 
       {/* Primary Sub Tabs */}
-      <div className="flex border-b border-slate-100" id="library-sub-tabs">
+      <div className="flex border-b border-slate-100 overflow-x-auto whitespace-nowrap scrollbar-none" id="library-sub-tabs">
+        <button
+          onClick={() => { setSubTab('ncert-books'); setSearchTerm(''); }}
+          className={`px-5 py-3 text-xs md:text-sm font-bold border-b-2 transition-all flex items-center gap-2 flex-shrink-0 ${
+            subTab === 'ncert-books' 
+              ? 'border-emerald-500 text-emerald-600' 
+              : 'border-transparent text-slate-500 hover:text-slate-900'
+          }`}
+        >
+          <BookMarked className="h-4 w-4" />
+          NCERT Books PDF Library
+        </button>
         <button
           onClick={() => { setSubTab('portals'); setSearchTerm(''); }}
-          className={`px-5 py-3 text-xs md:text-sm font-bold border-b-2 transition-all flex items-center gap-2 ${
+          className={`px-5 py-3 text-xs md:text-sm font-bold border-b-2 transition-all flex items-center gap-2 flex-shrink-0 ${
             subTab === 'portals' 
               ? 'border-emerald-500 text-emerald-600' 
               : 'border-transparent text-slate-500 hover:text-slate-900'
@@ -394,7 +688,7 @@ export default function MaterialsLibraryView({ selectedExam }: MaterialsLibraryV
         </button>
         <button
           onClick={() => { setSubTab('pyqs'); setSearchTerm(''); }}
-          className={`px-5 py-3 text-xs md:text-sm font-bold border-b-2 transition-all flex items-center gap-2 ${
+          className={`px-5 py-3 text-xs md:text-sm font-bold border-b-2 transition-all flex items-center gap-2 flex-shrink-0 ${
             subTab === 'pyqs' 
               ? 'border-emerald-500 text-emerald-600' 
               : 'border-transparent text-slate-500 hover:text-slate-900'
@@ -405,7 +699,7 @@ export default function MaterialsLibraryView({ selectedExam }: MaterialsLibraryV
         </button>
         <button
           onClick={() => { setSubTab('sample-tracker'); setSearchTerm(''); }}
-          className={`px-5 py-3 text-xs md:text-sm font-bold border-b-2 transition-all flex items-center gap-2 ${
+          className={`px-5 py-3 text-xs md:text-sm font-bold border-b-2 transition-all flex items-center gap-2 flex-shrink-0 ${
             subTab === 'sample-tracker' 
               ? 'border-emerald-500 text-emerald-600' 
               : 'border-transparent text-slate-500 hover:text-slate-900'
@@ -415,6 +709,245 @@ export default function MaterialsLibraryView({ selectedExam }: MaterialsLibraryV
           Syllabus-to-Source Mapping Tracker
         </button>
       </div>
+
+      {/* NCERT Books PDF Library Sub Tab */}
+      {subTab === 'ncert-books' && (
+        <div className="space-y-6" id="ncert-books-section">
+          {/* Progress Tracker Card */}
+          <div className="bg-gradient-to-br from-emerald-950 to-slate-900 text-white rounded-2xl p-6 shadow-md border border-emerald-800/20 relative overflow-hidden">
+            <div className="absolute right-0 bottom-0 translate-x-8 translate-y-8 h-32 w-32 bg-emerald-500/20 rounded-full blur-2xl pointer-events-none" />
+            
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
+              <div className="space-y-2">
+                <span className="text-[10px] font-bold uppercase tracking-widest bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2.5 py-1 rounded-full">
+                  Foundation Core Tracker
+                </span>
+                <h3 className="text-xl font-extrabold font-display">Your NCERT Textbook Study Progress</h3>
+                <p className="text-xs text-emerald-200/80 max-w-2xl leading-relaxed">
+                  NCERTs are the absolute non-negotiable foundation for both UPSC and TNPSC civil service exams. Keep track of what you have finished reading below.
+                </p>
+              </div>
+
+              <div className="flex flex-col items-start md:items-end gap-1 flex-shrink-0">
+                <div className="text-3xl font-black font-display text-emerald-400">
+                  {completedNcertBooks.length} <span className="text-lg font-normal text-slate-300">/ {ncertBooksList.length} Books</span>
+                </div>
+                <div className="text-[10px] text-slate-300 font-medium">
+                  {Math.round((completedNcertBooks.length / ncertBooksList.length) * 100) || 0}% Syllabus Foundation Laid
+                </div>
+              </div>
+            </div>
+
+            {/* Progress Bar */}
+            <div className="mt-5 w-full bg-slate-800/60 rounded-full h-2.5 border border-slate-700 overflow-hidden">
+              <div 
+                className="bg-emerald-500 h-full rounded-full transition-all duration-500" 
+                style={{ width: `${(completedNcertBooks.length / ncertBooksList.length) * 100}%` }}
+              />
+            </div>
+          </div>
+
+          {/* Filters & Search Row */}
+          <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-4">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div className="space-y-1">
+                <h4 className="text-sm font-bold text-slate-900">Filter Curated Study Textbooks</h4>
+                <p className="text-[11px] text-slate-500">Isolate books by academic level or general civil service subject relevance.</p>
+              </div>
+
+              {/* Text Search */}
+              <div className="relative max-w-xs w-full">
+                <Search className="absolute left-3 top-2.5 h-3.5 w-3.5 text-slate-400" />
+                <input
+                  type="text"
+                  placeholder="Search textbooks..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-4 py-2 text-xs focus:outline-none focus:border-emerald-500 focus:bg-white text-slate-900 placeholder:text-slate-400 font-medium"
+                />
+              </div>
+            </div>
+
+            <div className="flex flex-col lg:flex-row lg:items-center gap-4 pt-3 border-t border-slate-100">
+              {/* Subject filters */}
+              <div className="space-y-1 flex-1">
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Subject Stream</span>
+                <div className="flex flex-wrap gap-1.5">
+                  {[
+                    { id: 'all', label: 'All Subjects' },
+                    { id: 'polity', label: 'Polity' },
+                    { id: 'history', label: 'History' },
+                    { id: 'geography', label: 'Geography' },
+                    { id: 'economy', label: 'Economy' },
+                    { id: 'art-culture', label: 'Art & Culture' },
+                    { id: 'science-sociology', label: 'Science / Ecology' }
+                  ].map((sub) => (
+                    <button
+                      key={sub.id}
+                      onClick={() => setNcertSubjectFilter(sub.id)}
+                      className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all ${
+                        ncertSubjectFilter === sub.id
+                          ? 'bg-emerald-600 text-white shadow-sm'
+                          : 'bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900'
+                      }`}
+                    >
+                      {sub.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Class filters */}
+              <div className="space-y-1">
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">School Class level</span>
+                <div className="flex flex-wrap gap-1.5">
+                  {[
+                    { id: 'all', label: 'All Classes' },
+                    { id: 'junior', label: 'Class 6-8' },
+                    { id: 'middle', label: 'Class 9-10' },
+                    { id: 'senior', label: 'Class 11-12' }
+                  ].map((cl) => (
+                    <button
+                      key={cl.id}
+                      onClick={() => setNcertClassFilter(cl.id)}
+                      className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all ${
+                        ncertClassFilter === cl.id
+                          ? 'bg-emerald-600 text-white shadow-sm'
+                          : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                      }`}
+                    >
+                      {cl.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* NCERT Books Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="ncert-books-grid">
+            {ncertBooksList
+              .filter(book => {
+                // Search term match
+                const matchesSearch = book.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                                      book.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                                      book.importance.toLowerCase().includes(searchTerm.toLowerCase());
+                
+                // Subject match
+                const matchesSubject = ncertSubjectFilter === 'all' || book.subject === ncertSubjectFilter;
+
+                // Class level match
+                let matchesClass = true;
+                if (ncertClassFilter === 'junior') {
+                  matchesClass = ['Class VI', 'Class VII', 'Class VIII'].includes(book.class);
+                } else if (ncertClassFilter === 'middle') {
+                  matchesClass = ['Class IX', 'Class X'].includes(book.class);
+                } else if (ncertClassFilter === 'senior') {
+                  matchesClass = ['Class XI', 'Class XII'].includes(book.class);
+                }
+
+                return matchesSearch && matchesSubject && matchesClass;
+              })
+              .map((book) => {
+                const isCompleted = completedNcertBooks.includes(book.id);
+                return (
+                  <div 
+                    key={book.id}
+                    className={`bg-white border rounded-2xl p-5 flex flex-col justify-between transition-all duration-200 shadow-sm hover:shadow-md ${
+                      isCompleted ? 'border-emerald-500 bg-emerald-50/[0.05]' : 'border-slate-200 bg-white'
+                    }`}
+                  >
+                    <div className="space-y-3.5">
+                      {/* Class & Subject Badges */}
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 border border-emerald-200">
+                          {book.class}
+                        </span>
+                        <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-500 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
+                          {book.subject}
+                        </span>
+                      </div>
+
+                      {/* Title & Description */}
+                      <div className="space-y-1">
+                        <h4 className="font-extrabold text-slate-900 text-sm leading-tight line-clamp-1">
+                          {book.title}
+                        </h4>
+                        <p className="text-[11px] text-slate-600 leading-relaxed font-sans line-clamp-3 min-h-[54px]">
+                          {book.description}
+                        </p>
+                      </div>
+
+                      {/* Civil Service Relevance Card */}
+                      <div className="bg-slate-50 p-3 rounded-xl border border-slate-200/60 text-[10px] text-slate-750 space-y-1 leading-relaxed min-h-[64px]">
+                        <span className="font-black text-amber-800 uppercase tracking-wide block">Exam Relevance:</span>
+                        <p className="text-slate-600">
+                          {book.importance}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Action buttons */}
+                    <div className="mt-5 pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
+                      {/* Checkbox selector */}
+                      <button
+                        onClick={() => toggleNcertBookCompleted(book.id)}
+                        className={`flex items-center gap-1 text-[11px] font-bold px-2.5 py-1.5 rounded-lg border transition-all cursor-pointer ${
+                          isCompleted
+                            ? 'bg-emerald-600 text-white border-emerald-500'
+                            : 'bg-white hover:bg-slate-50 text-slate-600 border-slate-250'
+                        }`}
+                      >
+                        <CheckCircle className={`h-3.5 w-3.5 ${isCompleted ? 'fill-white text-emerald-600' : ''}`} />
+                        {isCompleted ? 'Completed' : 'Mark Done'}
+                      </button>
+
+                      {/* Direct PDF Link */}
+                      <a
+                        href={book.url}
+                        target="_blank"
+                        referrerPolicy="no-referrer"
+                        rel="noopener noreferrer"
+                        className="text-emerald-700 bg-emerald-50 border border-emerald-150 hover:bg-emerald-100 px-3 py-1.5 rounded-lg text-[11px] font-bold flex items-center gap-1 transition-colors"
+                      >
+                        Read Online
+                        <ExternalLink className="h-3 w-3" />
+                      </a>
+                    </div>
+                  </div>
+                );
+              })}
+          </div>
+
+          {/* Empty state handling */}
+          {ncertBooksList.filter(book => {
+            const matchesSearch = book.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                                  book.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                                  book.importance.toLowerCase().includes(searchTerm.toLowerCase());
+            const matchesSubject = ncertSubjectFilter === 'all' || book.subject === ncertSubjectFilter;
+            let matchesClass = true;
+            if (ncertClassFilter === 'junior') {
+              matchesClass = ['Class VI', 'Class VII', 'Class VIII'].includes(book.class);
+            } else if (ncertClassFilter === 'middle') {
+              matchesClass = ['Class IX', 'Class X'].includes(book.class);
+            } else if (ncertClassFilter === 'senior') {
+              matchesClass = ['Class XI', 'Class XII'].includes(book.class);
+            }
+            return matchesSearch && matchesSubject && matchesClass;
+          }).length === 0 && (
+            <div className="bg-white border border-slate-200 rounded-2xl p-12 text-center text-slate-500 space-y-2 shadow-sm">
+              <BookMarked className="h-8 w-8 mx-auto text-slate-450" />
+              <p className="text-xs">No NCERT textbooks match your filter combinations.</p>
+              <button 
+                onClick={() => { setSearchTerm(''); setNcertSubjectFilter('all'); setNcertClassFilter('all'); }} 
+                className="text-xs text-emerald-600 hover:underline font-bold"
+              >
+                Clear Filter Settings
+              </button>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Fact Checker Sandbox Interactive Tool */}
       {subTab === 'portals' && (
