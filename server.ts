@@ -979,6 +979,434 @@ Candidates must study:
   res.json(fallbackNote);
 });
 
+// 9. Subject and Topic Wise Quiz Generator
+app.post('/api/subject-quiz', async (req, res) => {
+  const { subject, topic, exam } = req.body;
+
+  if (!subject || !topic) {
+    return res.status(400).json({ error: 'Subject and topic are required' });
+  }
+
+  const examLabels: Record<string, string> = {
+    UPSC: 'UPSC Civil Services Examination (IAS/IPS)',
+    TNPSC_G1: 'TNPSC Group I (Deputy Collector/DSP)',
+    TNPSC_G2: 'TNPSC Group II/IIA Executive Services',
+    TNPSC_G4: 'TNPSC Group IV & VAO Exam'
+  };
+
+  const examLabel = examLabels[exam] || exam || 'Civil Services standard';
+
+  if (aiClient) {
+    try {
+      const prompt = `You are an Elite Civil Services Examination Question Designer for ${examLabel} specializing in standard MCQ assessments.
+      Generate a premium, high-yield, and conceptual practice quiz containing exactly 5 multiple choice questions (MCQs) for:
+      Subject Category: ${subject}
+      Syllabus Topic/Focus: ${topic}
+      
+      Requirements for each of the 5 questions:
+      - The question must be highly realistic, challenging, and assess conceptual depth (avoid trivia; test articles, timelines, logical reasoning, or formulas).
+      - Include exactly 4 clear options.
+      - Specify the correct answer index (0 for Option A, 1 for Option B, 2 for Option C, 3 for Option D).
+      - Provide a thorough, official-style explanation describing why the correct option is right and highlighting the fallacies of incorrect options.
+      
+      Strictly output the response as JSON adhering to the specified schema.`;
+
+      const response = await callGeminiWithRetry(() => aiClient!.models.generateContent({
+        model: 'gemini-3.5-flash',
+        contents: prompt,
+        config: {
+          systemInstruction: 'You are an Expert Civil Services Examiner. You construct top-tier multiple-choice questions (MCQs) that require critical analytical thinking. All facts, historical chronologies, and constitutional provisions must be 100% authentic and verifiable.',
+          responseMimeType: 'application/json',
+          responseSchema: {
+            type: Type.OBJECT,
+            properties: {
+              questions: {
+                type: Type.ARRAY,
+                items: {
+                  type: Type.OBJECT,
+                  properties: {
+                    id: { type: Type.STRING, description: "Unique string id (e.g., q-pol-1)" },
+                    text: { type: Type.STRING, description: "The full question text, including statements 1 & 2 if appropriate." },
+                    options: {
+                      type: Type.ARRAY,
+                      items: { type: Type.STRING },
+                      description: "Exactly 4 options"
+                    },
+                    correctAnswerIndex: { type: Type.INTEGER, description: "Correct answer index (0-3)" },
+                    explanation: { type: Type.STRING, description: "Thorough explanation with facts and statutory references" },
+                    subject: { type: Type.STRING, description: "The broad subject category" }
+                  },
+                  required: ["id", "text", "options", "correctAnswerIndex", "explanation", "subject"]
+                }
+              }
+            },
+            required: ["questions"]
+          }
+        }
+      }));
+
+      const resultText = response.text;
+      if (resultText) {
+        const parsed = JSON.parse(resultText);
+        return res.json(parsed);
+      }
+    } catch (error: any) {
+      console.warn("Gemini subject quiz generator fallback activated:", error.message || error);
+    }
+  }
+
+  // Fallback Quiz Generator (High-fidelity offline mode)
+  console.log(`Generating offline fallback quiz for Subject: ${subject}, Topic: ${topic}`);
+  const fallbackData = generateFallbackQuiz(subject, topic, exam);
+  res.json({
+    ...fallbackData,
+    isOffline: true
+  });
+});
+
+// Helper function for offline subject-wise and topic-wise quiz questions
+function generateFallbackQuiz(subject: string, topic: string, exam: string) {
+  const normSubject = (subject || '').trim().toLowerCase();
+  const normTopic = (topic || '').trim().toLowerCase();
+  
+  const questions: any[] = [];
+  
+  if (normSubject.includes('polity')) {
+    questions.push({
+      id: `fb-pol-1`,
+      text: `Which of the following statements is correct regarding the writ jurisdiction of the Supreme Court and High Courts in India?\n1. The Supreme Court has wider writ jurisdiction than the High Courts since it can issue writs for any legal right.\n2. High Courts can issue writs under Article 226 not only for fundamental rights but also for other legal rights.`,
+      options: [
+        '1 only',
+        '2 only',
+        'Both 1 and 2',
+        'Neither 1 nor 2'
+      ],
+      correctAnswerIndex: 1,
+      explanation: `Statement 1 is incorrect: The writ jurisdiction of High Courts is wider than that of the Supreme Court. The Supreme Court can issue writs only for the enforcement of Fundamental Rights (Article 32), whereas a High Court can issue writs for the enforcement of Fundamental Rights as well as for any other purpose/ordinary legal rights (Article 226). Therefore, statement 2 is correct.`,
+      subject: 'Polity'
+    });
+    questions.push({
+      id: `fb-pol-2`,
+      text: `Which article of the Indian Constitution directs the state to secure a Uniform Civil Code (UCC) for citizens throughout the territory of India?`,
+      options: [
+        'Article 39A',
+        'Article 40',
+        'Article 44',
+        'Article 48'
+      ],
+      correctAnswerIndex: 2,
+      explanation: `Article 44 of the Directive Principles of State Policy (Part IV of the Indian Constitution) states that the State shall endeavor to secure for the citizens a Uniform Civil Code throughout the territory of India.`,
+      subject: 'Polity'
+    });
+    questions.push({
+      id: `fb-pol-3`,
+      text: `Consider the following statements regarding the amendment of the Constitution under Article 368:\n1. A bill to amend the Constitution can be initiated in either House of Parliament or State Legislatures.\n2. The President must give assent to a Constitutional Amendment Bill and cannot return it or withhold assent.`,
+      options: [
+        '1 only',
+        '2 only',
+        'Both 1 and 2',
+        'Neither 1 nor 2'
+      ],
+      correctAnswerIndex: 1,
+      explanation: `Statement 1 is incorrect: A constitutional amendment bill can only be initiated in either House of Parliament (Lok Sabha or Rajya Sabha), NOT in state legislatures. Statement 2 is correct: Under the 24th Amendment Act of 1971, it was made obligatory for the President to give assent to a constitutional amendment bill.`,
+      subject: 'Polity'
+    });
+    questions.push({
+      id: `fb-pol-4`,
+      text: `The Sixth Schedule of the Indian Constitution deals with the administration of tribal areas in which of the following states?`,
+      options: [
+        'Assam, Meghalaya, Tripura, and Mizoram',
+        'Assam, Manipur, Nagaland, and Tripura',
+        'Meghalaya, Mizoram, Nagaland, and Arunachal Pradesh',
+        'Manipur, Mizoram, Tripura, and Arunachal Pradesh'
+      ],
+      correctAnswerIndex: 0,
+      explanation: `The Sixth Schedule of the Constitution of India contains provisions for the administration of tribal areas in the four northeastern states: Assam, Meghalaya, Tripura, and Mizoram (often remembered using the acronym AMTM).`,
+      subject: 'Polity'
+    });
+    questions.push({
+      id: `fb-pol-5`,
+      text: `Which body conducts the elections to Panchayat Raj Institutions and Municipalities in Indian States?`,
+      options: [
+        'Election Commission of India',
+        'State Legislative Assembly',
+        'State Election Commission',
+        'Ministry of Panchayati Raj'
+      ],
+      correctAnswerIndex: 2,
+      explanation: `The State Election Commission (established under Articles 243K and 243ZA) is vested with the superintendence, direction, and control of the preparation of electoral rolls and the conduct of all elections to the Panchayats and Municipalities.`,
+      subject: 'Polity'
+    });
+  } else if (normSubject.includes('history') || normSubject.includes('movement')) {
+    questions.push({
+      id: `fb-hist-1`,
+      text: `Which of the following Buddhist Councils was held under the patronage of King Ashoka, and where did it take place?`,
+      options: [
+        'First Council at Rajgriha',
+        'Second Council at Vaishali',
+        'Third Council at Pataliputra',
+        'Fourth Council at Kashmir'
+      ],
+      correctAnswerIndex: 2,
+      explanation: `The Third Buddhist Council was convened in 250 BCE at Pataliputra under the patronage of the Mauryan Emperor Ashoka. It was presided over by Moggaliputta Tissa.`,
+      subject: 'History'
+    });
+    questions.push({
+      id: `fb-hist-2`,
+      text: `The "Poona Pact" of 1932 was signed between Mahatma Gandhi and Dr. B.R. Ambedkar to resolve the deadlock over:`,
+      options: [
+        'Complete Independence (Purna Swaraj)',
+        'Separate electorates for depressed classes proposed by the Communal Award',
+        'The execution of Bhagat Singh',
+        'Entry of lower castes into temples'
+      ],
+      correctAnswerIndex: 1,
+      explanation: `The Poona Pact (September 1932) was an agreement between Dr. B.R. Ambedkar and Mahatma Gandhi on behalf of depressed classes and upper-caste Hindu leaders. It abandoned separate electorates for depressed classes (as announced in Ramsay MacDonald's Communal Award) but significantly increased reserved seats for them in provincial legislatures.`,
+      subject: 'History'
+    });
+    questions.push({
+      id: `fb-hist-3`,
+      text: `Who among the following was the founder of the Self-Respect Movement (Swayam Mariyadai Iyakkam) in Tamil Nadu in 1925?`,
+      options: [
+        'C.N. Annadurai',
+        'E.V. Ramasamy (Periyar)',
+        'P. Theagaraya Chetty',
+        'T.M. Nair'
+      ],
+      correctAnswerIndex: 1,
+      explanation: `The Self-Respect Movement was started by E.V. Ramasamy (Periyar) in 1925 in Tamil Nadu to promote rationalism, self-respect, gender equality, and to dismantle the caste system.`,
+      subject: 'History'
+    });
+    questions.push({
+      id: `fb-hist-4`,
+      text: `With reference to ancient Tamil history, what does the term "Kodumanal" signify?`,
+      options: [
+        'A famous port on the eastern coast',
+        'An archaeological site in Erode district famous for gemstone-craft and iron smelting',
+        'The capital city of the Early Cholas',
+        'A classical dance form mentioned in Silappatikaram'
+      ],
+      correctAnswerIndex: 1,
+      explanation: `Kodumanal is an important archaeological site in Erode district, Tamil Nadu. Excavations have proved it was a highly active industrial and trade center of the Sangam Age, renowned for semi-precious bead manufacturing and high-grade crucible iron smelting.`,
+      subject: 'History'
+    });
+    questions.push({
+      id: `fb-hist-5`,
+      text: `The Swadeshi Steam Navigation Company (SSNCO), the first indigenous Indian shipping service, was launched in 1906 by:`,
+      options: [
+        'Subramania Bharati',
+        'V.O. Chidambaram Pillai',
+        'V.V.S. Aiyar',
+        'Tiruppur Kumaran'
+      ],
+      correctAnswerIndex: 1,
+      explanation: `V.O. Chidambaram Pillai (V.O.C.) established the Swadeshi Steam Navigation Company in Tuticorin in 1906 to challenge the British India Steam Navigation Company's monopoly, pioneering Indian industrial nationalism.`,
+      subject: 'History'
+    });
+  } else if (normSubject.includes('econ') || normSubject.includes('development')) {
+    questions.push({
+      id: `fb-econ-1`,
+      text: `Which of the following bodies replaced the Planning Commission of India on January 1, 2015?`,
+      options: [
+        'National Development Council (NDC)',
+        'NITI Aayog (National Institution for Transforming India)',
+        'Finance Commission of India',
+        'Central Statistical Office (CSO)'
+      ],
+      correctAnswerIndex: 1,
+      explanation: `The Planning Commission of India was replaced by NITI Aayog (National Institution for Transforming India) via a Cabinet Resolution on January 1, 2015, shifting India towards a cooperative, federal "bottom-up" planning model.`,
+      subject: 'Economy'
+    });
+    questions.push({
+      id: `fb-econ-2`,
+      text: `What is the statutory inflation target assigned to the Reserve Bank of India (RBI) under the monetary policy framework?`,
+      options: [
+        '2% with a band of +/- 1%',
+        '4% with a band of +/- 2%',
+        '5% with a band of +/- 3%',
+        '6% with a band of +/- 2%'
+      ],
+      correctAnswerIndex: 1,
+      explanation: `Under the amended RBI Act, the Government of India, in consultation with the RBI, sets the inflation target. The current target is 4% with a tolerance band of +/- 2% (i.e., a range of 2% to 6%).`,
+      subject: 'Economy'
+    });
+    questions.push({
+      id: `fb-econ-3`,
+      text: `The "Pudhumai Penn Scheme" of the Tamil Nadu government provides financial assistance of:`,
+      options: [
+        '₹500 per month for rural women entrepreneurs',
+        '₹1,000 per month to girl students from government schools pursuing higher education',
+        '₹1,500 per month for widowed mothers',
+        '₹2,000 one-time wedding assistance'
+      ],
+      correctAnswerIndex: 1,
+      explanation: `The Pudhumai Penn Scheme (Moovalur Ramamirtham Ammaiyar Higher Education Assurance Scheme) provides a monthly incentive of ₹1,000 to girl students who studied in government schools (classes 6 to 12) and are now pursuing higher education in college/diploma courses.`,
+      subject: 'Economy'
+    });
+    questions.push({
+      id: `fb-econ-4`,
+      text: `Which of the following is correct regarding Goods and Services Tax (GST) council in India?`,
+      options: [
+        'It is a non-constitutional body chaired by the Prime Minister.',
+        'It is a constitutional body established under Article 279A, chaired by the Union Finance Minister.',
+        'It is headed by the Governor of the Reserve Bank of India.',
+        'Decisions are taken by a simple majority vote of members present.'
+      ],
+      correctAnswerIndex: 1,
+      explanation: `The GST Council is a joint constitutional forum of the Centre and the States, established under Article 279A of the Constitution. It is chaired by the Union Finance Minister. Decisions are taken by a three-fourths majority of weighted votes of the members present and voting.`,
+      subject: 'Economy'
+    });
+    questions.push({
+      id: `fb-econ-5`,
+      text: `In economics, the "Gini Coefficient" is a metric used to measure which of the following?`,
+      options: [
+        'Unemployment levels',
+        'Income inequality or wealth distribution',
+        'National debt ratio',
+        'Industrial production growth rate'
+      ],
+      correctAnswerIndex: 1,
+      explanation: `The Gini Coefficient (or Gini Index) is a statistical measure of economic inequality, measuring income or wealth distribution among a population. A coefficient of 0 represents perfect equality, while 1 represents perfect inequality.`,
+      subject: 'Economy'
+    });
+  } else if (normSubject.includes('tamil')) {
+    questions.push({
+      id: `fb-tam-1`,
+      text: `திருவள்ளுவர் அருளிய திருக்குறளில் உள்ள மொத்த அதிகாரங்கள் மற்றும் பாடல்களின் (குறள்கள்) எண்ணிக்கை முறையே எவ்வளவு?`,
+      options: [
+        '100 அதிகாரங்கள், 1000 குறள்கள்',
+        '133 அதிகாரங்கள், 1330 குறள்கள்',
+        '150 அதிகாரங்கள், 1500 குறள்கள்',
+        '18 அதிகாரங்கள், 180 குறள்கள்'
+      ],
+      correctAnswerIndex: 1,
+      explanation: `திருக்குறளில் மொத்தம் 133 அதிகாரங்கள் உள்ளன. ஒவ்வொரு அதிகாரத்திற்கும் 10 குறள்கள் வீதம் மொத்தம் 1330 குறட்பாக்கள் அமைந்துள்ளன. இது அறத்துப்பால், பொருட்பால், காமத்துப்பால் என்ற மூன்று பெரும் பிரிவுகளைக் கொண்டது.`,
+      subject: 'General Tamil'
+    });
+    questions.push({
+      id: `fb-tam-2`,
+      text: `"யாதும் ஊரே யாவரும் கேளிர்" - என்ற உலகளாவிய மனிதநேய வரிகள் இடம்பெற்றுள்ள சங்க கால நூல் எது?`,
+      options: [
+        'நற்றிணை',
+        'புறநானூறு',
+        'அகநானூறு',
+        'ஐங்குறுநூறு'
+      ],
+      correctAnswerIndex: 1,
+      explanation: `"யாதும் ஊரே யாவரும் கேளிர்" (யாரும் நமக்கு அந்நியரல்லர், எல்லா ஊர்களும் நம்மூரே) என்ற உன்னத வரிகள் சங்க இலக்கியமான எட்டுத்தொகை நூல்களில் ஒன்றான "புறநானூற்றில்" (பாடல் 191) இடம்பெற்றுள்ளன. இதனைப் பாடியவர் கணியன் பூங்குன்றனார் ஆவார்.`,
+      subject: 'General Tamil'
+    });
+    questions.push({
+      id: `fb-tam-3`,
+      text: `தமிழ் மொழியின் மிகப்பழைமையான இலக்கண நூல் எது?`,
+      options: [
+        'நன்னூல்',
+        'தொல்காப்பியம்',
+        'யாப்பருங்கலக்காரிகை',
+        'அகத்தியம்'
+      ],
+      correctAnswerIndex: 1,
+      explanation: `தொல்காப்பியம் என்பது நமக்குக் கிடைத்துள்ள தமிழ் மொழியின் மிகப்பழைமையான இலக்கண நூலாகும். இது தொல்காப்பியரால் இயற்றப்பட்டது. இது எழுத்து, சொல், பொருள் என மூன்று பெரும் அதிகாரங்களை உள்ளடக்கியது.`,
+      subject: 'General Tamil'
+    });
+    questions.push({
+      id: `fb-tam-4`,
+      text: `பத்துப்பாட்டு நூல்களில் மிகக் குறுகிய அடிகளைக் கொண்ட நூல் எது?`,
+      options: [
+        'குறிஞ்சிப்பாட்டு',
+        'முல்லைப்பாட்டு',
+        'நெடுநல்வாடை',
+        'மதுரைக்காஞ்சி'
+      ],
+      correctAnswerIndex: 1,
+      explanation: `பத்துப்பாட்டு நூல்களிலேயே மிகக் குறைந்த அடிகளைக் கொண்ட நூல் "முல்லைப்பாட்டு" ஆகும். இது நப்பூதனாரால் இயற்றப்பட்டது, மொத்தம் 103 அடிகளைக் கொண்டது.`,
+      subject: 'General Tamil'
+    });
+    questions.push({
+      id: `fb-tam-5`,
+      text: `சங்க காலத்தில் சோழ நாட்டின் தலைசிறந்த துறைமுகமாக விளங்கிய நகரம் எது?`,
+      options: [
+        'கொற்கை',
+        'பூம்புகார் (காவிரிப்பூம்பட்டினம்)',
+        'முசிறி',
+        'தொண்டி'
+      ],
+      correctAnswerIndex: 1,
+      explanation: `சங்க காலத்தில் சோழர்களின் முதன்மைத் துறைமுகமாக விளங்கியது பூம்புகார் (காவிரிப்பூம்பட்டினம்) ஆகும். கொற்கை பாண்டியர்களின் துறைமுகமாகவும், முசிறி மற்றும் தொண்டி சேரர்களின் துறைமுகங்களாகவும் விளங்கின.`,
+      subject: 'General Tamil'
+    });
+  } else {
+    // Default / Aptitude fallback
+    questions.push({
+      id: `fb-apt-1`,
+      text: `A person borrows ₹8,000 at a simple interest rate of 10% per annum. What is the total interest payable at the end of 3 years?`,
+      options: [
+        '₹1,600',
+        '₹2,400',
+        '₹2,800',
+        '₹3,200'
+      ],
+      correctAnswerIndex: 1,
+      explanation: `Use Simple Interest Formula: SI = (P * R * T) / 100\nHere, P = ₹8,000, R = 10%, T = 3 years.\nSI = (8000 * 10 * 3) / 100 = ₹2,400.`,
+      subject: 'Aptitude'
+    });
+    questions.push({
+      id: `fb-apt-2`,
+      text: `Find the compound interest on ₹10,000 for 2 years at 10% per annum, compounded annually.`,
+      options: [
+        '₹1,900',
+        '₹2,000',
+        '₹2,100',
+        '₹2,200'
+      ],
+      correctAnswerIndex: 2,
+      explanation: `Amount = P * (1 + R/100)^T\nAmount = 10000 * (1 + 10/100)^2 = 10000 * (1.1)^2 = ₹12,100.\nCompound Interest (CI) = Amount - Principal = 12100 - 10000 = ₹2,100.`,
+      subject: 'Aptitude'
+    });
+    questions.push({
+      id: `fb-apt-3`,
+      text: `A can complete a piece of work in 12 days, and B can complete the same work in 24 days. In how many days can they complete the work if they work together?`,
+      options: [
+        '6 days',
+        '8 days',
+        '9 days',
+        '10 days'
+      ],
+      correctAnswerIndex: 1,
+      explanation: `Rate together: 1/12 + 1/24 = 3/24 = 1/8. Thus, they can complete the work in 8 days working together.`,
+      subject: 'Aptitude'
+    });
+    questions.push({
+      id: `fb-apt-4`,
+      text: `Divide ₹480 between A and B in the ratio 3:5. What is the absolute difference between their shares?`,
+      options: [
+        '₹100',
+        '₹120',
+        '₹160',
+        '₹180'
+      ],
+      correctAnswerIndex: 1,
+      explanation: `Sum of ratio parts = 3 + 5 = 8 parts.\nTotal value of 8 parts = ₹480.\nValue of 1 part = 480 / 8 = ₹60.\nDifference between shares = (5 - 3) * 60 = 2 * 60 = ₹120.`,
+      subject: 'Aptitude'
+    });
+    questions.push({
+      id: `fb-apt-5`,
+      text: `A student has to secure 20% marks to pass an exam. If the maximum marks of the exam are 300, how many marks are needed to qualify?`,
+      options: [
+        '50 marks',
+        '60 marks',
+        '70 marks',
+        '80 marks'
+      ],
+      correctAnswerIndex: 1,
+      explanation: `Passing marks = 20% of 300 = (20 / 100) * 300 = 60 marks.`,
+      subject: 'Aptitude'
+    });
+  }
+  
+  return { questions };
+}
+
 // ----------------------------------------------------
 // VITE OR STATIC SERVING MIDDLEWARE
 // ----------------------------------------------------
