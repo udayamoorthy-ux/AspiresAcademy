@@ -25,7 +25,9 @@ import {
   ShieldCheck, 
   Layers,
   FileText,
-  Crown
+  Crown,
+  Copy,
+  Check
 } from 'lucide-react';
 
 interface QuizViewProps {
@@ -41,6 +43,24 @@ export default function QuizView({
   isPremium = false,
   onPremiumClick
 }: QuizViewProps) {
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+
+  const handleCopyLink = (id: string, url: string) => {
+    navigator.clipboard.writeText(url).then(() => {
+      setCopiedId(id);
+      setTimeout(() => setCopiedId(null), 2000);
+    }).catch(() => {
+      const el = document.createElement('textarea');
+      el.value = url;
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand('copy');
+      document.body.removeChild(el);
+      setCopiedId(id);
+      setTimeout(() => setCopiedId(null), 2000);
+    });
+  };
+
   const [activeTab, setActiveTab] = useState<'pyqs' | 'ai-compiler' | 'diagnostics'>('pyqs');
   const [session, setSession] = useState<QuizSession | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -740,29 +760,55 @@ export default function QuizView({
                         Verified Keys Mapped
                       </div>
 
-                      <div className="flex gap-2">
+                      <div className="flex gap-2 items-center">
                         {test.officialAnswerKeyUrl && (
+                          <div className="flex items-center gap-1">
+                            <a
+                              href={test.officialAnswerKeyUrl}
+                              target="_blank"
+                              referrerPolicy="no-referrer"
+                              rel="noopener noreferrer"
+                              title="Open Official Key"
+                              className="bg-slate-50 border border-slate-200 hover:bg-slate-100 text-amber-600 p-2 rounded-xl flex items-center justify-center transition-all"
+                            >
+                              <FileText className="h-4 w-4" />
+                            </a>
+                            <button
+                              onClick={() => handleCopyLink(`${test.id}-key`, test.officialAnswerKeyUrl)}
+                              title="Copy Official Key URL"
+                              className="p-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors cursor-pointer"
+                            >
+                              {copiedId === `${test.id}-key` ? (
+                                <Check className="h-4 w-4 text-emerald-600 animate-pulse" />
+                              ) : (
+                                <Copy className="h-4 w-4" />
+                              )}
+                            </button>
+                          </div>
+                        )}
+                        <div className="flex items-center gap-1">
                           <a
-                            href={test.officialAnswerKeyUrl}
+                            href={test.officialPaperUrl}
                             target="_blank"
                             referrerPolicy="no-referrer"
                             rel="noopener noreferrer"
-                            title="Official Key"
-                            className="bg-slate-50 border border-slate-200 hover:bg-slate-100 text-amber-600 p-2 rounded-xl flex items-center justify-center transition-all"
+                            title="Download Full Paper PDF"
+                            className="bg-slate-50 border border-slate-200 hover:bg-slate-100 text-slate-650 p-2 rounded-xl flex items-center justify-center transition-all"
                           >
-                            <FileText className="h-4 w-4" />
+                            <Download className="h-4 w-4" />
                           </a>
-                        )}
-                        <a
-                          href={test.officialPaperUrl}
-                          target="_blank"
-                          referrerPolicy="no-referrer"
-                          rel="noopener noreferrer"
-                          title="Download Full Paper PDF"
-                          className="bg-slate-50 border border-slate-200 hover:bg-slate-100 text-slate-650 p-2 rounded-xl flex items-center justify-center transition-all"
-                        >
-                          <Download className="h-4 w-4" />
-                        </a>
+                          <button
+                            onClick={() => handleCopyLink(`${test.id}-paper`, test.officialPaperUrl)}
+                            title="Copy Paper PDF URL"
+                            className="p-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors cursor-pointer"
+                          >
+                            {copiedId === `${test.id}-paper` ? (
+                              <Check className="h-4 w-4 text-emerald-600 animate-pulse" />
+                            ) : (
+                              <Copy className="h-4 w-4" />
+                            )}
+                          </button>
+                        </div>
                         <button
                           onClick={() => startPracticeTest(test)}
                           className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-xs px-4 py-2 rounded-xl flex items-center gap-1.5 transition-all shadow-md shadow-amber-500/10"

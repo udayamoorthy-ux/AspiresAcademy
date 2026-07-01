@@ -22,7 +22,10 @@ import {
   Award,
   BookMarked,
   Layers,
-  HelpCircle
+  HelpCircle,
+  Copy,
+  Check,
+  AlertCircle
 } from 'lucide-react';
 
 interface MaterialsLibraryViewProps {
@@ -328,6 +331,24 @@ const ncertBooksList: NcertBook[] = [
 export default function MaterialsLibraryView({ selectedExam }: MaterialsLibraryViewProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [activeCategoryFilter, setActiveCategoryFilter] = useState<string>('all');
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+
+  const handleCopyLink = (id: string, url: string) => {
+    navigator.clipboard.writeText(url).then(() => {
+      setCopiedId(id);
+      setTimeout(() => setCopiedId(null), 2000);
+    }).catch(() => {
+      // Fallback for older browsers or sandboxed clipboard errors
+      const el = document.createElement('textarea');
+      el.value = url;
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand('copy');
+      document.body.removeChild(el);
+      setCopiedId(id);
+      setTimeout(() => setCopiedId(null), 2000);
+    });
+  };
   const [verifiedCheckmarks, setVerifiedCheckmarks] = useState<Record<string, boolean>>({});
   const [subTab, setSubTab] = useState<'portals' | 'ncert-books' | 'pyqs' | 'sample-tracker'>('ncert-books');
   const [pyqExamFilter, setPyqExamFilter] = useState<'ALL' | 'UPSC' | 'TNPSC'>('ALL');
@@ -903,16 +924,29 @@ export default function MaterialsLibraryView({ selectedExam }: MaterialsLibraryV
                       </button>
 
                       {/* Direct PDF Link */}
-                      <a
-                        href={book.url}
-                        target="_blank"
-                        referrerPolicy="no-referrer"
-                        rel="noopener noreferrer"
-                        className="text-emerald-700 bg-emerald-50 border border-emerald-150 hover:bg-emerald-100 px-3 py-1.5 rounded-lg text-[11px] font-bold flex items-center gap-1 transition-colors"
-                      >
-                        Read Online
-                        <ExternalLink className="h-3 w-3" />
-                      </a>
+                      <div className="flex items-center gap-1">
+                        <a
+                          href={book.url}
+                          target="_blank"
+                          referrerPolicy="no-referrer"
+                          rel="noopener noreferrer"
+                          className="text-emerald-700 bg-emerald-50 border border-emerald-150 hover:bg-emerald-100 px-3 py-1.5 rounded-lg text-[11px] font-bold flex items-center gap-1 transition-colors"
+                        >
+                          Read Online
+                          <ExternalLink className="h-3 w-3" />
+                        </a>
+                        <button
+                          onClick={() => handleCopyLink(book.id, book.url)}
+                          title="Copy official textbook URL"
+                          className="p-1.5 rounded-lg bg-slate-50 border border-slate-200 text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors cursor-pointer"
+                        >
+                          {copiedId === book.id ? (
+                            <Check className="h-3.5 w-3.5 text-emerald-600" />
+                          ) : (
+                            <Copy className="h-3.5 w-3.5" />
+                          )}
+                        </button>
+                      </div>
                     </div>
                   </div>
                 );
@@ -1141,6 +1175,20 @@ export default function MaterialsLibraryView({ selectedExam }: MaterialsLibraryV
       {/* Main Material Registry - PREVIOUS YEARS QUESTIONS (PYQs) */}
       {subTab === 'pyqs' && (
         <div className="space-y-6" id="pyq-registry-area">
+          {/* Popup Blocker Info Advisory */}
+          <div className="bg-amber-50/70 border border-amber-200/80 rounded-2xl p-4 flex gap-3 items-start shadow-sm">
+            <AlertCircle className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5 animate-pulse" />
+            <div className="space-y-1">
+              <h4 className="text-xs font-bold text-amber-900">Important Note on Opening Official Papers & Keys</h4>
+              <p className="text-[11px] text-amber-800 leading-relaxed">
+                UPSC and TNPSC portals host files on highly secure government networks that frequently block popups or direct access when requested from inside learning portals or iframe sandboxes. 
+                <span className="block mt-1 font-semibold text-slate-800">
+                  💡 <strong>If clicking a button does not open the link,</strong> click the 📋 icon next to it to copy the direct URL, open a new browser tab, and paste it.
+                </span>
+              </p>
+            </div>
+          </div>
+
           <div className="bg-white border border-slate-200 p-5 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shadow-sm">
             <div>
               <h3 className="text-sm font-bold text-slate-900">Authorized Civil Services PYQ Portal</h3>
@@ -1209,29 +1257,55 @@ export default function MaterialsLibraryView({ selectedExam }: MaterialsLibraryV
                     Secure Download Source: {pyq.exam === 'UPSC' ? 'Govt of India' : 'Govt of Tamil Nadu'}
                   </span>
                   
-                  <div className="flex gap-2 w-full sm:w-auto">
+                  <div className="flex flex-wrap gap-2 w-full sm:w-auto items-center">
                     {pyq.officialAnswerKeyUrl && (
+                      <div className="flex items-center gap-1 flex-1 sm:flex-none">
+                        <a
+                          href={pyq.officialAnswerKeyUrl}
+                          target="_blank"
+                          referrerPolicy="no-referrer"
+                          rel="noopener noreferrer"
+                          className="text-amber-700 border border-amber-200 hover:border-amber-300 bg-amber-50 hover:bg-amber-100 px-3 py-1.5 rounded-lg text-[10px] font-bold flex items-center gap-1 justify-center w-full"
+                        >
+                          Official Key
+                          <ExternalLink className="h-3 w-3" />
+                        </a>
+                        <button
+                          onClick={() => handleCopyLink(`${pyq.id}-key`, pyq.officialAnswerKeyUrl)}
+                          title="Copy Answer Key Link"
+                          className="p-1.5 rounded-lg bg-white border border-slate-200 text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition-colors cursor-pointer flex-shrink-0"
+                        >
+                          {copiedId === `${pyq.id}-key` ? (
+                            <Check className="h-3.5 w-3.5 text-emerald-600 animate-pulse" />
+                          ) : (
+                            <Copy className="h-3.5 w-3.5" />
+                          )}
+                        </button>
+                      </div>
+                    )}
+                    <div className="flex items-center gap-1 flex-1 sm:flex-none">
                       <a
-                        href={pyq.officialAnswerKeyUrl}
+                        href={pyq.officialPaperUrl}
                         target="_blank"
                         referrerPolicy="no-referrer"
                         rel="noopener noreferrer"
-                        className="text-amber-700 border border-amber-200 hover:border-amber-300 bg-amber-50 hover:bg-amber-100 px-3 py-1.5 rounded-lg text-[10px] font-bold flex items-center gap-1 flex-1 sm:flex-none justify-center"
+                        className="text-emerald-700 border border-emerald-200 hover:border-emerald-300 bg-emerald-50 hover:bg-emerald-100 px-3 py-1.5 rounded-lg text-[10px] font-bold flex items-center gap-1 justify-center w-full"
                       >
-                        Official Answer Key
-                        <ExternalLink className="h-3 w-3" />
+                        Download PDF
+                        <Download className="h-3 w-3" />
                       </a>
-                    )}
-                    <a
-                      href={pyq.officialPaperUrl}
-                      target="_blank"
-                      referrerPolicy="no-referrer"
-                      rel="noopener noreferrer"
-                      className="text-emerald-700 border border-emerald-200 hover:border-emerald-300 bg-emerald-50 hover:bg-emerald-100 px-3 py-1.5 rounded-lg text-[10px] font-bold flex items-center gap-1 flex-1 sm:flex-none justify-center"
-                    >
-                      Download PDF
-                      <Download className="h-3 w-3" />
-                    </a>
+                      <button
+                        onClick={() => handleCopyLink(`${pyq.id}-paper`, pyq.officialPaperUrl)}
+                        title="Copy Question Paper Link"
+                        className="p-1.5 rounded-lg bg-white border border-slate-200 text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition-colors cursor-pointer flex-shrink-0"
+                      >
+                        {copiedId === `${pyq.id}-paper` ? (
+                          <Check className="h-3.5 w-3.5 text-emerald-600 animate-pulse" />
+                        ) : (
+                          <Copy className="h-3.5 w-3.5" />
+                        )}
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
