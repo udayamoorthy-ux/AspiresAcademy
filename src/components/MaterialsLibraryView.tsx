@@ -768,6 +768,28 @@ export default function MaterialsLibraryView({ selectedExam }: MaterialsLibraryV
             </div>
           </div>
 
+          {/* NCERT Direct-link Session Alert */}
+          <div className="bg-amber-50/70 border border-amber-200/80 rounded-2xl p-4 flex gap-3 items-start shadow-sm">
+            <AlertCircle className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
+            <div className="space-y-1">
+              <h4 className="text-xs font-bold text-amber-900">Why does NCERT show an error when clicking 'Read Online'?</h4>
+              <p className="text-[11px] text-amber-800 leading-relaxed">
+                The official NCERT server (<code className="bg-amber-100/60 px-1 py-0.5 rounded text-amber-950 font-mono text-[10px]">ncert.nic.in</code>) has strict hotlink protection and session cookie requirements to prevent high server loads. If you see an error or blocked page:
+              </p>
+              <ul className="list-disc pl-4 text-[11px] text-amber-800 space-y-1 mt-1 font-medium">
+                <li>
+                  Click the copy icon (<Copy className="h-3 w-3 inline mx-0.5" />) next to 'Read Online' on any book card to copy the official direct URL.
+                </li>
+                <li>
+                  Paste it directly into a new browser tab or window to read/download.
+                </li>
+                <li>
+                  Alternatively, open the <a href="https://ncert.nic.in/textbook.php" target="_blank" rel="noreferrer" className="underline font-bold text-slate-800 hover:text-emerald-700">NCERT Official Textbook Portal</a> first to establish an active browser session, then retry clicking 'Read Online'.
+                </li>
+              </ul>
+            </div>
+          </div>
+
           {/* Filters & Search Row */}
           <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-4">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
