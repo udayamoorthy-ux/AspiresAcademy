@@ -44,7 +44,10 @@ import {
   Crown,
   CheckCircle2,
   Star,
-  FileText
+  FileText,
+  Share2,
+  Copy,
+  Check
 } from 'lucide-react';
 
 const TICKER_HEADLINES: Record<ExamType, string[]> = {
@@ -76,6 +79,7 @@ export default function App() {
   const [isSupportModalOpen, setIsSupportModalOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+  const [copiedLink, setCopiedLink] = useState(false);
   const [userEmail, setUserEmail] = useState<string>(() => {
     return localStorage.getItem('aspires_logged_in_email') || '';
   });
@@ -425,6 +429,67 @@ export default function App() {
               <p className="text-xs text-slate-500 leading-relaxed font-sans">
                 Maximize score efficiency by pairing your AI planner schedule with descriptive evaluation tasks and mock diagnostic quizzes. Keep in touch with the Personal AI Coach to draft specific revision outlines.
               </p>
+            </div>
+
+            {/* Viral Growth & Share Widget */}
+            <div className="bg-gradient-to-br from-emerald-600/5 to-teal-600/5 border border-emerald-500/20 p-5 rounded-2xl space-y-4 shadow-sm" id="share-card">
+              <div className="space-y-1">
+                <span className="text-[9px] uppercase tracking-widest text-emerald-700 font-bold font-mono">Spread the Word 📢</span>
+                <h4 className="font-extrabold text-sm text-slate-900 flex items-center gap-1.5 font-display">
+                  Invite Study Buddies
+                </h4>
+              </div>
+              <p className="text-xs text-slate-500 leading-relaxed">
+                Help other civil services aspirants prepare smarter! Share ASPIRES ACADEMY with your UPSC & TNPSC peers on WhatsApp or Telegram.
+              </p>
+              
+              <div className="grid grid-cols-1 gap-2">
+                <button
+                  onClick={() => {
+                    const shareText = `Hey! Check out ASPIRES ACADEMY — it is an amazing AI-powered prep portal for UPSC and TNPSC civil service exams! It has a dynamic syllabus tracker, AI essay evaluator, active recall cards, and an AI tutor chatbot. Try it here: ${window.location.origin}`;
+                    navigator.clipboard.writeText(shareText);
+                    setCopiedLink(true);
+                    setTimeout(() => setCopiedLink(false), 2000);
+                  }}
+                  className="w-full bg-white hover:bg-slate-50 border border-slate-200 text-slate-750 font-bold text-xs py-2 rounded-xl flex items-center justify-center gap-1.5 transition-all shadow-sm active:scale-[0.98] cursor-pointer"
+                  id="btn-copy-invite"
+                >
+                  {copiedLink ? (
+                    <>
+                      <Check className="h-3.5 w-3.5 text-emerald-600 animate-scaleIn" />
+                      <span className="text-emerald-700">Copied Invite Message!</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="h-3.5 w-3.5 text-slate-500" />
+                      <span>Copy Invite Message</span>
+                    </>
+                  )}
+                </button>
+
+                <div className="grid grid-cols-2 gap-2">
+                  <a
+                    href={`https://t.me/share/url?url=${encodeURIComponent(window.location.origin)}&text=${encodeURIComponent('Prepare smarter for UPSC & TNPSC exams with ASPIRES ACADEMY. Interactive syllabus trackers, AI essay evaluations, flashcards, and personalized coaching!')}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="bg-[#24A1DE]/10 hover:bg-[#24A1DE]/20 text-[#1975a2] font-black text-xs py-2 rounded-xl flex items-center justify-center gap-1 transition-all active:scale-[0.98]"
+                    id="btn-share-telegram"
+                  >
+                    <Share2 className="h-3 w-3" />
+                    <span>Telegram</span>
+                  </a>
+                  <a
+                    href={`https://api.whatsapp.com/send?text=${encodeURIComponent('Hey! Try ASPIRES ACADEMY — an amazing AI-powered prep portal for UPSC & TNPSC civil service exams with syllabus trackers, AI essay evaluation, flashcards, and mock tests! Here: ' + window.location.origin)}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="bg-[#25D366]/10 hover:bg-[#25D366]/20 text-[#128C7E] font-black text-xs py-2 rounded-xl flex items-center justify-center gap-1 transition-all active:scale-[0.98]"
+                    id="btn-share-whatsapp"
+                  >
+                    <Share2 className="h-3 w-3" />
+                    <span>WhatsApp</span>
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
 
