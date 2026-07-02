@@ -80,6 +80,7 @@ export default function App() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
+  const [highlightShareCard, setHighlightShareCard] = useState(false);
   const [userEmail, setUserEmail] = useState<string>(() => {
     return localStorage.getItem('aspires_logged_in_email') || '';
   });
@@ -214,6 +215,25 @@ export default function App() {
 
           {/* Quick Info Bar & Premium Controls */}
           <div className="flex items-center gap-4 flex-wrap" id="header-quick-info">
+            <button
+              onClick={() => {
+                // Scroll to share card
+                const el = document.getElementById('share-card');
+                if (el) {
+                  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                  setHighlightShareCard(true);
+                  setTimeout(() => setHighlightShareCard(false), 2500);
+                }
+              }}
+              className="bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-800 font-extrabold text-xs px-3.5 py-1.5 rounded-xl flex items-center gap-1.5 transition-all shadow-sm cursor-pointer active:scale-95"
+              id="header-share-btn"
+            >
+              <Share2 className="h-3.5 w-3.5 text-emerald-600 animate-pulse" />
+              <span>Invite Buddies</span>
+            </button>
+
+            <span className="h-4 w-px bg-slate-200 hidden sm:inline" />
+
             <button 
               onClick={() => setIsContactModalOpen(true)}
               className="border border-slate-200 hover:bg-slate-50 text-slate-700 font-extrabold text-xs px-3.5 py-1.5 rounded-xl flex items-center gap-1.5 transition-colors cursor-pointer"
@@ -432,7 +452,14 @@ export default function App() {
             </div>
 
             {/* Viral Growth & Share Widget */}
-            <div className="bg-gradient-to-br from-emerald-600/5 to-teal-600/5 border border-emerald-500/20 p-5 rounded-2xl space-y-4 shadow-sm" id="share-card">
+            <div 
+              className={`bg-gradient-to-br from-emerald-600/5 to-teal-600/5 border p-5 rounded-2xl space-y-4 shadow-sm transition-all duration-500 ${
+                highlightShareCard 
+                  ? 'ring-4 ring-amber-400 border-amber-400 scale-[1.03] shadow-md animate-pulse' 
+                  : 'border-emerald-500/20'
+              }`} 
+              id="share-card"
+            >
               <div className="space-y-1">
                 <span className="text-[9px] uppercase tracking-widest text-emerald-700 font-bold font-mono">Spread the Word 📢</span>
                 <h4 className="font-extrabold text-sm text-slate-900 flex items-center gap-1.5 font-display">
