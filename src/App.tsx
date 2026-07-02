@@ -410,7 +410,7 @@ export default function App() {
                   onClick={() => setIsSupportModalOpen(true)}
                   className="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs py-2.5 rounded-xl transition-all shadow-md hover:shadow-lg hover:scale-101 cursor-pointer flex items-center justify-center gap-1"
                 >
-                  <span>Activate Premium for ₹199</span>
+                  <span>Activate Premium</span>
                   <ArrowRight className="h-3 w-3" />
                 </button>
               </div>

@@ -29,7 +29,7 @@ const PRE_SEEDED_SUPPORTERS: Supporter[] = [
   {
     id: 's2',
     name: 'Karthik Raja S',
-    amount: 999,
+    amount: 699,
     message: 'Excellent syllabus tracker and AI coach. Subscribed to Annual Pass to keep it going.',
     timestamp: '5 hours ago'
   },
@@ -102,7 +102,7 @@ export default function GPaySupportCard({
 
   const getFinalAmount = () => {
     if (paymentMode === 'subscription') {
-      return selectedPlan === 'monthly' ? 199 : 999;
+      return selectedPlan === 'monthly' ? 199 : 699;
     }
     return customAmount ? parseFloat(customAmount) : amount;
   };
@@ -351,14 +351,14 @@ export default function GPaySupportCard({
                       id="plan-annual"
                     >
                       <span className="absolute -top-2 right-2 bg-amber-500 text-slate-950 font-black text-[7.5px] uppercase tracking-wider px-1.5 py-0.5 rounded-full border border-amber-600/20 shadow-sm">
-                        Best Value (Save 58%)
+                        Best Value (Save 71%)
                       </span>
                       <div>
                         <span className="text-[8px] uppercase tracking-wider font-mono font-black text-slate-400">Annual Pass</span>
                         <h4 className="font-extrabold text-slate-900 text-xs mt-0.5">Elite Preparatory</h4>
                       </div>
                       <div>
-                        <span className="text-base font-black text-slate-900">₹999</span>
+                        <span className="text-base font-black text-slate-900">₹699</span>
                         <span className="text-[10px] text-slate-500 font-medium"> / yr</span>
                       </div>
                     </button>
