@@ -550,16 +550,85 @@ export default function App() {
                         </select>
                       </div>
 
-                      <div className="bg-slate-50/50 p-2.5 rounded-lg border border-slate-200/50 max-h-36 overflow-y-auto space-y-2 text-[11px] text-slate-600 font-sans">
-                        <div className="font-extrabold text-slate-800 font-display">
+                      <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 max-h-60 overflow-y-auto space-y-3 text-[11px] text-slate-750 font-sans shadow-inner">
+                        <div className="font-extrabold text-slate-850 font-display border-b border-slate-200 pb-1.5 mb-2 sticky top-0 bg-slate-50 pt-0.5">
                           {selectedHeadingIndex === 0 && "🎯 UPSC CSE DAILY MCQ DRILL – Test Your Preparation Limits!"}
                           {selectedHeadingIndex === 1 && "🧠 Can You Crack These 5 Elite Civil Services Questions?"}
                           {selectedHeadingIndex === 2 && "🔥 UPSC Prelims Challenge: 5 High-Yield Questions from ASPIRES ACADEMY!"}
                           {selectedHeadingIndex === 3 && "💡 5 Tough UPSC Prep MCQs to Boost Your Score Today!"}
                         </div>
-                        <p className="text-[10px] leading-relaxed">
-                          Includes 5 premium exam-standard questions spanning Indian Polity, Modern History, Economy, and Tamil Heritage with verified explanation keys.
-                        </p>
+                        
+                        <div className="space-y-3">
+                          <div className="p-2 bg-white rounded-lg border border-slate-200/60 shadow-xs">
+                            <span className="font-bold text-emerald-700 font-mono text-[9px] uppercase tracking-wider">1️⃣ POLITY</span>
+                            <p className="font-semibold text-slate-850 mt-0.5">Which Article of the Constitution of India safeguards one's right to marry the person of one's choice?</p>
+                            <div className="grid grid-cols-2 gap-1 mt-1 pl-2 text-slate-500 font-mono text-[10px]">
+                              <div>A) Article 19</div>
+                              <div>B) Article 21</div>
+                              <div>C) Article 25</div>
+                              <div>D) Article 29</div>
+                            </div>
+                            <div className="mt-1.5 text-[10px] text-emerald-800 font-semibold bg-emerald-50 p-1 rounded">
+                              👉 Answer: B (Article 21) - Under Puttaswamy (2017) & Hadiya (2018) rulings.
+                            </div>
+                          </div>
+
+                          <div className="p-2 bg-white rounded-lg border border-slate-200/60 shadow-xs">
+                            <span className="font-bold text-emerald-700 font-mono text-[9px] uppercase tracking-wider">2️⃣ HISTORY</span>
+                            <p className="font-semibold text-slate-850 mt-0.5">With reference to ancient India, the term "Yavanapriya" in Sanskrit literature referred to:</p>
+                            <div className="grid grid-cols-2 gap-1 mt-1 pl-2 text-slate-500 font-mono text-[10px]">
+                              <div>A) Fine muslin cloth</div>
+                              <div>B) Ivory carvings</div>
+                              <div>C) Pepper</div>
+                              <div>D) Greek damsels</div>
+                            </div>
+                            <div className="mt-1.5 text-[10px] text-emerald-800 font-semibold bg-emerald-50 p-1 rounded">
+                              👉 Answer: C (Pepper) - Loved by Yavanas (Greeks) trading with Tamil kingdoms.
+                            </div>
+                          </div>
+
+                          <div className="p-2 bg-white rounded-lg border border-slate-200/60 shadow-xs">
+                            <span className="font-bold text-emerald-700 font-mono text-[9px] uppercase tracking-wider">3️⃣ POLITY</span>
+                            <p className="font-semibold text-slate-850 mt-0.5">In India, Separation of Judiciary from the Executive is enjoined by:</p>
+                            <div className="grid grid-cols-2 gap-1 mt-1 pl-2 text-slate-500 font-mono text-[10px]">
+                              <div>A) The Preamble</div>
+                              <div>B) Directive Principles (DPSP)</div>
+                              <div>C) The Seventh Schedule</div>
+                              <div>D) Conventional practice</div>
+                            </div>
+                            <div className="mt-1.5 text-[10px] text-emerald-800 font-semibold bg-emerald-50 p-1 rounded">
+                              👉 Answer: B (DPSP) - Outlined in Article 50 of Part IV of the Constitution.
+                            </div>
+                          </div>
+
+                          <div className="p-2 bg-white rounded-lg border border-slate-200/60 shadow-xs">
+                            <span className="font-bold text-emerald-700 font-mono text-[9px] uppercase tracking-wider">4️⃣ TAMIL HISTORY</span>
+                            <p className="font-semibold text-slate-850 mt-0.5">Who was the author of the Tamil historic work "Madurai Kanchi", describing Madurai city under King Nedunchezhiyan?</p>
+                            <div className="grid grid-cols-2 gap-1 mt-1 pl-2 text-slate-500 font-mono text-[10px]">
+                              <div>A) Mangudi Marudanar</div>
+                              <div>B) Nakkirar</div>
+                              <div>C) Kapilar</div>
+                              <div>D) Ilango Adigal</div>
+                            </div>
+                            <div className="mt-1.5 text-[10px] text-emerald-800 font-semibold bg-emerald-50 p-1 rounded">
+                              👉 Answer: A (Mangudi Marudanar) - From Pathuppattu of Sangam literature.
+                            </div>
+                          </div>
+
+                          <div className="p-2 bg-white rounded-lg border border-slate-200/60 shadow-xs">
+                            <span className="font-bold text-emerald-700 font-mono text-[9px] uppercase tracking-wider">5️⃣ ECONOMY</span>
+                            <p className="font-semibold text-slate-850 mt-0.5">With reference to India, the term "Core Inflation" is calculated by excluding which categories from Headline Inflation?</p>
+                            <div className="grid grid-cols-2 gap-1 mt-1 pl-2 text-slate-500 font-mono text-[10px]">
+                              <div>A) Fuel and Power</div>
+                              <div>B) Food and Beverages</div>
+                              <div>C) Both Food and Fuel items</div>
+                              <div>D) Manufactured goods only</div>
+                            </div>
+                            <div className="mt-1.5 text-[10px] text-emerald-800 font-semibold bg-emerald-50 p-1 rounded">
+                              👉 Answer: C (Both Food and Fuel items) - Excluding volatile commodities.
+                            </div>
+                          </div>
+                        </div>
                       </div>
 
                       <button
