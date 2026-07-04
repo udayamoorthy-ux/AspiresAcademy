@@ -80,6 +80,9 @@ export default function App() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
+  const [copiedPost, setCopiedPost] = useState(false);
+  const [selectedHeadingIndex, setSelectedHeadingIndex] = useState(0);
+  const [showOutreachKit, setShowOutreachKit] = useState(false);
   const [highlightShareCard, setHighlightShareCard] = useState(false);
   const [userEmail, setUserEmail] = useState<string>(() => {
     return localStorage.getItem('aspires_logged_in_email') || '';
@@ -516,6 +519,121 @@ export default function App() {
                     <span>WhatsApp</span>
                   </a>
                 </div>
+
+                {/* Dynamic Community Outreach Post Builder */}
+                <div className="border-t border-slate-200/60 pt-3 mt-2 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-bold text-emerald-800 uppercase tracking-wider flex items-center gap-1">
+                      <Sparkles className="h-3 w-3" /> Outreach Kit
+                    </span>
+                    <button
+                      onClick={() => setShowOutreachKit(!showOutreachKit)}
+                      className="text-[11px] font-bold text-slate-600 hover:text-slate-800 underline cursor-pointer"
+                    >
+                      {showOutreachKit ? 'Hide' : 'Show 5 UPSC Questions'}
+                    </button>
+                  </div>
+
+                  {showOutreachKit && (
+                    <div className="bg-white/80 border border-emerald-500/10 rounded-xl p-3 space-y-3 animate-fadeIn text-xs">
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-bold text-slate-500 uppercase font-mono">Select Title Heading:</label>
+                        <select
+                          value={selectedHeadingIndex}
+                          onChange={(e) => setSelectedHeadingIndex(Number(e.target.value))}
+                          className="w-full bg-white border border-slate-200 text-slate-750 text-xs rounded-lg px-2 py-1.5 font-sans focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 outline-none"
+                        >
+                          <option value={0}>🎯 UPSC Daily MCQ Drill</option>
+                          <option value={1}>🧠 Can You Crack These 5?</option>
+                          <option value={2}>🔥 UPSC Prelims Challenge</option>
+                          <option value={3}>💡 5 High-Yield UPSC MCQs</option>
+                        </select>
+                      </div>
+
+                      <div className="bg-slate-50/50 p-2.5 rounded-lg border border-slate-200/50 max-h-36 overflow-y-auto space-y-2 text-[11px] text-slate-600 font-sans">
+                        <div className="font-extrabold text-slate-800 font-display">
+                          {selectedHeadingIndex === 0 && "🎯 UPSC CSE DAILY MCQ DRILL – Test Your Preparation Limits!"}
+                          {selectedHeadingIndex === 1 && "🧠 Can You Crack These 5 Elite Civil Services Questions?"}
+                          {selectedHeadingIndex === 2 && "🔥 UPSC Prelims Challenge: 5 High-Yield Questions from ASPIRES ACADEMY!"}
+                          {selectedHeadingIndex === 3 && "💡 5 Tough UPSC Prep MCQs to Boost Your Score Today!"}
+                        </div>
+                        <p className="text-[10px] leading-relaxed">
+                          Includes 5 premium exam-standard questions spanning Indian Polity, Modern History, Economy, and Tamil Heritage with verified explanation keys.
+                        </p>
+                      </div>
+
+                      <button
+                        onClick={() => {
+                          const headings = [
+                            "🎯 UPSC CSE DAILY MCQ DRILL – Test Your Preparation Limits!",
+                            "🧠 Can You Crack These 5 Elite Civil Services Questions?",
+                            "🔥 UPSC Prelims Challenge: 5 High-Yield Questions from ASPIRES ACADEMY!",
+                            "💡 5 Tough UPSC Prep MCQs to Boost Your Score Today!"
+                          ];
+                          const heading = headings[selectedHeadingIndex];
+                          const postText = `${heading}
+
+1️⃣ POLITY: Which Article of the Constitution of India safeguards one's right to marry the person of one's choice?
+A) Article 19
+B) Article 21
+C) Article 25
+D) Article 29
+👉 Answer: B (Article 21) - Under the landmark Puttaswamy (2017) and Hadiya (2018) cases.
+
+2️⃣ HISTORY: With reference to ancient India, the term "Yavanapriya" in Sanskrit literature referred to:
+A) Fine muslin cloth
+B) Ivory carvings
+C) Pepper
+D) Greek damsels
+👉 Answer: C (Pepper) - Loved by Yavanas (Greeks) who traded with ancient Tamil kingdoms.
+
+3️⃣ POLITY: In India, Separation of Judiciary from the Executive is enjoined by:
+A) The Preamble of the Constitution
+B) A Directive Principle of State Policy
+C) The Seventh Schedule
+D) Conventional practice
+👉 Answer: B (A Directive Principle of State Policy) - Outlined in Article 50 of Part IV of the Constitution.
+
+4️⃣ TAMIL HISTORY: Who was the author of the Tamil historic work "Madurai Kanchi", which gives a vivid description of Madurai city under King Nedunchezhiyan?
+A) Mangudi Marudanar
+B) Nakkirar
+C) Kapilar
+D) Ilango Adigal
+👉 Answer: A (Mangudi Marudanar) - Part of Pathuppattu of Sangam literature.
+
+5️⃣ ECONOMY: With reference to India, the term "Core Inflation" is calculated by excluding which categories from Headline Inflation?
+A) Fuel and Power
+B) Food and Beverages
+C) Both Food and Fuel items
+D) Manufactured goods only
+👉 Answer: C (Both Food and Fuel items) - Volatile commodities are excluded to see the stable underlying trend.
+
+---
+🎁 Practice 100+ Free UPSC & TNPSC questions instantly with Interactive Syllabus Trackers & AI Coaches at ASPIRES ACADEMY!
+👉 Join and prepare for free here: ${window.location.origin}`;
+
+                          navigator.clipboard.writeText(postText);
+                          setCopiedPost(true);
+                          setTimeout(() => setCopiedPost(false), 2500);
+                        }}
+                        className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 rounded-xl flex items-center justify-center gap-1.5 transition-colors shadow-sm active:scale-[0.98] cursor-pointer"
+                      >
+                        {copiedPost ? (
+                          <>
+                            <Check className="h-3.5 w-3.5" />
+                            <span>Copied Outreach Post!</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="h-3.5 w-3.5" />
+                            <span>Copy Outreach Post</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  )}
+                </div>
+
               </div>
             </div>
           </div>
