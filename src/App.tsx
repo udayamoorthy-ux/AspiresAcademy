@@ -570,7 +570,7 @@ export default function App() {
               <div className="grid grid-cols-1 gap-2">
                 <button
                   onClick={() => {
-                    const shareText = `Hey! Check out ASPIRES ACADEMY — it is an amazing AI-powered prep portal for UPSC and TNPSC civil service exams! It has a dynamic syllabus tracker, AI essay evaluator, active recall cards, and an AI tutor chatbot. Try it here: ${window.location.origin}`;
+                    const shareText = `Hey! Check out ASPIRES ACADEMY (https://aspiresacademy.in) — an elite AI-Powered Civil Services Exam Prep Portal for UPSC & TNPSC! It features interactive syllabus trackers, AI voice lessons, automated essay evaluations, active recall flashcards, and 24/7 expert AI coaching. Try it here: https://aspiresacademy.in`;
                     navigator.clipboard.writeText(shareText);
                     setCopiedLink(true);
                     setTimeout(() => setCopiedLink(false), 2000);
@@ -593,7 +593,7 @@ export default function App() {
 
                 <div className="grid grid-cols-2 gap-2">
                   <a
-                    href={`https://t.me/share/url?url=${encodeURIComponent(window.location.origin)}&text=${encodeURIComponent('Prepare smarter for UPSC & TNPSC exams with ASPIRES ACADEMY. Interactive syllabus trackers, AI essay evaluations, flashcards, and personalized coaching!')}`}
+                    href={`https://t.me/share/url?url=${encodeURIComponent('https://aspiresacademy.in')}&text=${encodeURIComponent('Prepare smarter for UPSC & TNPSC exams with ASPIRES ACADEMY (https://aspiresacademy.in). Interactive syllabus trackers, AI essay evaluations, flashcards, and personalized coaching!')}`}
                     target="_blank"
                     rel="noreferrer"
                     className="bg-[#24A1DE]/10 hover:bg-[#24A1DE]/20 text-[#1975a2] font-black text-xs py-2 rounded-xl flex items-center justify-center gap-1 transition-all active:scale-[0.98]"
@@ -603,7 +603,7 @@ export default function App() {
                     <span>Telegram</span>
                   </a>
                   <a
-                    href={`https://api.whatsapp.com/send?text=${encodeURIComponent('Hey! Try ASPIRES ACADEMY — an amazing AI-powered prep portal for UPSC & TNPSC civil service exams with syllabus trackers, AI essay evaluation, flashcards, and mock tests! Here: ' + window.location.origin)}`}
+                    href={`https://api.whatsapp.com/send?text=${encodeURIComponent('Hey! Try ASPIRES ACADEMY (https://aspiresacademy.in) — an amazing AI-powered prep portal for UPSC & TNPSC civil service exams with syllabus trackers, AI essay evaluation, flashcards, and mock tests! Here: https://aspiresacademy.in')}`}
                     target="_blank"
                     rel="noreferrer"
                     className="bg-[#25D366]/10 hover:bg-[#25D366]/20 text-[#128C7E] font-black text-xs py-2 rounded-xl flex items-center justify-center gap-1 transition-all active:scale-[0.98]"
@@ -699,13 +699,13 @@ export default function App() {
                         </div>
 
                         {/* CTA Footer Preview */}
-                        <div className="pt-2.5 mt-2.5 border-t border-slate-200/80 text-[10px] text-slate-500 space-y-1 font-sans">
-                          <p className="font-mono text-[8px] uppercase tracking-wider text-slate-400">🎁 Offer Included in Share Post:</p>
-                          <p className="font-semibold text-slate-650">🎁 Practice 100+ Free UPSC & TNPSC questions instantly with Interactive Syllabus Trackers & AI Coaches at ASPIRES ACADEMY!</p>
-                          <p className="font-extrabold text-emerald-800 bg-emerald-50 px-2 py-1 rounded border border-emerald-500/15 flex items-center gap-1">
+                        <div className="pt-2.5 mt-2.5 border-t border-slate-200/80 text-[10px] text-slate-500 space-y-1.5 font-sans">
+                          <p className="font-mono text-[8px] uppercase tracking-wider text-slate-400">🎁 Description & Offer Included in Share Post:</p>
+                          <p className="font-semibold text-slate-700">🚀 ASPIRES ACADEMY is an elite AI-Powered Civil Services Exam Preparation Portal for UPSC & TNPSC. Learn with interactive syllabus trackers, AI voice lessons, automated essay evaluation, flashcards, and live mock tests.</p>
+                          <p className="font-extrabold text-emerald-800 bg-emerald-50 px-2.5 py-1.5 rounded border border-emerald-500/15 flex items-center gap-1.5">
                             <span>⚡ Early Bird Special: Get the Annual Pass for just ₹299/yr (Save 87%) - valid for the first 100 aspirants only!</span>
                           </p>
-                          <p className="text-blue-600 font-medium">👉 Join and prepare here: {window.location.origin}</p>
+                          <p className="text-blue-600 font-semibold">👉 Join and prepare here: https://aspiresacademy.in</p>
                         </div>
                       </div>
 
@@ -728,9 +728,9 @@ export default function App() {
                           const postText = `${heading}
 
 ${questionsText}---
-🎁 Practice 100+ Free UPSC & TNPSC questions instantly with Interactive Syllabus Trackers & AI Coaches at ASPIRES ACADEMY!
+🚀 ASPIRES ACADEMY (https://aspiresacademy.in) is an elite AI-Powered Civil Services Exam Preparation Portal for UPSC & TNPSC. Practice 100+ Free questions instantly with Interactive Syllabus Trackers, AI Voice Lessons, Essay Evaluators, and AI Coach Mentorship!
 ⚡ Early Bird Special: Get the Annual Pass for just ₹299/yr (Save 87%) - valid for the first 100 aspirants only!
-👉 Join and prepare here: ${window.location.origin}`;
+👉 Join and prepare here: https://aspiresacademy.in`;
 
                           navigator.clipboard.writeText(postText);
                           setCopiedPost(true);
