@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { ExamType } from './types';
+import { ExamType, Question } from './types';
 import SyllabusView from './components/SyllabusView';
 import PlannerView from './components/PlannerView';
 import QuizView from './components/QuizView';
@@ -24,6 +24,13 @@ import ReviewsView from './components/ReviewsView';
 import SubjectQuizView from './components/SubjectQuizView';
 import FlashcardsView from './components/FlashcardsView';
 import MainsSprintsView from './components/MainsSprintsView';
+import { 
+  AUTHENTIC_POLITY_POOL, 
+  AUTHENTIC_HISTORY_POOL, 
+  AUTHENTIC_ECONOMY_POOL, 
+  AUTHENTIC_TAMIL_POOL, 
+  generateAptitudeQuestion 
+} from './utils/questionPool';
 
 import { 
   BookOpen, 
@@ -84,6 +91,93 @@ export default function App() {
   const [selectedHeadingIndex, setSelectedHeadingIndex] = useState(0);
   const [showOutreachKit, setShowOutreachKit] = useState(false);
   const [highlightShareCard, setHighlightShareCard] = useState(false);
+  const [outreachQuestions, setOutreachQuestions] = useState<Question[]>([]);
+  const [isGeneratingOutreach, setIsGeneratingOutreach] = useState(false);
+  const [outreachSource, setOutreachSource] = useState<'daily' | 'ai'>('daily');
+  const [dailySeedOffset, setDailySeedOffset] = useState(0);
+
+  const getDailyQuestionsForOutreach = (exam: ExamType, seedOffset = 0) => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth() + 1;
+    const date = today.getDate();
+    const baseSeed = year * 1000 + month * 100 + date + seedOffset;
+
+    const selectedQuestions: Question[] = [];
+
+    // 1. Polity
+    const polityIdx = baseSeed % AUTHENTIC_POLITY_POOL.length;
+    selectedQuestions.push({ ...AUTHENTIC_POLITY_POOL[polityIdx], subject: 'POLITY' });
+
+    // 2. History
+    const historyIdx = (baseSeed + 3) % AUTHENTIC_HISTORY_POOL.length;
+    selectedQuestions.push({ ...AUTHENTIC_HISTORY_POOL[historyIdx], subject: 'HISTORY' });
+
+    // 3. Economy
+    const economyIdx = (baseSeed + 7) % AUTHENTIC_ECONOMY_POOL.length;
+    selectedQuestions.push({ ...AUTHENTIC_ECONOMY_POOL[economyIdx], subject: 'ECONOMY' });
+
+    // 4. Tamil History or general history based on Exam
+    if (exam.startsWith('TNPSC')) {
+      const tamilIdx = (baseSeed + 11) % AUTHENTIC_TAMIL_POOL.length;
+      selectedQuestions.push({ ...AUTHENTIC_TAMIL_POOL[tamilIdx], subject: 'TAMIL HERITAGE' });
+    } else {
+      const otherHistoryIdx = (baseSeed + 11) % AUTHENTIC_HISTORY_POOL.length;
+      const finalHistIdx = otherHistoryIdx === historyIdx ? (otherHistoryIdx + 1) % AUTHENTIC_HISTORY_POOL.length : otherHistoryIdx;
+      selectedQuestions.push({ ...AUTHENTIC_HISTORY_POOL[finalHistIdx], subject: 'WORLD & INDIAN HISTORY' });
+    }
+
+    // 5. Aptitude
+    const aptQ = generateAptitudeQuestion(baseSeed + 15);
+    selectedQuestions.push({ ...aptQ, subject: 'CSAT / APTITUDE' });
+
+    return selectedQuestions;
+  };
+
+  useEffect(() => {
+    if (outreachSource === 'daily') {
+      const q = getDailyQuestionsForOutreach(selectedExam, dailySeedOffset);
+      setOutreachQuestions(q);
+    }
+  }, [selectedExam, dailySeedOffset, outreachSource]);
+
+  const handleGenerateAIOutreach = async () => {
+    setIsGeneratingOutreach(true);
+    try {
+      const response = await fetch('/api/generate-quiz', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          exam: selectedExam,
+          subject: 'Mixed High-Yield civil services topics spanning Indian Polity, Modern History, Economy, and Science'
+        }),
+      });
+      if (!response.ok) throw new Error('API request failed');
+      const data = await response.json();
+      if (data.questions && Array.isArray(data.questions) && data.questions.length > 0) {
+        // Map the generated questions to ensure they have subjects mapped for the Outreach visualizer
+        const mappedQuestions = data.questions.map((q: any, idx: number) => {
+          const defaultSubjects = ['POLITY', 'HISTORY', 'ECONOMY', 'GENERAL SCIENCE', 'CSAT'];
+          return {
+            ...q,
+            subject: q.subject || defaultSubjects[idx % defaultSubjects.length]
+          };
+        });
+        setOutreachQuestions(mappedQuestions);
+        setOutreachSource('ai');
+      } else {
+        throw new Error('No questions returned');
+      }
+    } catch (err) {
+      console.warn("Outreach AI Generation failed, falling back to next offline daily pool:", err);
+      setDailySeedOffset(prev => prev + 1);
+      setOutreachSource('daily');
+    } finally {
+      setIsGeneratingOutreach(false);
+    }
+  };
   const [userEmail, setUserEmail] = useState<string>(() => {
     return localStorage.getItem('aspires_logged_in_email') || '';
   });
@@ -524,18 +618,45 @@ export default function App() {
                 <div className="border-t border-slate-200/60 pt-3 mt-2 space-y-3">
                   <div className="flex items-center justify-between">
                     <span className="text-[10px] font-bold text-emerald-800 uppercase tracking-wider flex items-center gap-1">
-                      <Sparkles className="h-3 w-3" /> Outreach Kit
+                      <Sparkles className="h-3 w-3 animate-pulse" /> Outreach Kit
                     </span>
                     <button
                       onClick={() => setShowOutreachKit(!showOutreachKit)}
                       className="text-[11px] font-bold text-slate-600 hover:text-slate-800 underline cursor-pointer"
                     >
-                      {showOutreachKit ? 'Hide' : 'Show 5 UPSC Questions'}
+                      {showOutreachKit ? 'Hide' : 'Show Daily 5 Questions'}
                     </button>
                   </div>
 
                   {showOutreachKit && (
                     <div className="bg-white/80 border border-emerald-500/10 rounded-xl p-3 space-y-3 animate-fadeIn text-xs">
+                      {/* Dynamic Refresh Controls */}
+                      <div className="flex items-center gap-2 justify-between border-b border-slate-100 pb-2 mb-1">
+                        <div className="text-[9px] text-slate-500 font-mono uppercase tracking-wide">
+                          Mode: <span className="font-extrabold text-emerald-700">{outreachSource === 'daily' ? `Daily Rotation (Set #${dailySeedOffset + 1})` : 'AI Custom'}</span>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <button
+                            onClick={() => {
+                              setDailySeedOffset(prev => prev + 1);
+                              setOutreachSource('daily');
+                            }}
+                            className="text-[9px] font-bold text-emerald-800 hover:text-emerald-950 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-100 cursor-pointer active:scale-95 transition-all"
+                            title="Load next daily set of questions"
+                          >
+                            🔄 Next Daily
+                          </button>
+                          <button
+                            onClick={handleGenerateAIOutreach}
+                            disabled={isGeneratingOutreach}
+                            className={`text-[9px] font-bold text-white bg-emerald-600 hover:bg-emerald-700 px-1.5 py-0.5 rounded cursor-pointer active:scale-95 transition-all flex items-center gap-0.5 ${isGeneratingOutreach ? 'opacity-50 pointer-events-none' : ''}`}
+                            title="Generate 5 fresh questions with Gemini AI"
+                          >
+                            {isGeneratingOutreach ? 'Generating...' : '✨ Gen AI'}
+                          </button>
+                        </div>
+                      </div>
+
                       <div className="space-y-1">
                         <label className="text-[10px] font-bold text-slate-500 uppercase font-mono">Select Title Heading:</label>
                         <select
@@ -543,141 +664,60 @@ export default function App() {
                           onChange={(e) => setSelectedHeadingIndex(Number(e.target.value))}
                           className="w-full bg-white border border-slate-200 text-slate-750 text-xs rounded-lg px-2 py-1.5 font-sans focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 outline-none"
                         >
-                          <option value={0}>🎯 UPSC Daily MCQ Drill</option>
+                          <option value={0}>🎯 Daily MCQ Drill</option>
                           <option value={1}>🧠 Can You Crack These 5?</option>
-                          <option value={2}>🔥 UPSC Prelims Challenge</option>
-                          <option value={3}>💡 5 High-Yield UPSC MCQs</option>
+                          <option value={2}>🔥 Prelims Challenge</option>
+                          <option value={3}>💡 5 High-Yield MCQs</option>
                         </select>
                       </div>
 
                       <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 max-h-60 overflow-y-auto space-y-3 text-[11px] text-slate-750 font-sans shadow-inner">
                         <div className="font-extrabold text-slate-850 font-display border-b border-slate-200 pb-1.5 mb-2 sticky top-0 bg-slate-50 pt-0.5">
-                          {selectedHeadingIndex === 0 && "🎯 UPSC CSE DAILY MCQ DRILL – Test Your Preparation Limits!"}
-                          {selectedHeadingIndex === 1 && "🧠 Can You Crack These 5 Elite Civil Services Questions?"}
-                          {selectedHeadingIndex === 2 && "🔥 UPSC Prelims Challenge: 5 High-Yield Questions from ASPIRES ACADEMY!"}
-                          {selectedHeadingIndex === 3 && "💡 5 Tough UPSC Prep MCQs to Boost Your Score Today!"}
+                          {selectedHeadingIndex === 0 && `🎯 ${selectedExam} CSE DAILY MCQ DRILL – Test Your Limits!`}
+                          {selectedHeadingIndex === 1 && `🧠 Can You Crack These 5 Elite ${selectedExam} Questions?`}
+                          {selectedHeadingIndex === 2 && `🔥 ${selectedExam} Prelims Challenge: 5 High-Yield Questions from ASPIRES!`}
+                          {selectedHeadingIndex === 3 && `💡 5 Tough ${selectedExam} Prep MCQs to Boost Your Score Today!`}
                         </div>
                         
                         <div className="space-y-3">
-                          <div className="p-2 bg-white rounded-lg border border-slate-200/60 shadow-xs">
-                            <span className="font-bold text-emerald-700 font-mono text-[9px] uppercase tracking-wider">1️⃣ POLITY</span>
-                            <p className="font-semibold text-slate-850 mt-0.5">Which Article of the Constitution of India safeguards one's right to marry the person of one's choice?</p>
-                            <div className="grid grid-cols-2 gap-1 mt-1 pl-2 text-slate-500 font-mono text-[10px]">
-                              <div>A) Article 19</div>
-                              <div>B) Article 21</div>
-                              <div>C) Article 25</div>
-                              <div>D) Article 29</div>
+                          {outreachQuestions.map((q, index) => (
+                            <div key={q.id || index} className="p-2 bg-white rounded-lg border border-slate-200/60 shadow-xs">
+                              <span className="font-bold text-emerald-700 font-mono text-[9px] uppercase tracking-wider">
+                                {index + 1}️⃣ {q.subject || 'GENERAL STUDIES'}
+                              </span>
+                              <p className="font-semibold text-slate-850 mt-0.5">{q.text}</p>
+                              <div className="grid grid-cols-2 gap-1 mt-1 pl-2 text-slate-500 font-mono text-[10px]">
+                                {q.options.map((opt, oIdx) => (
+                                  <div key={oIdx}>{String.fromCharCode(65 + oIdx)}) {opt}</div>
+                                ))}
+                              </div>
+                              <div className="mt-1.5 text-[10px] text-emerald-800 font-semibold bg-emerald-50 p-1 rounded">
+                                👉 Answer: {String.fromCharCode(65 + q.correctAnswerIndex)} ({q.options[q.correctAnswerIndex]}) - {q.explanation}
+                              </div>
                             </div>
-                            <div className="mt-1.5 text-[10px] text-emerald-800 font-semibold bg-emerald-50 p-1 rounded">
-                              👉 Answer: B (Article 21) - Under Puttaswamy (2017) & Hadiya (2018) rulings.
-                            </div>
-                          </div>
-
-                          <div className="p-2 bg-white rounded-lg border border-slate-200/60 shadow-xs">
-                            <span className="font-bold text-emerald-700 font-mono text-[9px] uppercase tracking-wider">2️⃣ HISTORY</span>
-                            <p className="font-semibold text-slate-850 mt-0.5">With reference to ancient India, the term "Yavanapriya" in Sanskrit literature referred to:</p>
-                            <div className="grid grid-cols-2 gap-1 mt-1 pl-2 text-slate-500 font-mono text-[10px]">
-                              <div>A) Fine muslin cloth</div>
-                              <div>B) Ivory carvings</div>
-                              <div>C) Pepper</div>
-                              <div>D) Greek damsels</div>
-                            </div>
-                            <div className="mt-1.5 text-[10px] text-emerald-800 font-semibold bg-emerald-50 p-1 rounded">
-                              👉 Answer: C (Pepper) - Loved by Yavanas (Greeks) trading with Tamil kingdoms.
-                            </div>
-                          </div>
-
-                          <div className="p-2 bg-white rounded-lg border border-slate-200/60 shadow-xs">
-                            <span className="font-bold text-emerald-700 font-mono text-[9px] uppercase tracking-wider">3️⃣ POLITY</span>
-                            <p className="font-semibold text-slate-850 mt-0.5">In India, Separation of Judiciary from the Executive is enjoined by:</p>
-                            <div className="grid grid-cols-2 gap-1 mt-1 pl-2 text-slate-500 font-mono text-[10px]">
-                              <div>A) The Preamble</div>
-                              <div>B) Directive Principles (DPSP)</div>
-                              <div>C) The Seventh Schedule</div>
-                              <div>D) Conventional practice</div>
-                            </div>
-                            <div className="mt-1.5 text-[10px] text-emerald-800 font-semibold bg-emerald-50 p-1 rounded">
-                              👉 Answer: B (DPSP) - Outlined in Article 50 of Part IV of the Constitution.
-                            </div>
-                          </div>
-
-                          <div className="p-2 bg-white rounded-lg border border-slate-200/60 shadow-xs">
-                            <span className="font-bold text-emerald-700 font-mono text-[9px] uppercase tracking-wider">4️⃣ TAMIL HISTORY</span>
-                            <p className="font-semibold text-slate-850 mt-0.5">Who was the author of the Tamil historic work "Madurai Kanchi", describing Madurai city under King Nedunchezhiyan?</p>
-                            <div className="grid grid-cols-2 gap-1 mt-1 pl-2 text-slate-500 font-mono text-[10px]">
-                              <div>A) Mangudi Marudanar</div>
-                              <div>B) Nakkirar</div>
-                              <div>C) Kapilar</div>
-                              <div>D) Ilango Adigal</div>
-                            </div>
-                            <div className="mt-1.5 text-[10px] text-emerald-800 font-semibold bg-emerald-50 p-1 rounded">
-                              👉 Answer: A (Mangudi Marudanar) - From Pathuppattu of Sangam literature.
-                            </div>
-                          </div>
-
-                          <div className="p-2 bg-white rounded-lg border border-slate-200/60 shadow-xs">
-                            <span className="font-bold text-emerald-700 font-mono text-[9px] uppercase tracking-wider">5️⃣ ECONOMY</span>
-                            <p className="font-semibold text-slate-850 mt-0.5">With reference to India, the term "Core Inflation" is calculated by excluding which categories from Headline Inflation?</p>
-                            <div className="grid grid-cols-2 gap-1 mt-1 pl-2 text-slate-500 font-mono text-[10px]">
-                              <div>A) Fuel and Power</div>
-                              <div>B) Food and Beverages</div>
-                              <div>C) Both Food and Fuel items</div>
-                              <div>D) Manufactured goods only</div>
-                            </div>
-                            <div className="mt-1.5 text-[10px] text-emerald-800 font-semibold bg-emerald-50 p-1 rounded">
-                              👉 Answer: C (Both Food and Fuel items) - Excluding volatile commodities.
-                            </div>
-                          </div>
+                          ))}
                         </div>
                       </div>
 
                       <button
                         onClick={() => {
                           const headings = [
-                            "🎯 UPSC CSE DAILY MCQ DRILL – Test Your Preparation Limits!",
-                            "🧠 Can You Crack These 5 Elite Civil Services Questions?",
-                            "🔥 UPSC Prelims Challenge: 5 High-Yield Questions from ASPIRES ACADEMY!",
-                            "💡 5 Tough UPSC Prep MCQs to Boost Your Score Today!"
+                            selectedHeadingIndex === 0 ? `🎯 ${selectedExam} CSE DAILY MCQ DRILL – Test Your Limits!` : '',
+                            selectedHeadingIndex === 1 ? `🧠 Can You Crack These 5 Elite ${selectedExam} Questions?` : '',
+                            selectedHeadingIndex === 2 ? `🔥 ${selectedExam} Prelims Challenge: 5 High-Yield Questions from ASPIRES!` : '',
+                            selectedHeadingIndex === 3 ? `💡 5 Tough ${selectedExam} Prep MCQs to Boost Your Score Today!` : ''
                           ];
-                          const heading = headings[selectedHeadingIndex];
+                          const heading = headings[selectedHeadingIndex] || `🎯 ${selectedExam} Daily Civil Services Challenge`;
+                          
+                          let questionsText = '';
+                          outreachQuestions.forEach((q, index) => {
+                            const optionsText = q.options.map((opt, oIdx) => `${String.fromCharCode(65 + oIdx)}) ${opt}`).join('\n');
+                            questionsText += `${index + 1}️⃣ ${q.subject || 'GENERAL STUDIES'}: ${q.text}\n${optionsText}\n👉 Answer: ${String.fromCharCode(65 + q.correctAnswerIndex)} (${q.options[q.correctAnswerIndex]}) - ${q.explanation}\n\n`;
+                          });
+
                           const postText = `${heading}
 
-1️⃣ POLITY: Which Article of the Constitution of India safeguards one's right to marry the person of one's choice?
-A) Article 19
-B) Article 21
-C) Article 25
-D) Article 29
-👉 Answer: B (Article 21) - Under the landmark Puttaswamy (2017) and Hadiya (2018) cases.
-
-2️⃣ HISTORY: With reference to ancient India, the term "Yavanapriya" in Sanskrit literature referred to:
-A) Fine muslin cloth
-B) Ivory carvings
-C) Pepper
-D) Greek damsels
-👉 Answer: C (Pepper) - Loved by Yavanas (Greeks) who traded with ancient Tamil kingdoms.
-
-3️⃣ POLITY: In India, Separation of Judiciary from the Executive is enjoined by:
-A) The Preamble of the Constitution
-B) A Directive Principle of State Policy
-C) The Seventh Schedule
-D) Conventional practice
-👉 Answer: B (A Directive Principle of State Policy) - Outlined in Article 50 of Part IV of the Constitution.
-
-4️⃣ TAMIL HISTORY: Who was the author of the Tamil historic work "Madurai Kanchi", which gives a vivid description of Madurai city under King Nedunchezhiyan?
-A) Mangudi Marudanar
-B) Nakkirar
-C) Kapilar
-D) Ilango Adigal
-👉 Answer: A (Mangudi Marudanar) - Part of Pathuppattu of Sangam literature.
-
-5️⃣ ECONOMY: With reference to India, the term "Core Inflation" is calculated by excluding which categories from Headline Inflation?
-A) Fuel and Power
-B) Food and Beverages
-C) Both Food and Fuel items
-D) Manufactured goods only
-👉 Answer: C (Both Food and Fuel items) - Volatile commodities are excluded to see the stable underlying trend.
-
----
+${questionsText}---
 🎁 Practice 100+ Free UPSC & TNPSC questions instantly with Interactive Syllabus Trackers & AI Coaches at ASPIRES ACADEMY!
 👉 Join and prepare for free here: ${window.location.origin}`;
 
