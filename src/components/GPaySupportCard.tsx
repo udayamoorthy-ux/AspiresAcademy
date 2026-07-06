@@ -29,7 +29,7 @@ const PRE_SEEDED_SUPPORTERS: Supporter[] = [
   {
     id: 's2',
     name: 'Karthik Raja S',
-    amount: 699,
+    amount: 299,
     message: 'Excellent syllabus tracker and AI coach. Subscribed to Annual Pass to keep it going.',
     timestamp: '5 hours ago'
   },
@@ -102,7 +102,7 @@ export default function GPaySupportCard({
 
   const getFinalAmount = () => {
     if (paymentMode === 'subscription') {
-      return selectedPlan === 'monthly' ? 199 : 699;
+      return selectedPlan === 'monthly' ? 199 : 299;
     }
     return customAmount ? parseFloat(customAmount) : amount;
   };
@@ -308,6 +308,13 @@ export default function GPaySupportCard({
                     <p className="text-[10.5px] text-slate-500 leading-relaxed">
                       Upgrade to unlock permanent access to state-of-the-art civil service guidance pipelines. Scan with Google Pay to simulate immediate enrollment.
                     </p>
+                    <div className="mt-1.5 font-bold text-emerald-800 bg-emerald-50 px-2.5 py-1.5 rounded-xl border border-emerald-500/15 flex items-center gap-1.5 text-[10px] w-full animate-fadeIn shadow-xs">
+                      <span className="relative flex h-2 w-2 shrink-0">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                      </span>
+                      <span>🎁 Early Bird Special: ₹299/yr for the first 100 aspirants only!</span>
+                    </div>
                   </div>
 
                   {/* Plan Cards */}
@@ -350,15 +357,15 @@ export default function GPaySupportCard({
                       }`}
                       id="plan-annual"
                     >
-                      <span className="absolute -top-2 right-2 bg-amber-500 text-slate-950 font-black text-[7.5px] uppercase tracking-wider px-1.5 py-0.5 rounded-full border border-amber-600/20 shadow-sm">
-                        Best Value (Save 71%)
+                      <span className="absolute -top-2 right-2 bg-amber-500 text-slate-950 font-black text-[7.5px] uppercase tracking-wider px-1.5 py-0.5 rounded-full border border-amber-600/20 shadow-sm animate-pulse">
+                        First 100 Aspirants (Save 87%)
                       </span>
                       <div>
                         <span className="text-[8px] uppercase tracking-wider font-mono font-black text-slate-400">Annual Pass</span>
                         <h4 className="font-extrabold text-slate-900 text-xs mt-0.5">Elite Preparatory</h4>
                       </div>
                       <div>
-                        <span className="text-base font-black text-slate-900">₹699</span>
+                        <span className="text-base font-black text-slate-900">₹299</span>
                         <span className="text-[10px] text-slate-500 font-medium"> / yr</span>
                       </div>
                     </button>
