@@ -697,6 +697,16 @@ export default function App() {
                             </div>
                           ))}
                         </div>
+
+                        {/* CTA Footer Preview */}
+                        <div className="pt-2.5 mt-2.5 border-t border-slate-200/80 text-[10px] text-slate-500 space-y-1 font-sans">
+                          <p className="font-mono text-[8px] uppercase tracking-wider text-slate-400">🎁 Offer Included in Share Post:</p>
+                          <p className="font-semibold text-slate-650">🎁 Practice 100+ Free UPSC & TNPSC questions instantly with Interactive Syllabus Trackers & AI Coaches at ASPIRES ACADEMY!</p>
+                          <p className="font-extrabold text-emerald-800 bg-emerald-50 px-2 py-1 rounded border border-emerald-500/15 flex items-center gap-1">
+                            <span>⚡ Early Bird Special: Get the Annual Pass for just ₹299/yr (Save 87%) - valid for the first 100 aspirants only!</span>
+                          </p>
+                          <p className="text-blue-600 font-medium">👉 Join and prepare here: {window.location.origin}</p>
+                        </div>
                       </div>
 
                       <button
@@ -719,7 +729,8 @@ export default function App() {
 
 ${questionsText}---
 🎁 Practice 100+ Free UPSC & TNPSC questions instantly with Interactive Syllabus Trackers & AI Coaches at ASPIRES ACADEMY!
-👉 Join and prepare for free here: ${window.location.origin}`;
+⚡ Early Bird Special: Get the Annual Pass for just ₹299/yr (Save 87%) - valid for the first 100 aspirants only!
+👉 Join and prepare here: ${window.location.origin}`;
 
                           navigator.clipboard.writeText(postText);
                           setCopiedPost(true);
