@@ -148,6 +148,41 @@ const FLASHCARD_DECKS: Record<ExamType, Flashcard[]> = {
       ]
     }
   ],
+  RRB_NTPC: [
+    {
+      id: 'rrb-fc-1',
+      category: 'General Science (Physics)',
+      question: 'What is Newton\'s First Law of Motion (Law of Inertia)?',
+      answer: 'An object remains in a state of rest or of uniform motion in a straight line unless compelled to change that state by an applied external force.',
+      points: [
+        'Inertia is the inherent property of an object to resist changes in its state of motion.',
+        'Mass is the direct quantitative measure of inertia.',
+        'Frequently tested in Railway exams under conceptual General Science.'
+      ]
+    },
+    {
+      id: 'rrb-fc-2',
+      category: 'Mathematics (Speed & Distance)',
+      question: 'What is the relative speed formula for two objects moving in opposite directions?',
+      answer: 'Relative Speed = Speed of Object A + Speed of Object B (S1 + S2). They approach or recede from each other at the sum of their individual speeds.',
+      points: [
+        'If moving in the SAME direction: Relative Speed = S1 - S2 (where S1 > S2).',
+        'Crucial for train crossing problems (crossing another train or a moving platform helper).',
+        'Always convert speed unit (km/h to m/s: multiply by 5/18) before adding lengths.'
+      ]
+    },
+    {
+      id: 'rrb-fc-3',
+      category: 'General Awareness (Railways)',
+      question: 'Who was the Governor-General of India when the first railway line was introduced?',
+      answer: 'Lord Dalhousie (often regarded as the "Father of Indian Railways").',
+      points: [
+        'Introduced the first line between Bombay (Bori Bunder) and Thane in April 1853.',
+        'He envisioned the railway network to connect the main agricultural and military centers of India.',
+        'Also introduced the Electric Telegraph and Postal reforms during his tenure.'
+      ]
+    }
+  ],
 };
 
 export default function FlashcardsView({ selectedExam }: { selectedExam: ExamType }) {

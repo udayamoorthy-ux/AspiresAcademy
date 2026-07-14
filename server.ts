@@ -90,7 +90,8 @@ app.post('/api/study-planner', async (req, res) => {
     TNPSC_G1: 'TNPSC Group I (Deputy Collector/DSP) Prelims & Mains',
     TNPSC_G2: 'TNPSC Group II/IIA Executive and Non-Executive Exams',
     TNPSC_G4: 'TNPSC Group IV & VAO Written Exam',
-    SSC_CGL: 'SSC CGL (Combined Graduate Level) Tiers I & II Exams'
+    SSC_CGL: 'SSC CGL (Combined Graduate Level) Tiers I & II Exams',
+    RRB_NTPC: 'RRB NTPC (Non-Technical Popular Categories) Stage 1 & 2 CBT Exams'
   };
 
   const examLabel = examLabels[exam] || exam;
@@ -698,7 +699,8 @@ app.post('/api/mentor-chat', async (req, res) => {
     TNPSC_G1: 'TNPSC Group I Exam',
     TNPSC_G2: 'TNPSC Group II Exam',
     TNPSC_G4: 'TNPSC Group IV & VAO Exam',
-    SSC_CGL: 'SSC CGL (Combined Graduate Level) Exam'
+    SSC_CGL: 'SSC CGL (Combined Graduate Level) Exam',
+    RRB_NTPC: 'RRB NTPC Exam'
   };
 
   const examLabel = examLabels[exam] || 'Civil Services Exam';
@@ -817,7 +819,8 @@ app.post('/api/notes', async (req, res) => {
     TNPSC_G1: 'TNPSC Group 1 Exam',
     TNPSC_G2: 'TNPSC Group 2 Exam',
     TNPSC_G4: 'TNPSC Group 4 Exam',
-    SSC_CGL: 'SSC CGL Exam'
+    SSC_CGL: 'SSC CGL Exam',
+    RRB_NTPC: 'RRB NTPC Exam'
   };
   const examLabel = examLabels[exam] || 'Civil Services Exam';
 
@@ -995,7 +998,8 @@ app.post('/api/subject-quiz', async (req, res) => {
     TNPSC_G1: 'TNPSC Group I (Deputy Collector/DSP)',
     TNPSC_G2: 'TNPSC Group II/IIA Executive Services',
     TNPSC_G4: 'TNPSC Group IV & VAO Exam',
-    SSC_CGL: 'Staff Selection Commission Combined Graduate Level (SSC CGL) Exam'
+    SSC_CGL: 'Staff Selection Commission Combined Graduate Level (SSC CGL) Exam',
+    RRB_NTPC: 'Railway Recruitment Board Non-Technical Popular Categories (RRB NTPC) Exam'
   };
 
   const examLabel = examLabels[exam] || exam || 'Civil Services standard';

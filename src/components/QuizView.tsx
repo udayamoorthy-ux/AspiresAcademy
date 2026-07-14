@@ -67,7 +67,7 @@ export default function QuizView({
   const [customSubject, setCustomSubject] = useState<string>('');
   const [selectedAnswerIndex, setSelectedAnswerIndex] = useState<number | null>(null);
   const [hasAnswered, setHasAnswered] = useState<boolean>(false);
-  const [activePYQFilter, setActivePYQFilter] = useState<'ALL' | 'UPSC' | 'TNPSC' | 'SSC'>('ALL');
+  const [activePYQFilter, setActivePYQFilter] = useState<'ALL' | 'UPSC' | 'TNPSC' | 'SSC' | 'RRB'>('ALL');
 
   // Free Tier Usage Counting state for Mock Tests
   const [mockTestCount, setMockTestCount] = useState<number>(() => {
@@ -291,6 +291,7 @@ export default function QuizView({
     if (activePYQFilter === 'UPSC' && test.exam !== 'UPSC') return false;
     if (activePYQFilter === 'TNPSC' && !test.exam.startsWith('TNPSC')) return false;
     if (activePYQFilter === 'SSC' && test.exam !== 'SSC_CGL') return false;
+    if (activePYQFilter === 'RRB' && test.exam !== 'RRB_NTPC') return false;
 
     // Stage 2 filter: If they are on a specific exam screen, show relevant or matching years first
     return true;
@@ -695,7 +696,8 @@ export default function QuizView({
                     { id: 'ALL', label: 'All Boards' },
                     { id: 'UPSC', label: 'UPSC CSE' },
                     { id: 'TNPSC', label: 'TNPSC Boards' },
-                    { id: 'SSC', label: 'SSC CGL' }
+                    { id: 'SSC', label: 'SSC CGL' },
+                    { id: 'RRB', label: 'RRB NTPC' }
                   ].map((f) => (
                     <button
                       key={f.id}

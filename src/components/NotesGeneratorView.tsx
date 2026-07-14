@@ -49,6 +49,12 @@ const PRESET_TOPICS: Record<ExamType, { topic: string; keywords: string }[]> = {
     { topic: 'Active to Passive Voice Rules', keywords: 'Tense transitions, Imperative sentences, Interrogative transformations, Prepositional changes' },
     { topic: 'Syllogism & Venn Diagrams', keywords: 'All A are B, Some B are C, No A is C, At least some, Possibility cases' },
     { topic: 'Constitutional Bodies', keywords: 'Election Commission Art 324, UPSC Art 315, CAG Art 148, Finance Commission Art 280' }
+  ],
+  RRB_NTPC: [
+    { topic: 'General Science: Physics Laws', keywords: 'Newton Laws of Motion, Kinetic and Potential Energy, Sound Propagation, Lenses & Human Eye Optics' },
+    { topic: 'Mathematics: Time, Speed & Distance', keywords: 'Train Relative Speed, Bridge & Platform Crossing Time, Average Speed, Upstream/Downstream Boats' },
+    { topic: 'General Intelligence: Series & Coding', keywords: 'Number & Alphabet Series patterns, Coding-Decoding by opposite alphabet values, Syllogisms, Mathematical Operations' },
+    { topic: 'Railway Systems and History of India', keywords: 'Father of Indian Railways Lord Dalhousie, Railway Zones and Headquarters, Wheel & Axle Plants, Dedicated Freight Corridors (DFCs)' }
   ]
 };
 

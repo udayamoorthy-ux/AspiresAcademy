@@ -35,6 +35,8 @@ export default function MentorChatView({ selectedExam, isPremium = false, onPrem
       introText = "வணக்கம்! உங்கள் டி.என்.பி.எஸ்.சி (TNPSC) தேர்வுக்கு உங்களை வழிநடத்தும் வழிகாட்டி நான். பொதுத்தமிழ் (Part A), தமிழ் மரபு மற்றும் பண்பாடு, திருக்குறள் அறநெறிகள், அல்லது கணித திறனறிவுகளுக்கான (Aptitude) சந்தேகங்களை நீங்கள் என்னிடம் கேட்கலாம். வெற்றியை நோக்கிப் பயணிப்போம்!";
     } else if (selectedExam === 'SSC_CGL') {
       introText = "Hello, SSC CGL aspirant! I am your dedicated Staff Selection Commission Combined Graduate Level guide. Ask me about high-speed Quantitative Aptitude shortcuts, core English Grammar rules, Logical Reasoning strategies, or general computer basics. Let's ace Tier-I and Tier-II together!";
+    } else if (selectedExam === 'RRB_NTPC') {
+      introText = "Welcome, Railway (RRB NTPC) aspirant! I am your Railway Recruitment Board guide. Ask me about speed-distance-time shortcuts, general science formulas (physics/chemistry/biology), railway history facts, or reasoning hacks. Let's get you on track to success!";
     }
 
     setMessages([
@@ -122,7 +124,13 @@ export default function MentorChatView({ selectedExam, isPremium = false, onPrem
     }
   };
 
-  const QUICK_PROMPTS = selectedExam === 'SSC_CGL'
+  const QUICK_PROMPTS = selectedExam === 'RRB_NTPC'
+    ? [
+        { label: "Train Math Tricks", text: "How do I solve train speed, relative speed, and bridge crossing math problems quickly?" },
+        { label: "General Science Key Notes", text: "What are the most commonly asked Physics and Chemistry concepts in RRB NTPC exams?" },
+        { label: "Railway History GK", text: "Summarize the critical facts about Indian Railways, zones, headquarters, and history for General Awareness." }
+      ]
+    : selectedExam === 'SSC_CGL'
     ? [
         { label: "Quant Shortcuts", text: "What are the most effective short-cut strategies for scoring full marks in Quantitative Aptitude?" },
         { label: "Grammar Master Rules", text: "List the absolute non-negotiable grammar rules for Active/Passive and Direct/Indirect speech in SSC CGL." },
@@ -259,7 +267,9 @@ export default function MentorChatView({ selectedExam, isPremium = false, onPrem
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             placeholder={
-              selectedExam === 'SSC_CGL'
+              selectedExam === 'RRB_NTPC'
+                ? "Ask about train math, general science, or Indian Railways GK..."
+                : selectedExam === 'SSC_CGL'
                 ? "Ask about Quant, English grammar rules, or Computer basics..."
                 : selectedExam.startsWith('TNPSC')
                 ? "பொதுத்தமிழ், கணிதம் அல்லது திருக்குறள் பற்றி கேட்கவும்..."

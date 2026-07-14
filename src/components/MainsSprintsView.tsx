@@ -100,6 +100,32 @@ const DAILY_SPRINTS: Record<ExamType, SprintPrompt[]> = {
       context: 'General Awareness - Economics (Tier-II)'
     }
   ],
+  RRB_NTPC: [
+    {
+      id: 'rrb-sprint-1',
+      question: 'Explain the concept of "Inertia of Rest" and "Inertia of Motion" under Newton\'s First Law. Provide a day-to-day life example of each.',
+      timeLimit: 240, // 4 minutes
+      idealKeywords: ['State of rest', 'Uniform motion', 'External force', 'Inherent property', 'Sudden brakes'],
+      evaluationRubric: [
+        { title: 'Definitions', desc: 'Inertia of Rest: resistance to change from rest; Inertia of Motion: resistance to change from uniform movement.' },
+        { title: 'Newtonian Connection', desc: 'Correctly linked both concepts back to Newton\'s First Law of Motion.' },
+        { title: 'Real-Life Examples', desc: 'Gave robust examples, e.g., passengers falling backward when a train starts suddenly (rest), or falling forward when brakes are applied (motion).' }
+      ],
+      context: 'General Science - Physics (CBT-1 / CBT-2)'
+    },
+    {
+      id: 'rrb-sprint-2',
+      question: 'Briefly explain the formulaic difference between "Relative Speed" when two objects move in opposite directions versus the same direction. Why is this critical in train-crossing calculations?',
+      timeLimit: 180, // 3 minutes
+      idealKeywords: ['S1 + S2', 'S1 - S2', 'Direction of approach', 'Sum of lengths', 'Relative velocity'],
+      evaluationRubric: [
+        { title: 'Formulas', desc: 'Stated S1 + S2 for opposite directions, and S1 - S2 for the same direction.' },
+        { title: 'Train-Crossing Application', desc: 'Explained that the total distance covered in crossing is always the sum of the two train lengths.' },
+        { title: 'Mathematical Clarity', desc: 'Expressed the concepts concisely with logical, clean formatting.' }
+      ],
+      context: 'Mathematics - Time, Speed & Distance (CBT-1 / CBT-2)'
+    }
+  ],
 };
 
 export default function MainsSprintsView({ selectedExam }: { selectedExam: ExamType }) {

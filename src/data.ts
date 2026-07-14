@@ -79,6 +79,20 @@ export const EXAM_DETAILS = {
       { subject: 'Computer Knowledge', description: 'Computer Basics, Software (MS Office), Working with Internet and Emails, Basics of Cyber Security.' },
     ],
   },
+  RRB_NTPC: {
+    title: 'RRB NTPC (Non-Technical Popular Categories) Exam',
+    shortName: 'RRB NTPC',
+    stages: [
+      { name: 'Stage 1 CBT', details: '3 Sections: Mathematics (30 Qs), General Intelligence & Reasoning (30 Qs), General Awareness (40 Qs). Total 100 MCQs, 100 Marks. Time: 90 Mins.' },
+      { name: 'Stage 2 CBT', details: 'Mathematics (35 Qs), General Intelligence & Reasoning (35 Qs), General Awareness (50 Qs). Total 120 MCQs, 120 Marks. Time: 90 Mins.' },
+      { name: 'CBAT / Typing Test', details: 'Computer Based Aptitude Test (for Station Master/Traffic Assistant) or Typing Skill Test (for clerk positions).' }
+    ],
+    syllabus: [
+      { subject: 'Mathematics', description: 'Number System, Decimals, Fractions, LCM, HCF, Ratio & Proportion, Percentage, Mensuration, Time & Work, Time & Distance, Simple & Compound Interest, Profit & Loss, Elementary Algebra, Geometry, Trigonometry, Elementary Statistics.' },
+      { subject: 'General Intelligence & Reasoning', description: 'Analogies, Completion of Number and Alphabetical Series, Coding and Decoding, Mathematical Operations, Similarities and Differences, Relationships, Analytical Reasoning, Syllogism, Jumbling, Venn Diagrams, Puzzle, Data Sufficiency, Statement-Conclusion, Statement-Courses of Action, Decision Making, Maps, Interpretation of Graphs.' },
+      { subject: 'General Awareness', description: 'Current Events of National and International Importance, Games and Sports, Art and Culture of India, Indian Literature, Monuments and Places of India, General Science and Life Science (up to 10th CBSE), History of India and Freedom Struggle, Physical, Social and Economic Geography of India and World, Indian Polity and Constitution, General Scientific and Technological Developments, Environmental Issues, Basics of Computers.' }
+    ],
+  },
 };
 
 export const DEFAULT_ESSAY_PROMPTS: EssayPrompt[] = [
@@ -328,6 +342,60 @@ export const STATIC_QUIZ_QUESTIONS: Record<ExamType, Question[]> = {
       ],
       correctAnswerIndex: 2,
       explanation: 'Article 360 of the Indian Constitution empowers the President of India to declare a financial emergency if he/she is satisfied that a situation has arisen whereby the financial stability or credit of India or any part of its territory is threatened.',
+      subject: 'General Awareness',
+    }
+  ],
+  RRB_NTPC: [
+    {
+      id: 'rrb-ntpc-q1',
+      text: 'A train 150 meters long passes a telegraph post in 12 seconds. In how much time (in seconds) will it pass a bridge 250 meters long?',
+      options: [
+        '20 seconds',
+        '24 seconds',
+        '32 seconds',
+        '40 seconds'
+      ],
+      correctAnswerIndex: 2,
+      explanation: 'Speed of the train = Length of train / Time taken to pass post = 150 m / 12 s = 12.5 m/s.\nTo pass the bridge, the train has to cover a total distance = Length of train + Length of bridge = 150 + 250 = 400 m.\nTime required = Total distance / Speed = 400 m / 12.5 m/s = 32 seconds.\nCorrect option is C.',
+      subject: 'Mathematics',
+    },
+    {
+      id: 'rrb-ntpc-q2',
+      text: 'In which city is the National Academy of Indian Railways (NAIR) situated?',
+      options: [
+        'New Delhi',
+        'Vadodara',
+        'Secunderabad',
+        'Pune'
+      ],
+      correctAnswerIndex: 1,
+      explanation: 'The National Academy of Indian Railways (NAIR), formerly known as Railway Staff College, is situated in Vadodara, Gujarat. It is the premier training institution for the officers of Indian Railways.',
+      subject: 'General Awareness',
+    },
+    {
+      id: 'rrb-ntpc-q3',
+      text: 'Select the option that is related to the third term in the same way as the second term is related to the first term:\n\nCOAL : HEAT :: WAX : ?',
+      options: [
+        'Energy',
+        'Candle',
+        'Light',
+        'Bee'
+      ],
+      correctAnswerIndex: 2,
+      explanation: 'Burning COAL produces HEAT. Similarly, burning WAX produces LIGHT (as in a candle). Thus, Light is the correct logical counterpart.',
+      subject: 'General Intelligence & Reasoning',
+    },
+    {
+      id: 'rrb-ntpc-q4',
+      text: 'Which Indian Railway zone operates the highest altitude railway station, "Ghum" (at an altitude of 2,258 meters)?',
+      options: [
+        'Northern Railway',
+        'Northeast Frontier Railway',
+        'Southern Railway',
+        'Western Railway'
+      ],
+      correctAnswerIndex: 1,
+      explanation: 'Ghum railway station of the Darjeeling Himalayan Railway is the highest railway station in India. It is situated at an altitude of 2,258 meters (7,407 ft) and is operated by the Northeast Frontier Railway (NFR) zone.',
       subject: 'General Awareness',
     }
   ]

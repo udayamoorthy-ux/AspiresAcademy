@@ -79,6 +79,11 @@ const TICKER_HEADLINES: Record<ExamType, string[]> = {
     'SSC CGL 2026: Official Tier I computer-based exams are scheduled for Autumn 2026.',
     'Tier II Syllabus Update: Quantitative, English, Reasoning, and Computer sections compiled under new pattern.',
     'Advisory Note: Data Entry Speed Test is mandatory for all posts. Candidates are advised to practice typing regularly.'
+  ],
+  RRB_NTPC: [
+    'RRB NTPC 2026: Official Stage 1 Computer-Based Tests (CBT-1) are scheduled to begin in Autumn 2026.',
+    'Syllabus Advisory: Focus intensively on 10th-standard General Science (Physics, Chemistry, Life Sciences) which constitutes 40% of CBT General Awareness.',
+    'Preparation Tip: Practice high-speed quantitative tricks and alphabetical logic series regularly to optimize your 90-minute limit.'
   ]
 };
 
@@ -448,13 +453,14 @@ export default function App() {
           </div>
 
           {/* Selector Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5 w-full lg:w-auto" id="exam-selector-buttons">
+          <div className="grid grid-cols-2 sm:grid-cols-6 gap-2.5 w-full lg:w-auto" id="exam-selector-buttons">
             {[
               { id: 'UPSC', label: 'UPSC IAS/IPS' },
               { id: 'TNPSC_G1', label: 'TNPSC Group 1' },
               { id: 'TNPSC_G2', label: 'TNPSC Group 2' },
               { id: 'TNPSC_G4', label: 'TNPSC Group 4' },
-              { id: 'SSC_CGL', label: 'SSC CGL' }
+              { id: 'SSC_CGL', label: 'SSC CGL' },
+              { id: 'RRB_NTPC', label: 'RRB NTPC' }
             ].map((examItem) => {
               const isActive = selectedExam === examItem.id;
               return (

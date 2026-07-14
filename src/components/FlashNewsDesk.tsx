@@ -31,7 +31,7 @@ export interface OfficialNotification {
   id: string;
   examType: ExamType;
   title: string;
-  source: 'UPSC' | 'TNPSC' | 'PIB' | 'SSC';
+  source: 'UPSC' | 'TNPSC' | 'PIB' | 'SSC' | 'RRB';
   category: 'notification' | 'result' | 'key' | 'pib';
   publishDate: string;
   deadlineDate?: string;
@@ -240,6 +240,37 @@ const GOVERNMENT_NOTIFICATIONS_DATA: OfficialNotification[] = [
     ],
     isImportant: true,
     fileSize: '1.2 MB'
+  },
+  {
+    id: 'rrb-1',
+    examType: 'RRB_NTPC',
+    title: 'RRB NTPC Stage 1 Computer Based Test (CBT-1) Revised Dates Announced',
+    source: 'RRB',
+    category: 'notification',
+    publishDate: 'July 12, 2026',
+    officialLink: 'https://www.rrcb.gov.in',
+    highlights: [
+      'CBT-1 examinations to be conducted in multiple phases starting from late September 2026.',
+      'City intimation slip and travel pass downloads for SC/ST candidates will be active 10 days prior to the exam start.'
+    ],
+    isImportant: true,
+    fileSize: '298 KB'
+  },
+  {
+    id: 'rrb-2',
+    examType: 'RRB_NTPC',
+    title: 'Railway Recruitment Boards: Recruitment for Non-Technical Popular Categories 2026 Detailed Notification',
+    source: 'RRB',
+    category: 'notification',
+    publishDate: 'July 01, 2026',
+    deadlineDate: 'July 31, 2026',
+    officialLink: 'https://www.rrcb.gov.in',
+    highlights: [
+      'Over 11,500 vacant positions for Station Master, Goods Guard, Junior Clerk, and Typist across Indian Railways zones.',
+      'Age relaxation benefits apply to reservation categories as per official Ministry of Railways gazette guidelines.'
+    ],
+    isImportant: true,
+    fileSize: '1.2 MB'
   }
 ];
 
@@ -328,6 +359,7 @@ export default function FlashNewsDesk({ selectedExam }: FlashNewsDeskProps) {
       case 'TNPSC_G2': return 'TNPSC Group 2 & IIA Board';
       case 'TNPSC_G4': return 'TNPSC Group 4 Board';
       case 'SSC_CGL': return 'Staff Selection Commission (SSC)';
+      case 'RRB_NTPC': return 'Railway Recruitment Board (RRB)';
       default: return 'Government Examination Board';
     }
   };
