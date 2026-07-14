@@ -44,7 +44,7 @@ interface ResourceItem {
 
 interface PYQItem {
   id: string;
-  exam: 'UPSC' | 'TNPSC';
+  exam: 'UPSC' | 'TNPSC' | 'SSC';
   year: number;
   paperType: 'Prelims' | 'Mains';
   subjectName: string;
@@ -57,7 +57,7 @@ interface PYQItem {
 
 interface InteractivePYQCase {
   id: string;
-  exam: 'UPSC' | 'TNPSC';
+  exam: 'UPSC' | 'TNPSC' | 'SSC';
   year: number;
   stage: 'Prelims' | 'Mains';
   questionText: string;
@@ -351,7 +351,7 @@ export default function MaterialsLibraryView({ selectedExam }: MaterialsLibraryV
   };
   const [verifiedCheckmarks, setVerifiedCheckmarks] = useState<Record<string, boolean>>({});
   const [subTab, setSubTab] = useState<'portals' | 'ncert-books' | 'pyqs' | 'sample-tracker'>('ncert-books');
-  const [pyqExamFilter, setPyqExamFilter] = useState<'ALL' | 'UPSC' | 'TNPSC'>('ALL');
+  const [pyqExamFilter, setPyqExamFilter] = useState<'ALL' | 'UPSC' | 'TNPSC' | 'SSC'>('ALL');
   
   // NCERT study tracker state
   const [completedNcertBooks, setCompletedNcertBooks] = useState<string[]>(() => {
@@ -577,6 +577,29 @@ export default function MaterialsLibraryView({ selectedExam }: MaterialsLibraryV
       officialAnswerKeyUrl: 'https://www.tnpsc.gov.in/English/QP_Prelims.aspx',
       syllabusMapping: 'Samacheer Kalvi General Tamil, Basic Indian Polity, Science, Aptitude',
       verifiedNotes: 'High density of questions directly from 6th to 10th standard Samacheer Kalvi textbooks. Always verify with official State board texts.'
+    },
+    {
+      id: 'ssc-cgl-2024-t1',
+      exam: 'SSC',
+      year: 2024,
+      paperType: 'Prelims',
+      subjectName: 'Tier I CBT',
+      title: 'SSC CGL Tier I Official Practice Mock Paper (2024)',
+      officialPaperUrl: 'https://ssc.gov.in',
+      officialAnswerKeyUrl: 'https://ssc.gov.in',
+      syllabusMapping: 'Quantitative Aptitude, General Intelligence & Reasoning, English Comprehension, General Awareness',
+      verifiedNotes: 'This official mock paper is styled directly under the latest Tier-I computer-based exam pattern. Highly recommended for pacing and sectional accuracy practice.'
+    },
+    {
+      id: 'ssc-cgl-2024-t2',
+      exam: 'SSC',
+      year: 2024,
+      paperType: 'Mains',
+      subjectName: 'Tier II Sectional Paper',
+      title: 'SSC CGL Tier II Quantitative & English Sectional Paper (2024)',
+      officialPaperUrl: 'https://ssc.gov.in',
+      syllabusMapping: 'Advanced Mathematics, Analytical Reasoning, Cloze Test, Reading Comprehension, Computer Basics',
+      verifiedNotes: 'Features the updated 150-mark weightage system. Focus heavily on Section III Computer Awareness and speed metrics.'
     }
   ];
 
@@ -1223,7 +1246,8 @@ export default function MaterialsLibraryView({ selectedExam }: MaterialsLibraryV
               {[
                 { id: 'ALL', label: 'All Papers' },
                 { id: 'UPSC', label: 'UPSC Papers' },
-                { id: 'TNPSC', label: 'TNPSC Papers' }
+                { id: 'TNPSC', label: 'TNPSC Papers' },
+                { id: 'SSC', label: 'SSC Papers' }
               ].map((btn) => (
                 <button
                   key={btn.id}

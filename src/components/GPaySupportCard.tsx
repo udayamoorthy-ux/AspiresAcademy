@@ -372,27 +372,65 @@ export default function GPaySupportCard({
                   </div>
 
                   {/* Bullet points of Premium features */}
-                  <div className="bg-slate-50 border border-slate-200/50 rounded-2xl p-3.5 space-y-2">
-                    <span className="text-[8.5px] uppercase font-mono font-black tracking-wider text-slate-400 block">Premium Feature Highlights</span>
-                    <ul className="space-y-1.5 text-[10.5px] text-slate-600 font-semibold">
-                      <li className="flex items-center gap-2">
-                        <Check className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
-                        <span>Unlimited AI Essay Evaluations with rubrics</span>
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <Check className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
-                        <span>Unlimited Notes and recall deck generations</span>
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <Check className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
-                        <span>Unlimited 24/7 Coaching chats with study targets</span>
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <Check className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
-                        <span>Unlimited diagnostic tests mapped directly to exams</span>
-                      </li>
-                    </ul>
-                  </div>
+                  {selectedPlan === 'annual' ? (
+                    <div className="bg-amber-500/10 border border-amber-500/35 rounded-2xl p-3.5 space-y-2.5 animate-fadeIn">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[9px] uppercase font-mono font-black tracking-wider text-amber-700 flex items-center gap-1">
+                          <Crown className="h-3.5 w-3.5 text-amber-600 animate-bounce" />
+                          Exclusive Annual-Only VIP Benefits
+                        </span>
+                        <span className="text-[8px] px-1.5 py-0.5 font-bold rounded bg-amber-500 text-slate-950 uppercase font-mono tracking-tight shrink-0">Best Seller</span>
+                      </div>
+                      <ul className="space-y-1.5 text-[10.5px] text-slate-700 font-semibold">
+                        <li className="flex items-start gap-2">
+                          <Check className="h-3.5 w-3.5 text-amber-600 shrink-0 mt-0.5" />
+                          <span><strong>Unlimited AI Essay Evaluations</strong> with granular rubrics</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <Check className="h-3.5 w-3.5 text-amber-600 shrink-0 mt-0.5" />
+                          <span><strong>Unlimited Notes &amp; Flashcards</strong> generations</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <Check className="h-3.5 w-3.5 text-amber-600 shrink-0 mt-0.5" />
+                          <span><strong>VIP Priority Line</strong>: 2x faster Gemini responses</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <Check className="h-3.5 w-3.5 text-amber-600 shrink-0 mt-0.5" />
+                          <span className="text-emerald-700 font-bold">⭐ BONUS: Free 1-Click PDF Notes Exporter</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <Check className="h-3.5 w-3.5 text-amber-600 shrink-0 mt-0.5" />
+                          <span className="text-emerald-700 font-bold">⭐ BONUS: WhatsApp Notification Alerts (Worth ₹499/yr)</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <Check className="h-3.5 w-3.5 text-amber-600 shrink-0 mt-0.5" />
+                          <span className="text-emerald-700 font-bold">⭐ BONUS: 10% Off Physical Study Materials</span>
+                        </li>
+                      </ul>
+                    </div>
+                  ) : (
+                    <div className="bg-slate-50 border border-slate-200/50 rounded-2xl p-3.5 space-y-2">
+                      <span className="text-[8.5px] uppercase font-mono font-black tracking-wider text-slate-400 block">Premium Feature Highlights</span>
+                      <ul className="space-y-1.5 text-[10.5px] text-slate-600 font-semibold">
+                        <li className="flex items-center gap-2">
+                          <Check className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
+                          <span>Unlimited AI Essay Evaluations with rubrics</span>
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <Check className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
+                          <span>Unlimited Notes and recall deck generations</span>
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <Check className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
+                          <span>Unlimited 24/7 Coaching chats with study targets</span>
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <Check className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
+                          <span>Unlimited diagnostic tests mapped directly to exams</span>
+                        </li>
+                      </ul>
+                    </div>
+                  )}
                 </div>
               ) : (
                 // Mode 2: One-Time Donation Options

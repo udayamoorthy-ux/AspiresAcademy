@@ -33,6 +33,8 @@ export default function MentorChatView({ selectedExam, isPremium = false, onPrem
       introText = "Greetings, UPSC Civil Services aspirant! I am your IAS/IPS exam guide. Ask me about M. Laxmikanth chapters, Modern Indian History, Economics, Essay strategies, or Mains answer reviews. Let's make your administrative dreams a reality!";
     } else if (selectedExam.startsWith('TNPSC')) {
       introText = "வணக்கம்! உங்கள் டி.என்.பி.எஸ்.சி (TNPSC) தேர்வுக்கு உங்களை வழிநடத்தும் வழிகாட்டி நான். பொதுத்தமிழ் (Part A), தமிழ் மரபு மற்றும் பண்பாடு, திருக்குறள் அறநெறிகள், அல்லது கணித திறனறிவுகளுக்கான (Aptitude) சந்தேகங்களை நீங்கள் என்னிடம் கேட்கலாம். வெற்றியை நோக்கிப் பயணிப்போம்!";
+    } else if (selectedExam === 'SSC_CGL') {
+      introText = "Hello, SSC CGL aspirant! I am your dedicated Staff Selection Commission Combined Graduate Level guide. Ask me about high-speed Quantitative Aptitude shortcuts, core English Grammar rules, Logical Reasoning strategies, or general computer basics. Let's ace Tier-I and Tier-II together!";
     }
 
     setMessages([
@@ -120,7 +122,13 @@ export default function MentorChatView({ selectedExam, isPremium = false, onPrem
     }
   };
 
-  const QUICK_PROMPTS = selectedExam.startsWith('TNPSC') 
+  const QUICK_PROMPTS = selectedExam === 'SSC_CGL'
+    ? [
+        { label: "Quant Shortcuts", text: "What are the most effective short-cut strategies for scoring full marks in Quantitative Aptitude?" },
+        { label: "Grammar Master Rules", text: "List the absolute non-negotiable grammar rules for Active/Passive and Direct/Indirect speech in SSC CGL." },
+        { label: "Tier-II Strategy", text: "Explain the Tier-II exam structure and how to balance Quant, English, and Computer awareness." }
+      ]
+    : selectedExam.startsWith('TNPSC') 
     ? [
         { label: "திருக்குறள் - நிர்வாகம்", text: "நிர்வாகத் தரம் மற்றும் அறநெறிகளுக்கு திருக்குறள் கூறும் கருத்துக்களைப் பற்றி விளக்குக." },
         { label: "Aptitude Study Method", text: "How can I score full 25/25 in TNPSC Aptitude and Mental Ability?" },
@@ -250,7 +258,13 @@ export default function MentorChatView({ selectedExam, isPremium = false, onPrem
             disabled={loading}
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
-            placeholder={selectedExam.startsWith('TNPSC') ? "பொதுத்தமிழ், கணிதம் அல்லது திருக்குறள் பற்றி கேட்கவும்..." : "Ask your civil services query in English or Tamil..."}
+            placeholder={
+              selectedExam === 'SSC_CGL'
+                ? "Ask about Quant, English grammar rules, or Computer basics..."
+                : selectedExam.startsWith('TNPSC')
+                ? "பொதுத்தமிழ், கணிதம் அல்லது திருக்குறள் பற்றி கேட்கவும்..."
+                : "Ask your civil services query in English or Tamil..."
+            }
             className="flex-grow bg-white border border-slate-200 rounded-xl px-4 py-3 text-xs md:text-sm text-slate-900 focus:outline-none focus:border-amber-500 transition-colors placeholder:text-slate-400 font-medium shadow-sm"
           />
 

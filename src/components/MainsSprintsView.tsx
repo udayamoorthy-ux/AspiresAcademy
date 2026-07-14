@@ -74,6 +74,32 @@ const DAILY_SPRINTS: Record<ExamType, SprintPrompt[]> = {
   TNPSC_G1: TNPSC_SPRINTS,
   TNPSC_G2: TNPSC_SPRINTS,
   TNPSC_G4: TNPSC_SPRINTS,
+  SSC_CGL: [
+    {
+      id: 'ssc-sprint-1',
+      question: 'Write a brief precis of the following topic: "The Impact of E-Commerce on Traditional Brick-and-Mortar Retailers in India". Summarize the core arguments in under 100 words.',
+      timeLimit: 300, // 5 minutes
+      idealKeywords: ['Digital convenience', 'Disruptive innovation', 'Consumer behavior', 'Local economies', 'Hybrid models'],
+      evaluationRubric: [
+        { title: 'Conciseness & Word Limit', desc: 'Squeezed the core arguments into a coherent summary under 100 words.' },
+        { title: 'Structure', desc: 'Covered the initial disruption, consumer shift, and final hybrid (omnichannel) solution.' },
+        { title: 'Grammar & Clarity', desc: 'Used precise vocabulary, correct syntax, and smooth transitions.' }
+      ],
+      context: 'English Descriptive & Precis Practice (Tier-II)'
+    },
+    {
+      id: 'ssc-sprint-2',
+      question: 'Explain the fundamental difference between Direct Taxes and Indirect Taxes in India. Provide at least two key examples of each.',
+      timeLimit: 180, // 3 minutes
+      idealKeywords: ['Tax incidence', 'Tax liability', 'Progressive tax', 'Regressive tax', 'Income Tax', 'GST'],
+      evaluationRubric: [
+        { title: 'Definitions', desc: 'Direct tax is paid by the person on whom it is levied (cannot be shifted); indirect tax incidence is shifted to the end consumer.' },
+        { title: 'Tax Nature', desc: 'Highlighted that Direct Taxes are progressive, while Indirect Taxes are regressive in nature.' },
+        { title: 'Examples', desc: 'Provided correct examples: Income Tax/Corporate Tax (Direct) and GST/Customs Duty (Indirect).' }
+      ],
+      context: 'General Awareness - Economics (Tier-II)'
+    }
+  ],
 };
 
 export default function MainsSprintsView({ selectedExam }: { selectedExam: ExamType }) {

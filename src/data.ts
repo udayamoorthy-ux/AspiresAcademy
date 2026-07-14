@@ -64,6 +64,21 @@ export const EXAM_DETAILS = {
       { subject: 'Part B: Aptitude & Mental Ability', description: 'Mental math, ratio, simplification, logical reasoning, and basic word problems.' },
     ],
   },
+  SSC_CGL: {
+    title: 'SSC Combined Graduate Level (CGL) Exam',
+    shortName: 'SSC CGL',
+    stages: [
+      { name: 'Tier 1: Preliminary Exam', details: '4 Sections: General Intelligence & Reasoning (25 Qs), General Awareness (25 Qs), Quantitative Aptitude (25 Qs), English Comprehension (25 Qs). Total 100 MCQs, 200 Marks.' },
+      { name: 'Tier 2: Mains Exam', details: 'Mathematical Abilities (30 Qs), Reasoning & General Intelligence (30 Qs), English Language & Comprehension (45 Qs), General Awareness (25 Qs), Computer Knowledge (20 Qs) and Data Entry Speed Test.' },
+    ],
+    syllabus: [
+      { subject: 'Quantitative Aptitude', description: 'Percentage, Ratio, Profit & Loss, Simple & Compound Interest, Algebra, Geometry, Mensuration, Trigonometry.' },
+      { subject: 'General Intelligence & Reasoning', description: 'Analogy, Classification, Syllogism, Blood Relations, Coding-Decoding, Non-verbal series, Venn diagrams.' },
+      { subject: 'English Language & Comprehension', description: 'Spot the Error, Fill in the Blanks, Synonyms/Antonyms, Idioms & Phrases, Active/Passive Voice, Direct/Indirect, Cloze Test.' },
+      { subject: 'General Awareness', description: 'History, Culture, Geography, Economic Scene, General Policy, Scientific Research, Current Affairs.' },
+      { subject: 'Computer Knowledge', description: 'Computer Basics, Software (MS Office), Working with Internet and Emails, Basics of Cyber Security.' },
+    ],
+  },
 };
 
 export const DEFAULT_ESSAY_PROMPTS: EssayPrompt[] = [
@@ -260,6 +275,60 @@ export const STATIC_QUIZ_QUESTIONS: Record<ExamType, Question[]> = {
       correctAnswerIndex: 2,
       explanation: 'திருக்குறள் 133 அதிகாரங்களையும் (chapters), அதிகாரத்திற்கு பத்து குறட்பாக்கள் வீதம் மொத்தம் 1330 குறட்பாக்களையும் கொண்டுள்ளது.',
       subject: 'General Tamil',
+    }
+  ],
+  SSC_CGL: [
+    {
+      id: 'ssc-cgl-q1',
+      text: 'A sum of ₹12,000 becomes ₹15,972 in 3 years at x% per annum, compounded annually. What is the value of x?',
+      options: [
+        '8%',
+        '10%',
+        '12%',
+        '15%'
+      ],
+      correctAnswerIndex: 1,
+      explanation: 'Using Compound Interest formula: A = P(1 + r/100)^t -> 15972 = 12000(1 + x/100)^3 -> 15972 / 12000 = (1 + x/100)^3 -> 1.331 = (1 + x/100)^3. Since 1.331 is (1.1)^3, we have 1 + x/100 = 1.1 -> x = 10%.',
+      subject: 'Quantitative Aptitude',
+    },
+    {
+      id: 'ssc-cgl-q2',
+      text: 'Select the synonym of the given word: "OBSTINATE"',
+      options: [
+        'Stubborn',
+        'Flexible',
+        'Pliant',
+        'Submissive'
+      ],
+      correctAnswerIndex: 0,
+      explanation: '"Obstinate" means stubbornly refusing to change one\'s opinion or chosen course of action, despite attempts to persuade one to do so. "Stubborn" is its exact synonym. Flexible, pliant, and submissive are antonyms.',
+      subject: 'English Language',
+    },
+    {
+      id: 'ssc-cgl-q3',
+      text: 'If in a certain code language, "CAT" is written as "24267", how is "DOG" written in that code?',
+      options: [
+        '231220',
+        '201223',
+        '231507',
+        '221520'
+      ],
+      correctAnswerIndex: 0,
+      explanation: 'In this code, letters are coded by the position value of their opposites (Z-A reverse order: A=26, B=25, C=24...). C (opposite X) is 24, A (opposite Z) is 26, T (opposite G) is 7. Thus, CAT is "24267". For DOG: D (opposite W) is 23, O (opposite L) is 12, G (opposite T) is 20. So DOG is coded as "231220".',
+      subject: 'General Intelligence & Reasoning',
+    },
+    {
+      id: 'ssc-cgl-q4',
+      text: 'Which article of the Indian Constitution empowers the President to declare a Financial Emergency?',
+      options: [
+        'Article 352',
+        'Article 356',
+        'Article 360',
+        'Article 368'
+      ],
+      correctAnswerIndex: 2,
+      explanation: 'Article 360 of the Indian Constitution empowers the President of India to declare a financial emergency if he/she is satisfied that a situation has arisen whereby the financial stability or credit of India or any part of its territory is threatened.',
+      subject: 'General Awareness',
     }
   ]
 };

@@ -31,7 +31,7 @@ export interface OfficialNotification {
   id: string;
   examType: ExamType;
   title: string;
-  source: 'UPSC' | 'TNPSC' | 'PIB';
+  source: 'UPSC' | 'TNPSC' | 'PIB' | 'SSC';
   category: 'notification' | 'result' | 'key' | 'pib';
   publishDate: string;
   deadlineDate?: string;
@@ -209,6 +209,37 @@ const GOVERNMENT_NOTIFICATIONS_DATA: OfficialNotification[] = [
     ],
     isImportant: false,
     fileSize: '340 KB'
+  },
+  {
+    id: 'ssc-1',
+    examType: 'SSC_CGL',
+    title: 'SSC CGL Tier I 2026 Tentative Answer Key and Response Sheets Released',
+    source: 'SSC',
+    category: 'key',
+    publishDate: 'June 28, 2026',
+    officialLink: 'https://ssc.gov.in',
+    highlights: [
+      'Candidates can submit representations against tentative answer keys online with ₹100 per question challenged.',
+      'Response sheet downloads will remain open for exactly 7 days from the release portal activation.'
+    ],
+    isImportant: true,
+    fileSize: '412 KB'
+  },
+  {
+    id: 'ssc-2',
+    examType: 'SSC_CGL',
+    title: 'Staff Selection Commission: Combined Graduate Level Examination 2026 Notification',
+    source: 'SSC',
+    category: 'notification',
+    publishDate: 'June 15, 2026',
+    deadlineDate: 'July 15, 2026',
+    officialLink: 'https://ssc.gov.in',
+    highlights: [
+      'Over 15,000 tentative vacancies announced across Group B and Group C posts.',
+      'Tier I computer-based exams scheduled for late Autumn 2026.'
+    ],
+    isImportant: true,
+    fileSize: '1.2 MB'
   }
 ];
 
@@ -296,6 +327,7 @@ export default function FlashNewsDesk({ selectedExam }: FlashNewsDeskProps) {
       case 'TNPSC_G1': return 'TNPSC Group 1 Board';
       case 'TNPSC_G2': return 'TNPSC Group 2 & IIA Board';
       case 'TNPSC_G4': return 'TNPSC Group 4 Board';
+      case 'SSC_CGL': return 'Staff Selection Commission (SSC)';
       default: return 'Government Examination Board';
     }
   };

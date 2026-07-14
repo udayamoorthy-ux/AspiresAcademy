@@ -113,6 +113,41 @@ const FLASHCARD_DECKS: Record<ExamType, Flashcard[]> = {
   TNPSC_G1: TNPSC_CARDS,
   TNPSC_G2: TNPSC_CARDS,
   TNPSC_G4: TNPSC_CARDS,
+  SSC_CGL: [
+    {
+      id: 'ssc-fc-1',
+      category: 'Quantitative Aptitude',
+      question: 'How do you find the number of trailing zeros in n! (factorial)?',
+      answer: 'Divide n by successive powers of 5 (5, 25, 125...) and sum the integer quotients: [n/5] + [n/25] + [n/125] + ...',
+      points: [
+        'Example: For 100!, 100/5 = 20, 100/25 = 4. Total trailing zeros = 20 + 4 = 24.',
+        'This is based on Legendre\'s Formula for prime factors of factorials.',
+        'A zero is created by the product of 2 and 5. Since 2 is more abundant than 5, the power of 5 determines the count.'
+      ]
+    },
+    {
+      id: 'ssc-fc-2',
+      category: 'English Grammar',
+      question: 'What is the rule for "Lest" in English sentence structure?',
+      answer: 'The conjunction "lest" means "for fear that" or "to avoid the risk of". It must be followed by "should" or a subjunctive base verb, and NEVER takes a negative word like "not".',
+      points: [
+        'Correct: Run fast lest you should miss the train.',
+        'Incorrect: Run fast lest you should not miss the train.',
+        'The clause following lest is always affirmative because "lest" itself has a negative meaning.'
+      ]
+    },
+    {
+      id: 'ssc-fc-3',
+      category: 'Reasoning (Syllogism)',
+      question: 'What does "Some A are not B" imply in Venn Diagrams?',
+      answer: 'It means there is at least one element in set A that is definitely outside set B. It does NOT automatically imply that "Some A are B" or "Some B are not A".',
+      points: [
+        'Represented by shading a part of circle A that cannot overlap with B.',
+        'Highly tested in Tier-1 & Tier-2 reasoning questions.',
+        'Keep in mind: "Some A are not B" can be true even if set A and set B are completely disjoint.'
+      ]
+    }
+  ],
 };
 
 export default function FlashcardsView({ selectedExam }: { selectedExam: ExamType }) {

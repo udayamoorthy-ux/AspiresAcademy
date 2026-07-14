@@ -74,6 +74,11 @@ const TICKER_HEADLINES: Record<ExamType, string[]> = {
   TNPSC_G4: [
     'TNPSC Group IV Combined Civil Services 2026 notification released. Online Registration open for 6,244 vacancies.',
     'Typist & Steno-Typist Technical Certificate validation cycle starts. Verify credentials under local quota preference.'
+  ],
+  SSC_CGL: [
+    'SSC CGL 2026: Official Tier I computer-based exams are scheduled for Autumn 2026.',
+    'Tier II Syllabus Update: Quantitative, English, Reasoning, and Computer sections compiled under new pattern.',
+    'Advisory Note: Data Entry Speed Test is mandatory for all posts. Candidates are advised to practice typing regularly.'
   ]
 };
 
@@ -443,12 +448,13 @@ export default function App() {
           </div>
 
           {/* Selector Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 w-full lg:w-auto" id="exam-selector-buttons">
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5 w-full lg:w-auto" id="exam-selector-buttons">
             {[
               { id: 'UPSC', label: 'UPSC IAS/IPS' },
               { id: 'TNPSC_G1', label: 'TNPSC Group 1' },
               { id: 'TNPSC_G2', label: 'TNPSC Group 2' },
-              { id: 'TNPSC_G4', label: 'TNPSC Group 4' }
+              { id: 'TNPSC_G4', label: 'TNPSC Group 4' },
+              { id: 'SSC_CGL', label: 'SSC CGL' }
             ].map((examItem) => {
               const isActive = selectedExam === examItem.id;
               return (
@@ -699,13 +705,21 @@ export default function App() {
                         </div>
 
                         {/* CTA Footer Preview */}
-                        <div className="pt-2.5 mt-2.5 border-t border-slate-200/80 text-[10px] text-slate-500 space-y-1.5 font-sans">
+                        <div className="pt-2.5 mt-2.5 border-t border-slate-200/80 text-[10px] text-slate-500 space-y-2 font-sans">
                           <p className="font-mono text-[8px] uppercase tracking-wider text-slate-400">🎁 Description & Offer Included in Share Post:</p>
-                          <p className="font-semibold text-slate-700">🚀 ASPIRES ACADEMY is an elite AI-Powered Civil Services Exam Preparation Portal for UPSC & TNPSC. Learn with interactive syllabus trackers, AI voice lessons, automated essay evaluation, flashcards, and live mock tests.</p>
-                          <p className="font-extrabold text-emerald-800 bg-emerald-50 px-2.5 py-1.5 rounded border border-emerald-500/15 flex items-center gap-1.5">
-                            <span>⚡ Early Bird Special: Get the Annual Pass for just ₹299/yr (Save 87%) - valid for the first 100 aspirants only!</span>
+                          <p className="font-semibold text-slate-700 leading-relaxed">
+                            🚀 <strong>ASPIRES ACADEMY</strong> is an elite, state-of-the-art AI-powered preparation portal designed specifically for UPSC Civil Services, TNPSC Group 1, 2, 4, and SSC CGL exams. Learn with interactive syllabus trackers, AI voice lessons, automated essay evaluation, active recall flashcards, and live mock tests.
                           </p>
-                          <p className="text-blue-600 font-semibold">👉 Join and prepare here: https://aspiresacademy.in</p>
+                          <div className="bg-amber-50 border border-amber-300 rounded-xl p-2.5 text-slate-800 space-y-1">
+                            <p className="text-[10px] font-black text-amber-900 uppercase tracking-wide">🎟️ SPECIAL ASPIRANT DISCOUNT ACTIVE</p>
+                            <p className="text-[10px] font-medium leading-relaxed">
+                              Use Coupon Code <strong className="text-emerald-700 bg-emerald-50 px-1 py-0.5 rounded font-mono border border-emerald-200">ANNUAL87</strong> to get the Elite Annual Pass for just <strong>₹299/year</strong> (87% Off, Regular ₹2,299/yr). Get unlimited essay checks and instant portal alerts!
+                            </p>
+                          </div>
+                          <p className="text-blue-600 font-extrabold flex items-center gap-1">
+                            <span>🔗 Start Your Prep Journey:</span>
+                            <a href="https://aspiresacademy.in" target="_blank" rel="noopener noreferrer" className="underline hover:text-blue-800">https://aspiresacademy.in</a>
+                          </p>
                         </div>
                       </div>
 
@@ -725,12 +739,7 @@ export default function App() {
                             questionsText += `${index + 1}️⃣ ${q.subject || 'GENERAL STUDIES'}: ${q.text}\n${optionsText}\n👉 Answer: ${String.fromCharCode(65 + q.correctAnswerIndex)} (${q.options[q.correctAnswerIndex]}) - ${q.explanation}\n\n`;
                           });
 
-                          const postText = `${heading}
-
-${questionsText}---
-🚀 ASPIRES ACADEMY (https://aspiresacademy.in) is an elite AI-Powered Civil Services Exam Preparation Portal for UPSC & TNPSC. Practice 100+ Free questions instantly with Interactive Syllabus Trackers, AI Voice Lessons, Essay Evaluators, and AI Coach Mentorship!
-⚡ Early Bird Special: Get the Annual Pass for just ₹299/yr (Save 87%) - valid for the first 100 aspirants only!
-👉 Join and prepare here: https://aspiresacademy.in`;
+                          const postText = `${heading}\n\n${questionsText}---\n🚀 ASPIRES ACADEMY (https://aspiresacademy.in) is an elite, state-of-the-art AI-powered preparation portal for UPSC Civil Services, TNPSC Group 1/2/4, and SSC CGL. Learn with interactive syllabus trackers, AI voice lessons, automated essay evaluation, active recall flashcards, and live mock tests!\n🎟️ SPECIAL ASPIRANT DISCOUNT: Use Coupon Code "ANNUAL87" to get the ASPIRES Elite Annual Pass for just ₹299/year (87% OFF, Regular ₹2,299/yr) - valid for fast-acting aspirants only!\n🔗 Start Your Prep Journey: https://aspiresacademy.in`;
 
                           navigator.clipboard.writeText(postText);
                           setCopiedPost(true);

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export type ExamType = 'UPSC' | 'TNPSC_G1' | 'TNPSC_G2' | 'TNPSC_G4';
+export type ExamType = 'UPSC' | 'TNPSC_G1' | 'TNPSC_G2' | 'TNPSC_G4' | 'SSC_CGL';
 
 export interface PlannerTask {
   id: string;

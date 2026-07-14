@@ -89,7 +89,8 @@ app.post('/api/study-planner', async (req, res) => {
     UPSC: 'UPSC Civil Services Examination (CSE) Prelims & Mains',
     TNPSC_G1: 'TNPSC Group I (Deputy Collector/DSP) Prelims & Mains',
     TNPSC_G2: 'TNPSC Group II/IIA Executive and Non-Executive Exams',
-    TNPSC_G4: 'TNPSC Group IV & VAO Written Exam'
+    TNPSC_G4: 'TNPSC Group IV & VAO Written Exam',
+    SSC_CGL: 'SSC CGL (Combined Graduate Level) Tiers I & II Exams'
   };
 
   const examLabel = examLabels[exam] || exam;
@@ -114,7 +115,7 @@ app.post('/api/study-planner', async (req, res) => {
         model: 'gemini-3.5-flash',
         contents: prompt,
         config: {
-          systemInstruction: 'You are an elite Civil Services Exam Mentor who creates precise, customized, realistic schedules for UPSC and TNPSC aspirants. All topics, chapters, and textbook citations (e.g., NCERT, M. Laxmikanth, Spectrum, Samacheer Kalvi) must be 100% authentic, real, and factually accurate. Do not recommend fictional resources or invent false syllabus chapters.',
+          systemInstruction: 'You are an elite Civil Services and Staff Selection Exam Mentor who creates precise, customized, realistic schedules for UPSC, TNPSC, and SSC CGL aspirants. All topics, chapters, and textbook citations (e.g., NCERT, M. Laxmikanth, Spectrum, Samacheer Kalvi, RS Aggarwal, Kiran Publications) must be 100% authentic, real, and factually accurate. Do not recommend fictional resources or invent false syllabus chapters.',
           responseMimeType: 'application/json',
           responseSchema: {
             type: Type.OBJECT,
@@ -511,7 +512,7 @@ app.post('/api/generate-quiz', async (req, res) => {
         model: 'gemini-3.5-flash',
         contents: prompt,
         config: {
-          systemInstruction: 'You are a Senior Question Compiler for UPSC (Civil Services) and TNPSC (Tamil Nadu Public Service Commission) exams. Your questions are balanced, challenging, accurate, and test deep understanding rather than simple rote memorization. Every question, option, correct answer, and explanation must be 100% factually accurate, referencing real articles of the Constitution of India, real historical timelines, and genuine economic statistics. There is zero tolerance for hallucinations or incorrect/outdated facts.',
+          systemInstruction: 'You are a Senior Question Compiler for UPSC (Civil Services), TNPSC (Tamil Nadu Public Service Commission), and SSC CGL (Staff Selection Commission Combined Graduate Level) exams. Your questions are balanced, challenging, accurate, and test deep understanding or high-precision aptitude rather than simple rote memorization. Every question, option, correct answer, and explanation must be 100% factually accurate, referencing real articles of the Constitution of India, real historical timelines, genuine economic statistics, or standard mathematical and grammatical principles. There is zero tolerance for hallucinations or incorrect/outdated facts.',
           responseMimeType: 'application/json',
           responseSchema: {
             type: Type.OBJECT,
@@ -618,7 +619,7 @@ app.post('/api/evaluate-essay', async (req, res) => {
         model: 'gemini-3.5-flash',
         contents: prompt,
         config: {
-          systemInstruction: 'You are an Expert UPSC and TNPSC Descriptive Examiner who grades mains essays and GS answers. You evaluate structural cohesion, depth of arguments, inclusion of constitution articles or historical references, grammatical accuracy, and logical flow. You must rigorously check for factual accuracy; penalize any fabricated statistics or misattributed constitutional articles. Your model answers must represent 100% authentic, accurate, and official academic outlines.',
+          systemInstruction: 'You are an Expert UPSC, TNPSC, and SSC CGL Descriptive/English/General Studies Examiner who grades mains essays, papers, letter/précis submissions, and GS answers. You evaluate structural cohesion, depth of arguments, grammatical accuracy, and logical flow. You must rigorously check for factual accuracy; penalize any fabricated statistics or misattributed constitutional articles. Your model answers must represent 100% authentic, accurate, and official academic outlines.',
           responseMimeType: 'application/json',
           responseSchema: {
             type: Type.OBJECT,
@@ -696,7 +697,8 @@ app.post('/api/mentor-chat', async (req, res) => {
     UPSC: 'UPSC Civil Services Exam',
     TNPSC_G1: 'TNPSC Group I Exam',
     TNPSC_G2: 'TNPSC Group II Exam',
-    TNPSC_G4: 'TNPSC Group IV & VAO Exam'
+    TNPSC_G4: 'TNPSC Group IV & VAO Exam',
+    SSC_CGL: 'SSC CGL (Combined Graduate Level) Exam'
   };
 
   const examLabel = examLabels[exam] || 'Civil Services Exam';
@@ -711,7 +713,7 @@ app.post('/api/mentor-chat', async (req, res) => {
         model: 'gemini-3.5-flash',
         contents: `The aspirant is preparing for the ${examLabel}.\nChat history:\n${chatHistoryFormatted}\n\nProvide the next response as the wise, encouraging Civil Services Mentor. Keep your answer highly helpful, structured, clear, and focused on specific syllabus guidelines, study tips, or explanations. All facts, historical timelines, and constitutional provisions must be 100% authentic and accurate. If you are unsure of any specific local data or statistics, state that they should check official government sources directly (e.g., PIB, Tamil Nadu Department of Archaeology, or Union Budget). Feel free to explain administrative concepts, historical milestones, or Thirukkural ethics, and write in Tamil or English as requested by the aspirant.`,
         config: {
-          systemInstruction: 'You are an inspiring, wise, highly knowledgeable UPSC and TNPSC civil services coach who acts as a caring but lively Indian sister/auntie mentor ("Priya Didi"). You MUST speak in a highly engaging tone, using popular Indian-English slang naturally and frequently (e.g., "Arre Yaar", "Beta", "Aiyyo", "Tension nakko lo", "Chalo", "simple na", "toh", "acha", "hain na", "yaar", "bas", "jaldi se", "Superb!"). While maintaining absolute factual accuracy and academic rigor for all Indian Polity, History, Tamil Heritage, and Aptitude topics, deliver your wisdom with this warm, sisterly Indian persona so the aspirant feels supported and motivated. Do not lose your casual, lovable slang style!',
+          systemInstruction: 'You are an inspiring, wise, highly knowledgeable UPSC, TNPSC, and SSC CGL civil services coach who acts as a caring but lively Indian sister/auntie mentor ("Priya Didi"). You MUST speak in a highly engaging tone, using popular Indian-English slang naturally and frequently (e.g., "Arre Yaar", "Beta", "Aiyyo", "Tension nakko lo", "Chalo", "simple na", "toh", "acha", "hain na", "yaar", "bas", "jaldi se", "Superb!"). While maintaining absolute factual accuracy and academic rigor for all Indian Polity, History, Tamil Heritage, SSC Quantitative Aptitude, English Comprehension, Reasoning, and General Awareness topics, deliver your wisdom with this warm, sisterly Indian persona so the aspirant feels supported and motivated. Do not lose your casual, lovable slang style!',
         }
       }));
 
@@ -814,7 +816,8 @@ app.post('/api/notes', async (req, res) => {
     UPSC: 'UPSC Civil Services Exam',
     TNPSC_G1: 'TNPSC Group 1 Exam',
     TNPSC_G2: 'TNPSC Group 2 Exam',
-    TNPSC_G4: 'TNPSC Group 4 Exam'
+    TNPSC_G4: 'TNPSC Group 4 Exam',
+    SSC_CGL: 'SSC CGL Exam'
   };
   const examLabel = examLabels[exam] || 'Civil Services Exam';
 
@@ -991,7 +994,8 @@ app.post('/api/subject-quiz', async (req, res) => {
     UPSC: 'UPSC Civil Services Examination (IAS/IPS)',
     TNPSC_G1: 'TNPSC Group I (Deputy Collector/DSP)',
     TNPSC_G2: 'TNPSC Group II/IIA Executive Services',
-    TNPSC_G4: 'TNPSC Group IV & VAO Exam'
+    TNPSC_G4: 'TNPSC Group IV & VAO Exam',
+    SSC_CGL: 'Staff Selection Commission Combined Graduate Level (SSC CGL) Exam'
   };
 
   const examLabel = examLabels[exam] || exam || 'Civil Services standard';

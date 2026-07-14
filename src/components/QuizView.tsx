@@ -67,7 +67,7 @@ export default function QuizView({
   const [customSubject, setCustomSubject] = useState<string>('');
   const [selectedAnswerIndex, setSelectedAnswerIndex] = useState<number | null>(null);
   const [hasAnswered, setHasAnswered] = useState<boolean>(false);
-  const [activePYQFilter, setActivePYQFilter] = useState<'ALL' | 'UPSC' | 'TNPSC'>('ALL');
+  const [activePYQFilter, setActivePYQFilter] = useState<'ALL' | 'UPSC' | 'TNPSC' | 'SSC'>('ALL');
 
   // Free Tier Usage Counting state for Mock Tests
   const [mockTestCount, setMockTestCount] = useState<number>(() => {
@@ -287,9 +287,10 @@ export default function QuizView({
 
   // Filter practice tests based on toggle and selected exam
   const filteredTests = PREVIOUS_YEAR_PRACTICE_TESTS.filter(test => {
-    // Stage 1 filter: UPSC/TNPSC overall switch
+    // Stage 1 filter: UPSC/TNPSC/SSC overall switch
     if (activePYQFilter === 'UPSC' && test.exam !== 'UPSC') return false;
-    if (activePYQFilter === 'TNPSC' && test.exam === 'UPSC') return false;
+    if (activePYQFilter === 'TNPSC' && !test.exam.startsWith('TNPSC')) return false;
+    if (activePYQFilter === 'SSC' && test.exam !== 'SSC_CGL') return false;
 
     // Stage 2 filter: If they are on a specific exam screen, show relevant or matching years first
     return true;
@@ -693,7 +694,8 @@ export default function QuizView({
                   {[
                     { id: 'ALL', label: 'All Boards' },
                     { id: 'UPSC', label: 'UPSC CSE' },
-                    { id: 'TNPSC', label: 'TNPSC Boards' }
+                    { id: 'TNPSC', label: 'TNPSC Boards' },
+                    { id: 'SSC', label: 'SSC CGL' }
                   ].map((f) => (
                     <button
                       key={f.id}

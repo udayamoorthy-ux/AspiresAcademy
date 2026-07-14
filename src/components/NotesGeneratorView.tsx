@@ -43,6 +43,12 @@ const PRESET_TOPICS: Record<ExamType, { topic: string; keywords: string }[]> = {
     { topic: 'Tamil Literature Chronology', keywords: 'Silappatikaram, Manimekalai, Nayanmar and Alwar saints' },
     { topic: 'Important Schemes of TN Govt', keywords: 'Pudhumai Penn, Illam Thedi Kalvi, Makkalai Thedi Maruthuvam' },
     { topic: 'Aptitude Simple Interest', keywords: 'Formulas, Compound comparison, Rate of interest derivations' }
+  ],
+  SSC_CGL: [
+    { topic: 'Quantitative Aptitude Geometry', keywords: 'Centroid, Incenter, Orthocenter, Congruency & Similarity of Triangles, Cyclic Quadrilaterals' },
+    { topic: 'Active to Passive Voice Rules', keywords: 'Tense transitions, Imperative sentences, Interrogative transformations, Prepositional changes' },
+    { topic: 'Syllogism & Venn Diagrams', keywords: 'All A are B, Some B are C, No A is C, At least some, Possibility cases' },
+    { topic: 'Constitutional Bodies', keywords: 'Election Commission Art 324, UPSC Art 315, CAG Art 148, Finance Commission Art 280' }
   ]
 };
 
