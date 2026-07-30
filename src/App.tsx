@@ -744,7 +744,7 @@ export default function App() {
                       👑 Owner Multi-Exam WhatsApp Broadcaster Control Hub
                     </h4>
                     <p className="text-[11px] text-slate-400 font-sans">
-                      Automated 7-exam WhatsApp group dispatcher is reserved for the site owner (<code className="text-amber-300 font-mono">udayamoorthy@gmail.com</code>).
+                      Automated 7-exam WhatsApp group dispatcher is reserved for authorized platform administrators.
                     </p>
                   </div>
                 </div>

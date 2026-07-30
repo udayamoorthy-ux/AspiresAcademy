@@ -21,7 +21,7 @@ export default function ContactModal({ isOpen, onClose, currentUserEmail }: Cont
   if (!isOpen) return null;
 
   const handleCopyEmail = () => {
-    navigator.clipboard.writeText('udayamoorthy@gmail.com');
+    navigator.clipboard.writeText('support@aspiresacademy.in');
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -40,7 +40,7 @@ export default function ContactModal({ isOpen, onClose, currentUserEmail }: Cont
     setLoading(true);
     setErrorMsg('');
 
-    // Simulate sending message to udayamoorthy@gmail.com
+    // Simulate sending message to support desk
     setTimeout(() => {
       const generatedTicket = 'ASP-' + Math.floor(100000 + Math.random() * 900000);
       setTicketId(generatedTicket);
@@ -59,7 +59,7 @@ export default function ContactModal({ isOpen, onClose, currentUserEmail }: Cont
       `Message:\n${message}\n\n` +
       `Best regards,\n${name}`
     );
-    window.open(`mailto:udayamoorthy@gmail.com?subject=${subject}&body=${body}`, '_blank');
+    window.open(`mailto:support@aspiresacademy.in?subject=${subject}&body=${body}`, '_blank');
   };
 
   const resetForm = () => {
@@ -90,7 +90,7 @@ export default function ContactModal({ isOpen, onClose, currentUserEmail }: Cont
             </div>
             <div>
               <h4 className="font-extrabold text-sm text-slate-900 uppercase tracking-wider font-mono">ASPIRES Help Desk</h4>
-              <p className="text-[10px] text-slate-400">Direct query submission to administrator</p>
+              <p className="text-[10px] text-slate-400">Direct query submission to support team</p>
             </div>
           </div>
           <button 
@@ -104,16 +104,16 @@ export default function ContactModal({ isOpen, onClose, currentUserEmail }: Cont
         {/* Support Representative Context Banner */}
         <div className="bg-slate-50 border border-slate-200 p-3.5 rounded-2xl flex items-start gap-3 text-xs text-slate-600">
           <div className="h-8 w-8 rounded-full bg-emerald-100 text-emerald-800 font-extrabold flex items-center justify-center shrink-0 mt-0.5 text-[11px] font-mono">
-            UM
+            AA
           </div>
           <div className="space-y-1">
             <p className="font-bold text-slate-800 text-xs">Aspirants Coordinator Desk</p>
             <p className="text-slate-500 leading-normal text-[11px]">
-              Our administrator <strong>Udayamoorthy</strong> resolves student queries, premium setup validation, and study materials dispatch.
+              Our <strong>ASPIRES Support Team</strong> resolves student queries, premium setup validation, and study materials dispatch.
             </p>
             <div className="flex items-center gap-2 pt-1.5 flex-wrap">
               <span className="text-[10.5px] font-mono bg-white border border-slate-200 px-2 py-0.5 rounded text-slate-700 font-semibold select-all">
-                udayamoorthy@gmail.com
+                support@aspiresacademy.in
               </span>
               <button
                 onClick={handleCopyEmail}
@@ -136,14 +136,14 @@ export default function ContactModal({ isOpen, onClose, currentUserEmail }: Cont
             <div className="space-y-1.5">
               <h5 className="font-extrabold text-base text-slate-900 font-display">Query Submitted Successfully!</h5>
               <p className="text-xs text-slate-500 max-w-sm mx-auto leading-relaxed">
-                Thank you, your message has been logged directly for the administrator. A support coordinator will reach out to you within 12-24 hours.
+                Thank you, your message has been logged directly for the support team. A coordinator will reach out to you within 12-24 hours.
               </p>
             </div>
 
             <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 max-w-sm mx-auto space-y-1 text-center font-mono text-[11px]">
               <span className="text-slate-400 uppercase tracking-widest text-[9px] font-bold">Ticket Reference ID</span>
               <p className="text-slate-800 font-black text-sm select-all">{ticketId}</p>
-              <span className="text-emerald-600 font-bold block mt-1">Dispatched to: udayamoorthy@gmail.com</span>
+              <span className="text-emerald-600 font-bold block mt-1">Dispatched to: support@aspiresacademy.in</span>
             </div>
 
             <div className="flex gap-2.5 max-w-sm mx-auto pt-2">

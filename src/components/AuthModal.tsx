@@ -244,16 +244,13 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess, currentEmai
                         <div className="flex items-center justify-between">
                           <label className="text-[10px] font-black text-amber-900 uppercase tracking-wider font-mono flex items-center gap-1">
                             <Lock className="h-3 w-3 text-amber-600" />
-                            <span>Owner Passcode Required</span>
+                            <span>Owner Security Passcode</span>
                           </label>
-                          <span className="text-[9px] font-bold text-amber-700 bg-amber-100 px-1.5 py-0.5 rounded">
-                            Passcode: ASPIRES2026 / 7890
-                          </span>
                         </div>
                         <input
                           type="password"
                           required
-                          placeholder="Enter Owner Security Passcode (e.g. ASPIRES2026)"
+                          placeholder="Enter Owner Security Passcode"
                           value={ownerPasscode}
                           onChange={(e) => setOwnerPasscode(e.target.value)}
                           className="w-full px-3 py-2 bg-white border border-amber-300 rounded-lg text-xs font-mono font-bold text-slate-900 focus:outline-none focus:border-amber-500"
