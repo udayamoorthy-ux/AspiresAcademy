@@ -240,25 +240,59 @@ export default function App() {
 
   // WhatsApp Group Link State & Handlers
   const [whatsappGroupUrl, setWhatsappGroupUrl] = useState<string>(() => {
-    return localStorage.getItem('aspires_whatsapp_group_url') || 'https://chat.whatsapp.com/aspiresacademy.in';
+    return localStorage.getItem('aspires_whatsapp_group_url') || '';
   });
   const [showWhatsAppGroupModal, setShowWhatsAppGroupModal] = useState<boolean>(false);
   const [tempWhatsAppUrlInput, setTempWhatsAppUrlInput] = useState<string>('');
 
+  const extractWhatsAppGroupCode = (url: string): string => {
+    if (!url) return '';
+    const trimmed = url.trim();
+    if (trimmed.toLowerCase().includes('aspiresacademy')) return '';
+    const match = trimmed.match(/chat\.whatsapp\.com\/([A-Za-z0-9_-]+)/);
+    if (match && match[1]) {
+      const code = match[1];
+      if (code.length >= 10 && !code.toLowerCase().includes('aspires')) {
+        return code;
+      }
+    }
+    return '';
+  };
+
   const getActiveWhatsAppGroupUrl = () => {
-    return localStorage.getItem('aspires_whatsapp_group_url') || whatsappGroupUrl || 'https://chat.whatsapp.com/aspiresacademy.in';
+    const rawUrl = localStorage.getItem('aspires_whatsapp_group_url') || whatsappGroupUrl || '';
+    const code = extractWhatsAppGroupCode(rawUrl);
+    if (code) {
+      return `https://chat.whatsapp.com/${code}`;
+    }
+    return '';
+  };
+
+  const hasValidWhatsAppGroupUrl = () => {
+    return !!getActiveWhatsAppGroupUrl();
   };
 
   const handleJoinWhatsAppGroup = () => {
-    const url = getActiveWhatsAppGroupUrl();
-    window.open(url, '_blank');
+    const validUrl = getActiveWhatsAppGroupUrl();
+    if (validUrl) {
+      window.open(validUrl, '_blank');
+    } else {
+      setTempWhatsAppUrlInput(localStorage.getItem('aspires_whatsapp_group_url') || '');
+      setShowWhatsAppGroupModal(true);
+    }
   };
 
   const handleSaveWhatsAppGroupUrl = (urlToSave: string) => {
-    const trimmed = urlToSave.trim() || 'https://chat.whatsapp.com/aspiresacademy.in';
+    const trimmed = urlToSave.trim();
     setWhatsappGroupUrl(trimmed);
     localStorage.setItem('aspires_whatsapp_group_url', trimmed);
-    window.open(trimmed, '_blank');
+    const code = extractWhatsAppGroupCode(trimmed);
+    if (code) {
+      window.open(`https://chat.whatsapp.com/${code}`, '_blank');
+    } else {
+      // Fallback to direct WhatsApp chat if code isn't valid base62 code
+      window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent('Hi ASPIRES ACADEMY Admin! Please send me the WhatsApp Group invite link / add me to the study group.')}`, '_blank');
+    }
     setShowWhatsAppGroupModal(false);
   };
 
@@ -638,41 +672,74 @@ export default function App() {
               </p>
 
               <div className="grid grid-cols-1 gap-2 pt-0.5">
-                {/* Direct Join WhatsApp Group Link Anchor */}
-                <a
-                  href={getActiveWhatsAppGroupUrl()}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full bg-[#25D366] hover:bg-[#20ba5a] text-slate-950 font-extrabold text-xs py-2.5 rounded-xl flex items-center justify-center gap-1.5 transition-all shadow-2xs active:scale-95 cursor-pointer"
-                >
-                  <Send className="h-3.5 w-3.5" />
-                  <span>Join ASPIRES ACADEMY WhatsApp Group</span>
-                </a>
+                {hasValidWhatsAppGroupUrl() ? (
+                  <>
+                    {/* Direct Join WhatsApp Group Link Anchor */}
+                    <a
+                      href={getActiveWhatsAppGroupUrl()}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full bg-[#25D366] hover:bg-[#20ba5a] text-slate-950 font-extrabold text-xs py-2.5 rounded-xl flex items-center justify-center gap-1.5 transition-all shadow-2xs active:scale-95 cursor-pointer"
+                    >
+                      <Send className="h-3.5 w-3.5" />
+                      <span>Join ASPIRES ACADEMY WhatsApp Group</span>
+                    </a>
 
-                {/* Visible Clickable Text Hyperlink */}
-                <div className="bg-emerald-50/60 border border-emerald-200/80 rounded-xl p-2 text-center space-y-0.5">
-                  <span className="text-[10px] text-emerald-800 font-medium block">Direct WhatsApp Group Join Link:</span>
-                  <a
-                    href={getActiveWhatsAppGroupUrl()}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-[11px] font-mono font-bold text-emerald-700 hover:text-emerald-900 underline decoration-emerald-400 break-all inline-flex items-center gap-1"
-                  >
-                    <span>{getActiveWhatsAppGroupUrl()}</span>
-                    <ExternalLink className="h-3 w-3 shrink-0 inline" />
-                  </a>
-                </div>
+                    {/* Visible Clickable Text Hyperlink */}
+                    <div className="bg-emerald-50/60 border border-emerald-200/80 rounded-xl p-2 text-center space-y-0.5">
+                      <span className="text-[10px] text-emerald-800 font-medium block">Direct WhatsApp Group Join Link:</span>
+                      <a
+                        href={getActiveWhatsAppGroupUrl()}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[11px] font-mono font-bold text-emerald-700 hover:text-emerald-900 underline decoration-emerald-400 break-all inline-flex items-center gap-1"
+                      >
+                        <span>{getActiveWhatsAppGroupUrl()}</span>
+                        <ExternalLink className="h-3 w-3 shrink-0 inline" />
+                      </a>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    {/* Interactive Setup / Join Request Options when no real 22-char invite link is set yet */}
+                    <button
+                      onClick={handleJoinWhatsAppGroup}
+                      className="w-full bg-[#25D366] hover:bg-[#20ba5a] text-slate-950 font-extrabold text-xs py-2.5 rounded-xl flex items-center justify-center gap-1.5 transition-all shadow-2xs active:scale-95 cursor-pointer"
+                    >
+                      <Send className="h-3.5 w-3.5" />
+                      <span>Join WhatsApp Group / Set Invite Link</span>
+                    </button>
+
+                    <a
+                      href={`https://api.whatsapp.com/send?text=${encodeURIComponent(
+                        'Hi ASPIRES ACADEMY Admin! Please send me the official WhatsApp Group invite link to join the Daily 5 MCQs Study Group.'
+                      )}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-800 font-bold text-xs py-2 rounded-xl flex items-center justify-center gap-1.5 transition-all cursor-pointer text-center"
+                    >
+                      <Send className="h-3.5 w-3.5 text-emerald-600" />
+                      <span>Instant Join via WhatsApp Chat</span>
+                    </a>
+
+                    <div className="bg-amber-50/80 border border-amber-200 rounded-xl p-2 text-center">
+                      <span className="text-[10px] text-amber-800 font-medium leading-tight block">
+                        💡 Admin Note: Click ⚙️ below to paste your official 22-char WhatsApp Group invite link.
+                      </span>
+                    </div>
+                  </>
+                )}
 
                 {/* Share WhatsApp Group & Site Link */}
                 <a
                   href={`https://api.whatsapp.com/send?text=${encodeURIComponent(
-                    `Join official ASPIRES ACADEMY WhatsApp Study Group & Portal for Daily 5 MCQs, AI Voice Lessons, Essay Grading & Mock Tests!\n\n👥 Join Official WhatsApp Group: ${localStorage.getItem('aspires_whatsapp_group_url') || 'https://chat.whatsapp.com/aspiresacademy.in'}\n🌐 Practice Web Portal: https://aspiresacademy.in`
+                    `Join official ASPIRES ACADEMY WhatsApp Study Group & Portal for Daily 5 MCQs, AI Voice Lessons, Essay Grading & Mock Tests!\n\n👥 Join Official WhatsApp Group: ${getActiveWhatsAppGroupUrl() || 'https://aspiresacademy.in'}\n🌐 Practice Web Portal: https://aspiresacademy.in`
                   )}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-800 font-bold text-xs py-2 rounded-xl flex items-center justify-center gap-1.5 transition-all active:scale-95 cursor-pointer"
+                  className="w-full bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 font-bold text-xs py-2 rounded-xl flex items-center justify-center gap-1.5 transition-all active:scale-95 cursor-pointer"
                 >
-                  <Share2 className="h-3.5 w-3.5 text-emerald-600" />
+                  <Share2 className="h-3.5 w-3.5 text-slate-600" />
                   <span>Share Group on WhatsApp</span>
                 </a>
 
