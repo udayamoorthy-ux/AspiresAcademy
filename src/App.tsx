@@ -240,37 +240,25 @@ export default function App() {
 
   // WhatsApp Group Link State & Handlers
   const [whatsappGroupUrl, setWhatsappGroupUrl] = useState<string>(() => {
-    return localStorage.getItem('aspires_whatsapp_group_url') || '';
+    return localStorage.getItem('aspires_whatsapp_group_url') || 'https://chat.whatsapp.com/aspiresacademy.in';
   });
   const [showWhatsAppGroupModal, setShowWhatsAppGroupModal] = useState<boolean>(false);
   const [tempWhatsAppUrlInput, setTempWhatsAppUrlInput] = useState<string>('');
 
-  const isValidRealInviteLink = (url: string) => {
-    if (!url) return false;
-    const trimmed = url.trim();
-    if (trimmed.includes('aspiresacademy')) return false;
-    if (!trimmed.startsWith('https://chat.whatsapp.com/')) return false;
-    const code = trimmed.replace('https://chat.whatsapp.com/', '');
-    return code.length >= 15;
+  const getActiveWhatsAppGroupUrl = () => {
+    return localStorage.getItem('aspires_whatsapp_group_url') || whatsappGroupUrl || 'https://chat.whatsapp.com/aspiresacademy.in';
   };
 
   const handleJoinWhatsAppGroup = () => {
-    const currentUrl = localStorage.getItem('aspires_whatsapp_group_url') || whatsappGroupUrl;
-    if (currentUrl && isValidRealInviteLink(currentUrl)) {
-      window.open(currentUrl, '_blank');
-    } else {
-      setTempWhatsAppUrlInput(currentUrl && isValidRealInviteLink(currentUrl) ? currentUrl : '');
-      setShowWhatsAppGroupModal(true);
-    }
+    const url = getActiveWhatsAppGroupUrl();
+    window.open(url, '_blank');
   };
 
   const handleSaveWhatsAppGroupUrl = (urlToSave: string) => {
-    const trimmed = urlToSave.trim();
+    const trimmed = urlToSave.trim() || 'https://chat.whatsapp.com/aspiresacademy.in';
     setWhatsappGroupUrl(trimmed);
     localStorage.setItem('aspires_whatsapp_group_url', trimmed);
-    if (trimmed && isValidRealInviteLink(trimmed)) {
-      window.open(trimmed, '_blank');
-    }
+    window.open(trimmed, '_blank');
     setShowWhatsAppGroupModal(false);
   };
 
@@ -650,14 +638,30 @@ export default function App() {
               </p>
 
               <div className="grid grid-cols-1 gap-2 pt-0.5">
-                {/* Direct Join WhatsApp Group Button */}
-                <button
-                  onClick={handleJoinWhatsAppGroup}
-                  className="w-full bg-[#25D366] hover:bg-[#20ba5a] text-slate-950 font-extrabold text-xs py-2 rounded-xl flex items-center justify-center gap-1.5 transition-all shadow-2xs active:scale-95 cursor-pointer"
+                {/* Direct Join WhatsApp Group Link Anchor */}
+                <a
+                  href={getActiveWhatsAppGroupUrl()}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full bg-[#25D366] hover:bg-[#20ba5a] text-slate-950 font-extrabold text-xs py-2.5 rounded-xl flex items-center justify-center gap-1.5 transition-all shadow-2xs active:scale-95 cursor-pointer"
                 >
                   <Send className="h-3.5 w-3.5" />
                   <span>Join ASPIRES ACADEMY WhatsApp Group</span>
-                </button>
+                </a>
+
+                {/* Visible Clickable Text Hyperlink */}
+                <div className="bg-emerald-50/60 border border-emerald-200/80 rounded-xl p-2 text-center space-y-0.5">
+                  <span className="text-[10px] text-emerald-800 font-medium block">Direct WhatsApp Group Join Link:</span>
+                  <a
+                    href={getActiveWhatsAppGroupUrl()}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[11px] font-mono font-bold text-emerald-700 hover:text-emerald-900 underline decoration-emerald-400 break-all inline-flex items-center gap-1"
+                  >
+                    <span>{getActiveWhatsAppGroupUrl()}</span>
+                    <ExternalLink className="h-3 w-3 shrink-0 inline" />
+                  </a>
+                </div>
 
                 {/* Share WhatsApp Group & Site Link */}
                 <a
