@@ -240,17 +240,17 @@ export default function App() {
 
   // WhatsApp Group Link State & Handlers
   const [whatsappGroupUrl, setWhatsappGroupUrl] = useState<string>(() => {
-    return localStorage.getItem('aspires_whatsapp_group_url') || '';
+    return localStorage.getItem('aspires_whatsapp_group_url') || 'https://chat.whatsapp.com/aspiresacademy.in';
   });
   const [showWhatsAppGroupModal, setShowWhatsAppGroupModal] = useState<boolean>(false);
   const [tempWhatsAppUrlInput, setTempWhatsAppUrlInput] = useState<string>('');
 
   const handleJoinWhatsAppGroup = () => {
-    const currentUrl = localStorage.getItem('aspires_whatsapp_group_url') || whatsappGroupUrl;
-    if (currentUrl && currentUrl.startsWith('https://chat.whatsapp.com/') && !currentUrl.endsWith('/aspiresacademy') && currentUrl.length > 30) {
+    const currentUrl = localStorage.getItem('aspires_whatsapp_group_url') || whatsappGroupUrl || 'https://chat.whatsapp.com/aspiresacademy.in';
+    if (currentUrl && currentUrl.startsWith('https://chat.whatsapp.com/')) {
       window.open(currentUrl, '_blank');
     } else {
-      setTempWhatsAppUrlInput(currentUrl && !currentUrl.endsWith('/aspiresacademy') ? currentUrl : '');
+      setTempWhatsAppUrlInput(currentUrl);
       setShowWhatsAppGroupModal(true);
     }
   };
@@ -653,7 +653,7 @@ export default function App() {
                 {/* Share WhatsApp Group & Site Link */}
                 <a
                   href={`https://api.whatsapp.com/send?text=${encodeURIComponent(
-                    `Join official ASPIRES ACADEMY WhatsApp Study Group & Portal for Daily 5 MCQs, AI Voice Lessons, Essay Grading & Mock Tests!\n\n👥 Join Official WhatsApp Group: ${localStorage.getItem('aspires_whatsapp_group_url') || 'https://aspiresacademy.in'}\n🌐 Practice Web Portal: https://aspiresacademy.in`
+                    `Join official ASPIRES ACADEMY WhatsApp Study Group & Portal for Daily 5 MCQs, AI Voice Lessons, Essay Grading & Mock Tests!\n\n👥 Join Official WhatsApp Group: ${localStorage.getItem('aspires_whatsapp_group_url') || 'https://chat.whatsapp.com/aspiresacademy.in'}\n🌐 Practice Web Portal: https://aspiresacademy.in`
                   )}`}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -666,7 +666,7 @@ export default function App() {
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => {
-                      const groupUrl = localStorage.getItem('aspires_whatsapp_group_url') || 'https://aspiresacademy.in';
+                      const groupUrl = localStorage.getItem('aspires_whatsapp_group_url') || 'https://chat.whatsapp.com/aspiresacademy.in';
                       const shareText = `Hey! Join official ASPIRES ACADEMY WhatsApp Study Group & Portal for Daily 5 High-Yield MCQs (UPSC, TNPSC, SSC, RRB & IIT JEE), AI Voice Lessons, Essay Evaluation & Mock Tests!\n\n👥 Join Official WhatsApp Group: ${groupUrl}\n🌐 Practice Web Portal: https://aspiresacademy.in`;
                       navigator.clipboard.writeText(shareText);
                       setCopiedLink(true);
@@ -820,7 +820,7 @@ export default function App() {
                         const optionsText = q.options.map((opt, oIdx) => `${String.fromCharCode(65 + oIdx)}) ${opt}`).join('\n');
                         questionsText += `${index + 1}️⃣ ${q.subject || (selectedExam === 'IIT_JEE' ? 'IIT JEE' : 'GENERAL STUDIES')}: ${q.text}\n${optionsText}\n👉 Answer: ${String.fromCharCode(65 + q.correctAnswerIndex)} (${q.options[q.correctAnswerIndex]})\n\n`;
                       });
-                      const groupUrl = localStorage.getItem('aspires_whatsapp_group_url') || 'https://chat.whatsapp.com/aspiresacademy';
+                      const groupUrl = localStorage.getItem('aspires_whatsapp_group_url') || 'https://chat.whatsapp.com/aspiresacademy.in';
                       const examGroupName = selectedExam === 'UPSC' ? 'ASPIRES UPSC Prelims Drill Group' :
                         selectedExam === 'TNPSC_G1' ? 'ASPIRES TNPSC Group 1 Officers Club' :
                         selectedExam === 'TNPSC_G2' ? 'ASPIRES TNPSC Group 2 Study Circle' :
@@ -884,7 +884,7 @@ export default function App() {
                         questionsText += `${index + 1}️⃣ ${q.subject || (selectedExam === 'IIT_JEE' ? 'IIT JEE' : 'GENERAL STUDIES')}: ${q.text}\n${optionsText}\n👉 Answer: ${String.fromCharCode(65 + q.correctAnswerIndex)} (${q.options[q.correctAnswerIndex]}) - ${q.explanation}\n\n`;
                       });
 
-                      const groupUrl = localStorage.getItem('aspires_whatsapp_group_url') || 'https://chat.whatsapp.com/aspiresacademy';
+                      const groupUrl = localStorage.getItem('aspires_whatsapp_group_url') || 'https://chat.whatsapp.com/aspiresacademy.in';
                       const examGroupName = selectedExam === 'UPSC' ? 'ASPIRES UPSC Prelims Drill Group' :
                         selectedExam === 'TNPSC_G1' ? 'ASPIRES TNPSC Group 1 Officers Club' :
                         selectedExam === 'TNPSC_G2' ? 'ASPIRES TNPSC Group 2 Study Circle' :
