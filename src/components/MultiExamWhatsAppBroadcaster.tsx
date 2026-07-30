@@ -16,7 +16,8 @@ import {
   Share2,
   Clock,
   Layers,
-  MessageSquare
+  MessageSquare,
+  X
 } from 'lucide-react';
 import { ExamType, Question } from '../types';
 
@@ -111,6 +112,8 @@ export const MultiExamWhatsAppBroadcaster: React.FC<MultiExamWhatsAppBroadcaster
   const [copiedExamId, setCopiedExamId] = useState<string | null>(null);
   const [expandedExam, setExpandedExam] = useState<ExamType | null>('UPSC');
   const [sequenceStep, setSequenceStep] = useState<number | null>(null);
+  const [showBatchModal, setShowBatchModal] = useState<boolean>(false);
+  const [sentExams, setSentExams] = useState<Record<string, boolean>>({});
   const [copiedScript, setCopiedScript] = useState<boolean>(false);
   const [copiedEndpoint, setCopiedEndpoint] = useState<boolean>(false);
   const [whatsappGroupLink, setWhatsappGroupLink] = useState<string>(() => {
@@ -161,6 +164,7 @@ ${qText}---
   const handleSendToWhatsApp = (examInfo: ExamInfo) => {
     const text = buildExamPostText(examInfo);
     window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
+    setSentExams(prev => ({ ...prev, [examInfo.id]: true }));
   };
 
   // Copy single exam post text
@@ -199,14 +203,14 @@ ${qText}---
     EXAM_CHANNELS.forEach((channel, idx) => {
       setTimeout(() => {
         handleSendToWhatsApp(channel);
-      }, idx * 400);
+      }, idx * 450);
     });
   };
 
   // Sequential batch launcher
   const handleStartSequence = () => {
     setSequenceStep(0);
-    // Launch first
+    setShowBatchModal(true);
     handleSendToWhatsApp(EXAM_CHANNELS[0]);
   };
 
@@ -413,6 +417,240 @@ broadcastDaily5ToWhatsApp();`;
             >
               <span>{sequenceStep < EXAM_CHANNELS.length - 1 ? `Next: ${EXAM_CHANNELS[sequenceStep + 1].badge} ➡️` : 'Finish Sequence ✅'}</span>
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Batch Dispatch Modal / Overlay (When Batch Send is triggered) */}
+      {showBatchModal && (
+        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-xs z-50 flex items-center justify-center p-3 md:p-6 overflow-y-auto">
+          <div className="bg-white rounded-2xl shadow-2xl border border-emerald-500/30 max-w-4xl w-full overflow-hidden flex flex-col max-h-[92vh]">
+            
+            {/* Modal Header */}
+            <div className="bg-gradient-to-r from-emerald-900 via-emerald-800 to-teal-900 p-5 text-white flex items-center justify-between gap-4">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="bg-[#25D366] text-slate-950 font-black text-[10px] uppercase px-2.5 py-0.5 rounded-full font-mono flex items-center gap-1">
+                    <Zap className="h-3 w-3 fill-slate-950" /> 7 EXAMS BATCH DISPATCHER
+                  </span>
+                  <span className="text-xs font-mono text-emerald-200">
+                    Seed #{currentSeedOffset}
+                  </span>
+                </div>
+                <h3 className="text-lg md:text-xl font-black font-display text-white">
+                  📱 Multi-Exam WhatsApp Batch Dispatcher
+                </h3>
+                <p className="text-xs text-emerald-100 font-sans">
+                  Dispatch daily 5 MCQs to all 7 distinct exam WhatsApp groups below.
+                </p>
+              </div>
+
+              <button
+                onClick={() => setShowBatchModal(false)}
+                className="bg-emerald-950 hover:bg-emerald-800 text-emerald-200 hover:text-white p-2 rounded-xl transition-all border border-emerald-700/60 cursor-pointer"
+                title="Close Dispatcher"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-5 overflow-y-auto space-y-5 bg-slate-50">
+
+              {/* Progress Summary & Active Stepper */}
+              <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-2xs space-y-3">
+                <div className="flex items-center justify-between text-xs font-bold text-slate-700">
+                  <span className="flex items-center gap-1.5 font-display text-slate-900 font-black">
+                    <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+                    Overall Dispatch Status: {Object.keys(sentExams).length} of 7 Exam Groups Sent
+                  </span>
+                  <span className="font-mono text-slate-500">
+                    {Math.round((Object.keys(sentExams).length / 7) * 100)}% Complete
+                  </span>
+                </div>
+
+                {/* Progress Bar */}
+                <div className="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
+                  <div 
+                    className="bg-emerald-500 h-2.5 rounded-full transition-all duration-300"
+                    style={{ width: `${(Object.keys(sentExams).length / 7) * 100}%` }}
+                  ></div>
+                </div>
+
+                {/* Active Stepper Control */}
+                {sequenceStep !== null && sequenceStep < EXAM_CHANNELS.length && (
+                  <div className="bg-amber-50 border border-amber-300/80 rounded-xl p-3.5 flex flex-col sm:flex-row items-center justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      <span className="flex h-9 w-9 items-center justify-center rounded-full bg-amber-500 text-slate-950 font-black text-sm font-mono shadow-xs shrink-0">
+                        {sequenceStep + 1}/7
+                      </span>
+                      <div>
+                        <h4 className="text-xs font-black text-amber-950 font-display">
+                          Active Step: {EXAM_CHANNELS[sequenceStep].name}
+                        </h4>
+                        <p className="text-[11px] text-amber-800 font-sans">
+                          Target Group: <span className="font-bold">{EXAM_CHANNELS[sequenceStep].groupName}</span>
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <button
+                        onClick={() => handleSendToWhatsApp(EXAM_CHANNELS[sequenceStep])}
+                        className="bg-[#25D366] hover:bg-[#20ba5a] text-slate-950 font-extrabold text-xs px-3.5 py-1.5 rounded-lg flex items-center gap-1.5 shadow-xs cursor-pointer active:scale-95"
+                      >
+                        <Send className="h-3.5 w-3.5" /> Launch Step {sequenceStep + 1}
+                      </button>
+                      <button
+                        onClick={handleNextSequenceStep}
+                        className="bg-amber-600 hover:bg-amber-700 text-white font-extrabold text-xs px-3.5 py-1.5 rounded-lg flex items-center gap-1 shadow-xs cursor-pointer active:scale-95"
+                      >
+                        <span>{sequenceStep < 6 ? `Next (${EXAM_CHANNELS[sequenceStep + 1].badge}) ➡️` : 'Done ✅'}</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Quick Batch Tools */}
+              <div className="flex flex-wrap items-center justify-between gap-2 bg-emerald-50 border border-emerald-200/80 rounded-xl p-3">
+                <div className="text-xs font-bold text-emerald-900 font-display flex items-center gap-1.5">
+                  <Share2 className="h-4 w-4 text-emerald-700" />
+                  <span>Bulk Actions for All 7 Exam Categories:</span>
+                </div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <button
+                    onClick={handleOpenAllTabs}
+                    className="bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold text-xs px-3 py-1.5 rounded-lg flex items-center gap-1.5 cursor-pointer shadow-2xs active:scale-95 transition-all"
+                    title="Opens 7 WhatsApp tabs staggered by 450ms"
+                  >
+                    <ExternalLink className="h-3.5 w-3.5" /> Stagger Open All 7 Tabs
+                  </button>
+                  <button
+                    onClick={handleCopyAllExams}
+                    className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-xs px-3 py-1.5 rounded-lg flex items-center gap-1.5 cursor-pointer shadow-2xs active:scale-95 transition-all"
+                  >
+                    {copiedAll ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+                    <span>{copiedAll ? 'Copied All 7 Posts!' : 'Copy All 7 Posts'}</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* All 7 Exam Channel Rows */}
+              <div className="space-y-2.5">
+                <h4 className="text-xs font-black text-slate-700 uppercase tracking-wider font-mono">
+                  All 7 Individual Exam WhatsApp Group Outlets
+                </h4>
+
+                {EXAM_CHANNELS.map((channel, idx) => {
+                  const questions = getQuestionsForExam(channel.id, currentSeedOffset);
+                  const isSent = !!sentExams[channel.id];
+                  const isExpanded = expandedExam === channel.id;
+
+                  return (
+                    <div 
+                      key={channel.id}
+                      className={`border rounded-xl p-3.5 transition-all space-y-3 ${
+                        isSent 
+                          ? 'bg-emerald-50/60 border-emerald-300' 
+                          : 'bg-white border-slate-200 hover:border-slate-300'
+                      }`}
+                    >
+                      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+                        <div className="flex items-start gap-3">
+                          <span className="text-2xl shrink-0 leading-none">{channel.icon}</span>
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <span className={`text-[10px] font-extrabold uppercase px-2 py-0.5 rounded font-mono ${channel.color}`}>
+                                {channel.badge}
+                              </span>
+                              <h5 className="text-xs font-black text-slate-900 font-display">
+                                {channel.name}
+                              </h5>
+                              {isSent ? (
+                                <span className="bg-emerald-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 font-mono">
+                                  <Check className="h-3 w-3" /> Sent
+                                </span>
+                              ) : (
+                                <span className="bg-slate-100 text-slate-600 text-[10px] font-bold px-2 py-0.5 rounded-full font-mono">
+                                  Pending
+                                </span>
+                              )}
+                            </div>
+                            <p className="text-[11px] text-slate-500 mt-0.5 font-sans">
+                              📍 Target Group: <span className="font-semibold text-slate-700">{channel.groupName}</span>
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* Actions */}
+                        <div className="flex items-center gap-2 shrink-0 self-end md:self-center">
+                          <button
+                            onClick={() => setExpandedExam(isExpanded ? null : channel.id)}
+                            className="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[11px] px-2.5 py-1.5 rounded-lg flex items-center gap-1 cursor-pointer transition-all"
+                          >
+                            <span>5 MCQs</span>
+                            <ChevronDown className={`h-3 w-3 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+                          </button>
+                          <button
+                            onClick={() => handleCopyPost(channel)}
+                            className="bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs px-2.5 py-1.5 rounded-lg flex items-center gap-1 cursor-pointer transition-all"
+                          >
+                            {copiedExamId === channel.id ? <Check className="h-3.5 w-3.5 text-emerald-600" /> : <Copy className="h-3.5 w-3.5" />}
+                            <span>{copiedExamId === channel.id ? 'Copied' : 'Copy'}</span>
+                          </button>
+                          <button
+                            onClick={() => handleSendToWhatsApp(channel)}
+                            className="bg-[#25D366] hover:bg-[#20ba5a] text-slate-950 font-black text-xs px-3.5 py-1.5 rounded-lg flex items-center gap-1.5 cursor-pointer shadow-2xs active:scale-95 transition-all"
+                          >
+                            <Send className="h-3.5 w-3.5" />
+                            <span>Post on WhatsApp</span>
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Expandable Preview */}
+                      {isExpanded && (
+                        <div className="border-t border-slate-200 pt-3 text-xs space-y-2 bg-slate-100/60 p-3 rounded-lg">
+                          <div className="font-bold text-slate-800 flex items-center justify-between">
+                            <span>Questions Selected for {channel.badge}:</span>
+                            <span className="font-mono text-[10px] text-slate-500">{questions.length} MCQs</span>
+                          </div>
+                          <div className="space-y-1.5">
+                            {questions.map((q, qIdx) => (
+                              <div key={q.id || qIdx} className="bg-white p-2 rounded border border-slate-200 text-[11px] space-y-1">
+                                <div className="font-semibold text-slate-900 flex items-center gap-1.5">
+                                  <span className="text-emerald-700 font-bold font-mono">Q{qIdx + 1}.</span>
+                                  <span className="bg-emerald-50 text-emerald-800 text-[10px] px-1.5 py-0.2 rounded font-mono font-bold">[{q.subject}]</span>
+                                  <span>{q.text}</span>
+                                </div>
+                                <div className="text-[10px] text-emerald-800 font-bold font-mono">
+                                  ✓ Answer: {String.fromCharCode(65 + q.correctAnswerIndex)} ({q.options[q.correctAnswerIndex]})
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+
+            </div>
+
+            {/* Modal Footer */}
+            <div className="bg-slate-100 border-t border-slate-200 p-4 flex items-center justify-between gap-3">
+              <span className="text-xs font-semibold text-slate-500 font-mono">
+                ASPIRES ACADEMY • All 7 Exam Channels Configured
+              </span>
+              <button
+                onClick={() => setShowBatchModal(false)}
+                className="bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs px-4 py-2 rounded-xl transition-all cursor-pointer"
+              >
+                Close Batch Dispatcher
+              </button>
+            </div>
+
           </div>
         </div>
       )}
