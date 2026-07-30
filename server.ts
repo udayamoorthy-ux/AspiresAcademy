@@ -661,7 +661,7 @@ app.get('/api/daily-broadcast-payload', (req, res) => {
   const dateSeed = now.getFullYear() * 1000 + now.getMonth() * 100 + now.getDate();
   const globalUsedIds = new Set<string>();
 
-  const groupUrl = process.env.WHATSAPP_GROUP_URL || 'https://chat.whatsapp.com/aspiresacademy';
+  const groupUrl = process.env.WHATSAPP_GROUP_URL || 'https://aspiresacademy.in';
 
   let combinedFormattedText = `=========================================\n🎯 *ASPIRES ACADEMY - ALL 7 EXAM GROUPS DAILY MCQs*\n📅 *Date:* ${todayStr}\n=========================================\n\n`;
 

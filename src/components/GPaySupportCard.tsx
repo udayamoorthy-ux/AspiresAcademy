@@ -6,7 +6,7 @@ interface GPaySupportCardProps {
   onClose: () => void;
   onVoicePlay?: (text: string, title: string) => void;
   isPremium?: boolean;
-  onSubscriptionSuccess?: (plan: 'monthly' | 'annual') => void;
+  onSubscriptionSuccess?: (plan: 'annual') => void;
   onCancelSubscription?: () => void;
 }
 
@@ -22,7 +22,7 @@ const PRE_SEEDED_SUPPORTERS: Supporter[] = [
   {
     id: 's1',
     name: 'Priya Dharshini',
-    amount: 199,
+    amount: 299,
     message: 'The Mains Essay Evaluator has been a lifesaver for my TNPSC Group 1 prep!',
     timestamp: '2 hours ago'
   },
@@ -36,14 +36,14 @@ const PRE_SEEDED_SUPPORTERS: Supporter[] = [
   {
     id: 's3',
     name: 'Amit Sharma (UPSC Aspirant)',
-    amount: 199,
+    amount: 299,
     message: 'The AI voice lecture summaries of policy briefs on CURRENT AFFAIRS are absolute gold.',
     timestamp: 'Yesterday'
   },
   {
     id: 's4',
     name: 'Nandhini Murugesan',
-    amount: 199,
+    amount: 299,
     message: 'Customizable planners combined with mock tests help me target weak topics. Thank you!',
     timestamp: '2 days ago'
   }
@@ -58,7 +58,7 @@ export default function GPaySupportCard({
   onCancelSubscription 
 }: GPaySupportCardProps) {
   const [paymentMode, setPaymentMode] = useState<'subscription' | 'donation'>('subscription');
-  const [selectedPlan, setSelectedPlan] = useState<'monthly' | 'annual'>('monthly');
+  const [selectedPlan] = useState<'annual'>('annual');
   const [amount, setAmount] = useState<number>(100);
   const [customAmount, setCustomAmount] = useState<string>('');
   
@@ -102,7 +102,7 @@ export default function GPaySupportCard({
 
   const getFinalAmount = () => {
     if (paymentMode === 'subscription') {
-      return selectedPlan === 'monthly' ? 199 : 299;
+      return 299;
     }
     return customAmount ? parseFloat(customAmount) : amount;
   };
@@ -113,7 +113,7 @@ export default function GPaySupportCard({
     if (finalAmt > 0) {
       const senderName = supporterName.trim() || 'Aspirant';
       const note = paymentMode === 'subscription' 
-        ? `ASPIRES PREMIUM ${selectedPlan.toUpperCase()} subscription`
+        ? `ASPIRES PREMIUM ANNUAL pass subscription`
         : `ASPIRES ACADEMY contribution`;
       
       // Standard UPI deep link
@@ -145,7 +145,7 @@ export default function GPaySupportCard({
 
       if (paymentMode === 'subscription') {
         // Trigger subscription success
-        onSubscriptionSuccess?.(selectedPlan);
+        onSubscriptionSuccess?.('annual');
       } else {
         const newSupporter: Supporter = {
           id: 'user_' + Date.now(),
@@ -303,134 +303,72 @@ export default function GPaySupportCard({
                   <div className="space-y-1">
                     <h3 className="text-sm font-black text-slate-800 flex items-center gap-1.5">
                       <Crown className="h-4 w-4 text-amber-500" />
-                      Select Your Subscription Term
+                      Annual Premium Pass
                     </h3>
                     <p className="text-[10.5px] text-slate-500 leading-relaxed">
-                      Upgrade to unlock permanent access to state-of-the-art civil service guidance pipelines. Scan with Google Pay to simulate immediate enrollment.
+                      Unlock full 1-year access to state-of-the-art civil service guidance pipelines. Scan with Google Pay to activate instant enrollment.
                     </p>
                     <div className="mt-1.5 font-bold text-emerald-800 bg-emerald-50 px-2.5 py-1.5 rounded-xl border border-emerald-500/15 flex items-center gap-1.5 text-[10px] w-full animate-fadeIn shadow-xs">
                       <span className="relative flex h-2 w-2 shrink-0">
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                         <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                       </span>
-                      <span>🎁 Early Bird Special: ₹299/yr for the first 100 aspirants only!</span>
+                      <span>🎁 Early Bird Offer: Annual Pass @ ₹299/year (Save 87% OFF)</span>
                     </div>
                   </div>
 
-                  {/* Plan Cards */}
-                  <div className="grid grid-cols-2 gap-2.5">
-                    {/* Plan A: Monthly */}
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setSelectedPlan('monthly');
-                        setShowConfirmation(false);
-                      }}
-                      className={`p-3 rounded-2xl border text-left flex flex-col justify-between gap-2.5 transition-all relative ${
-                        selectedPlan === 'monthly'
-                          ? 'bg-emerald-50/40 border-emerald-500 ring-1 ring-emerald-500 shadow-sm'
-                          : 'bg-white hover:bg-slate-50 border-slate-200'
-                      }`}
-                      id="plan-monthly"
-                    >
-                      <div>
-                        <span className="text-[8px] uppercase tracking-wider font-mono font-black text-slate-400">Monthly Pass</span>
-                        <h4 className="font-extrabold text-slate-900 text-xs mt-0.5">Standard Premium</h4>
-                      </div>
-                      <div>
-                        <span className="text-base font-black text-slate-900">₹199</span>
-                        <span className="text-[10px] text-slate-500 font-medium"> / mo</span>
-                      </div>
-                    </button>
-
-                    {/* Plan B: Annual */}
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setSelectedPlan('annual');
-                        setShowConfirmation(false);
-                      }}
-                      className={`p-3 rounded-2xl border text-left flex flex-col justify-between gap-2.5 transition-all relative ${
-                        selectedPlan === 'annual'
-                          ? 'bg-emerald-50/40 border-emerald-500 ring-1 ring-emerald-500 shadow-sm'
-                          : 'bg-white hover:bg-slate-50 border-slate-200'
-                      }`}
-                      id="plan-annual"
-                    >
-                      <span className="absolute -top-2 right-2 bg-amber-500 text-slate-950 font-black text-[7.5px] uppercase tracking-wider px-1.5 py-0.5 rounded-full border border-amber-600/20 shadow-sm animate-pulse">
-                        First 100 Aspirants (Save 87%)
-                      </span>
-                      <div>
-                        <span className="text-[8px] uppercase tracking-wider font-mono font-black text-slate-400">Annual Pass</span>
-                        <h4 className="font-extrabold text-slate-900 text-xs mt-0.5">Elite Preparatory</h4>
-                      </div>
-                      <div>
-                        <span className="text-base font-black text-slate-900">₹299</span>
-                        <span className="text-[10px] text-slate-500 font-medium"> / yr</span>
-                      </div>
-                    </button>
+                  {/* Single Annual Pass Card */}
+                  <div className="p-3.5 rounded-2xl border bg-emerald-50/40 border-emerald-500 ring-1 ring-emerald-500/50 shadow-xs flex items-center justify-between gap-3 relative" id="plan-annual">
+                    <span className="absolute -top-2.5 right-3 bg-amber-500 text-slate-950 font-black text-[8px] uppercase tracking-wider px-2 py-0.5 rounded-full border border-amber-600/20 shadow-xs animate-pulse">
+                      Special Offer (Save 87%)
+                    </span>
+                    <div>
+                      <span className="text-[8.5px] uppercase tracking-wider font-mono font-black text-emerald-700 block">Annual Pass</span>
+                      <h4 className="font-black text-slate-900 text-sm">Elite Preparatory Membership</h4>
+                      <p className="text-[10px] text-slate-500">1 Full Year Unlimited Access to All 7 Exam Tools</p>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <span className="text-xl font-black text-slate-900">₹299</span>
+                      <span className="text-[11px] text-slate-500 font-bold block"> / year</span>
+                    </div>
                   </div>
 
                   {/* Bullet points of Premium features */}
-                  {selectedPlan === 'annual' ? (
-                    <div className="bg-amber-500/10 border border-amber-500/35 rounded-2xl p-3.5 space-y-2.5 animate-fadeIn">
-                      <div className="flex items-center justify-between">
-                        <span className="text-[9px] uppercase font-mono font-black tracking-wider text-amber-700 flex items-center gap-1">
-                          <Crown className="h-3.5 w-3.5 text-amber-600" />
-                          Exclusive Annual-Only VIP Benefits
-                        </span>
-                        <span className="text-[8px] px-1.5 py-0.5 font-bold rounded bg-amber-500 text-slate-950 uppercase font-mono tracking-tight shrink-0">Best Seller</span>
-                      </div>
-                      <ul className="space-y-1.5 text-[10.5px] text-slate-700 font-semibold">
-                        <li className="flex items-start gap-2">
-                          <Check className="h-3.5 w-3.5 text-amber-600 shrink-0 mt-0.5" />
-                          <span><strong>Unlimited AI Essay Evaluations</strong> with granular rubrics</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <Check className="h-3.5 w-3.5 text-amber-600 shrink-0 mt-0.5" />
-                          <span><strong>Unlimited Notes &amp; Flashcards</strong> generations</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <Check className="h-3.5 w-3.5 text-amber-600 shrink-0 mt-0.5" />
-                          <span><strong>VIP Priority Line</strong>: 2x faster Gemini responses</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <Check className="h-3.5 w-3.5 text-amber-600 shrink-0 mt-0.5" />
-                          <span className="text-emerald-700 font-bold">⭐ BONUS: Free 1-Click PDF Notes Exporter</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <Check className="h-3.5 w-3.5 text-amber-600 shrink-0 mt-0.5" />
-                          <span className="text-emerald-700 font-bold">⭐ BONUS: WhatsApp Notification Alerts (Worth ₹499/yr)</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <Check className="h-3.5 w-3.5 text-amber-600 shrink-0 mt-0.5" />
-                          <span className="text-emerald-700 font-bold">⭐ BONUS: 10% Off Physical Study Materials</span>
-                        </li>
-                      </ul>
+                  <div className="bg-amber-500/10 border border-amber-500/35 rounded-2xl p-3.5 space-y-2.5 animate-fadeIn">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[9px] uppercase font-mono font-black tracking-wider text-amber-700 flex items-center gap-1">
+                        <Crown className="h-3.5 w-3.5 text-amber-600" />
+                        Exclusive Annual VIP Pass Benefits
+                      </span>
+                      <span className="text-[8px] px-1.5 py-0.5 font-bold rounded bg-amber-500 text-slate-950 uppercase font-mono tracking-tight shrink-0">Best Value</span>
                     </div>
-                  ) : (
-                    <div className="bg-slate-50 border border-slate-200/50 rounded-2xl p-3.5 space-y-2">
-                      <span className="text-[8.5px] uppercase font-mono font-black tracking-wider text-slate-400 block">Premium Feature Highlights</span>
-                      <ul className="space-y-1.5 text-[10.5px] text-slate-600 font-semibold">
-                        <li className="flex items-center gap-2">
-                          <Check className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
-                          <span>Unlimited AI Essay Evaluations with rubrics</span>
-                        </li>
-                        <li className="flex items-center gap-2">
-                          <Check className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
-                          <span>Unlimited Notes and recall deck generations</span>
-                        </li>
-                        <li className="flex items-center gap-2">
-                          <Check className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
-                          <span>Unlimited 24/7 Coaching chats with study targets</span>
-                        </li>
-                        <li className="flex items-center gap-2">
-                          <Check className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
-                          <span>Unlimited diagnostic tests mapped directly to exams</span>
-                        </li>
-                      </ul>
-                    </div>
-                  )}
+                    <ul className="space-y-1.5 text-[10.5px] text-slate-700 font-semibold">
+                      <li className="flex items-start gap-2">
+                        <Check className="h-3.5 w-3.5 text-amber-600 shrink-0 mt-0.5" />
+                        <span><strong>Unlimited AI Essay Evaluations</strong> with granular rubrics</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Check className="h-3.5 w-3.5 text-amber-600 shrink-0 mt-0.5" />
+                        <span><strong>Unlimited Notes &amp; Flashcards</strong> generations</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Check className="h-3.5 w-3.5 text-amber-600 shrink-0 mt-0.5" />
+                        <span><strong>VIP Priority Line</strong>: 2x faster Gemini responses</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Check className="h-3.5 w-3.5 text-amber-600 shrink-0 mt-0.5" />
+                        <span className="text-emerald-700 font-bold">⭐ BONUS: Free 1-Click PDF Notes Exporter</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Check className="h-3.5 w-3.5 text-amber-600 shrink-0 mt-0.5" />
+                        <span className="text-emerald-700 font-bold">⭐ BONUS: WhatsApp Notification Alerts (Worth ₹499/yr)</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Check className="h-3.5 w-3.5 text-amber-600 shrink-0 mt-0.5" />
+                        <span className="text-emerald-700 font-bold">⭐ BONUS: 10% Off Physical Study Materials</span>
+                      </li>
+                    </ul>
+                  </div>
                 </div>
               ) : (
                 // Mode 2: One-Time Donation Options

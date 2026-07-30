@@ -117,7 +117,7 @@ export const MultiExamWhatsAppBroadcaster: React.FC<MultiExamWhatsAppBroadcaster
   const [copiedScript, setCopiedScript] = useState<boolean>(false);
   const [copiedEndpoint, setCopiedEndpoint] = useState<boolean>(false);
   const [whatsappGroupLink, setWhatsappGroupLink] = useState<string>(() => {
-    return localStorage.getItem('aspires_whatsapp_group_url') || 'https://chat.whatsapp.com/aspiresacademy';
+    return localStorage.getItem('aspires_whatsapp_group_url') || '';
   });
   const [isEditingLink, setIsEditingLink] = useState<boolean>(false);
 
@@ -151,7 +151,7 @@ ${qText}`;
       return headerAndQuestions;
     }
 
-    const groupUrl = whatsappGroupLink.trim() || 'https://chat.whatsapp.com/aspiresacademy';
+    const groupUrl = whatsappGroupLink.trim() || 'https://aspiresacademy.in';
 
     return `${headerAndQuestions}---
 🚀 *PRACTICE ON ASPIRES ACADEMY WEB PORTAL:* https://aspiresacademy.in
@@ -182,7 +182,7 @@ ${qText}`;
       combinedText += `\n\n`;
     });
 
-    const groupUrl = whatsappGroupLink.trim() || 'https://chat.whatsapp.com/aspiresacademy';
+    const groupUrl = whatsappGroupLink.trim() || 'https://aspiresacademy.in';
 
     combinedText += `=========================================
 🚀 *PRACTICE ALL 7 EXAMS ON ASPIRES ACADEMY PORTAL:* https://aspiresacademy.in
