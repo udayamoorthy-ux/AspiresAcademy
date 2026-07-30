@@ -31,6 +31,7 @@ import {
   AUTHENTIC_TAMIL_POOL, 
   generateAptitudeQuestion 
 } from './utils/questionPool';
+import { STATIC_QUIZ_QUESTIONS } from './data';
 
 import { 
   BookOpen, 
@@ -120,6 +121,31 @@ export default function App() {
 
     const selectedQuestions: Question[] = [];
 
+    // Special handling for IIT_JEE exam
+    if (exam === 'IIT_JEE') {
+      const pool = STATIC_QUIZ_QUESTIONS.IIT_JEE || [];
+      if (pool.length > 0) {
+        for (let i = 0; i < 5; i++) {
+          const qIdx = (baseSeed + i * 2) % pool.length;
+          selectedQuestions.push(pool[qIdx]);
+        }
+        return selectedQuestions;
+      }
+    }
+
+    // Handling for SSC_CGL or RRB_NTPC
+    if (exam === 'SSC_CGL' || exam === 'RRB_NTPC') {
+      const pool = STATIC_QUIZ_QUESTIONS[exam] || [];
+      if (pool.length > 0) {
+        for (let i = 0; i < 5; i++) {
+          const qIdx = (baseSeed + i) % pool.length;
+          selectedQuestions.push(pool[qIdx]);
+        }
+        return selectedQuestions;
+      }
+    }
+
+    // Default Civil Services (UPSC / TNPSC) logic
     // 1. Polity
     const polityIdx = baseSeed % AUTHENTIC_POLITY_POOL.length;
     selectedQuestions.push({ ...AUTHENTIC_POLITY_POOL[polityIdx], subject: 'POLITY' });
@@ -159,6 +185,12 @@ export default function App() {
   const handleGenerateAIOutreach = async () => {
     setIsGeneratingOutreach(true);
     try {
+      const promptSubject = selectedExam === 'IIT_JEE'
+        ? 'Mixed High-Yield IIT JEE Main and Advanced topics spanning Physics, Chemistry, and Mathematics'
+        : selectedExam === 'SSC_CGL' || selectedExam === 'RRB_NTPC'
+        ? 'Mixed Quantitative Aptitude, Reasoning, General Awareness, and English questions'
+        : 'Mixed High-Yield civil services topics spanning Indian Polity, Modern History, Economy, and Science';
+
       const response = await fetch('/api/generate-quiz', {
         method: 'POST',
         headers: {
@@ -166,7 +198,7 @@ export default function App() {
         },
         body: JSON.stringify({
           exam: selectedExam,
-          subject: 'Mixed High-Yield civil services topics spanning Indian Polity, Modern History, Economy, and Science'
+          subject: promptSubject
         }),
       });
       if (!response.ok) throw new Error('API request failed');
@@ -174,7 +206,11 @@ export default function App() {
       if (data.questions && Array.isArray(data.questions) && data.questions.length > 0) {
         // Map the generated questions to ensure they have subjects mapped for the Outreach visualizer
         const mappedQuestions = data.questions.map((q: any, idx: number) => {
-          const defaultSubjects = ['POLITY', 'HISTORY', 'ECONOMY', 'GENERAL SCIENCE', 'CSAT'];
+          const defaultSubjects = selectedExam === 'IIT_JEE'
+            ? ['PHYSICS', 'CHEMISTRY', 'MATHEMATICS', 'PHYSICS', 'CHEMISTRY']
+            : selectedExam === 'SSC_CGL' || selectedExam === 'RRB_NTPC'
+            ? ['QUANTITATIVE APTITUDE', 'REASONING', 'GENERAL AWARENESS', 'ENGLISH', 'MATHEMATICS']
+            : ['POLITY', 'HISTORY', 'ECONOMY', 'GENERAL SCIENCE', 'CSAT'];
           return {
             ...q,
             subject: q.subject || defaultSubjects[idx % defaultSubjects.length]
@@ -740,17 +776,18 @@ export default function App() {
                   {/* WhatsApp Direct Post Button */}
                   <button
                     onClick={() => {
+                      const examName = selectedExam === 'IIT_JEE' ? 'IIT JEE' : selectedExam === 'SSC_CGL' ? 'SSC CGL' : selectedExam === 'RRB_NTPC' ? 'RRB NTPC' : selectedExam.startsWith('TNPSC') ? 'TNPSC' : 'UPSC CSE';
                       const headings = [
-                        selectedHeadingIndex === 0 ? `🎯 ${selectedExam} CSE DAILY MCQ DRILL – Test Your Limits!` : '',
-                        selectedHeadingIndex === 1 ? `🧠 Can You Crack These 5 Elite ${selectedExam} Questions?` : '',
-                        selectedHeadingIndex === 2 ? `🔥 ${selectedExam} Prelims Challenge: 5 High-Yield Questions from ASPIRES!` : '',
-                        selectedHeadingIndex === 3 ? `💡 5 Tough ${selectedExam} Prep MCQs to Boost Your Score Today!` : ''
+                        `🎯 ${examName} DAILY MCQ DRILL – Test Your Limits!`,
+                        `🧠 Can You Crack These 5 Elite ${examName} Questions?`,
+                        `🔥 ${selectedExam === 'IIT_JEE' ? 'IIT JEE Main & Adv Challenge' : examName + ' Prelims Challenge'}: 5 High-Yield Questions from ASPIRES!`,
+                        `💡 5 High-Yield ${examName} Prep MCQs to Boost Your Score Today!`
                       ];
-                      const heading = headings[selectedHeadingIndex] || `🎯 ${selectedExam} Daily Challenge`;
+                      const heading = headings[selectedHeadingIndex] || `🎯 ${examName} Daily Challenge`;
                       let questionsText = '';
                       outreachQuestions.forEach((q, index) => {
                         const optionsText = q.options.map((opt, oIdx) => `${String.fromCharCode(65 + oIdx)}) ${opt}`).join('\n');
-                        questionsText += `${index + 1}️⃣ ${q.subject || 'GENERAL STUDIES'}: ${q.text}\n${optionsText}\n👉 Answer: ${String.fromCharCode(65 + q.correctAnswerIndex)} (${q.options[q.correctAnswerIndex]})\n\n`;
+                        questionsText += `${index + 1}️⃣ ${q.subject || (selectedExam === 'IIT_JEE' ? 'IIT JEE' : 'GENERAL STUDIES')}: ${q.text}\n${optionsText}\n👉 Answer: ${String.fromCharCode(65 + q.correctAnswerIndex)} (${q.options[q.correctAnswerIndex]})\n\n`;
                       });
                       const postText = `${heading}\n\n${questionsText}🚀 Practice on ASPIRES ACADEMY: https://aspiresacademy.in`;
                       window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(postText)}`, '_blank');
@@ -765,17 +802,18 @@ export default function App() {
                   {/* Facebook Direct Post Button */}
                   <button
                     onClick={() => {
+                      const examName = selectedExam === 'IIT_JEE' ? 'IIT JEE' : selectedExam === 'SSC_CGL' ? 'SSC CGL' : selectedExam === 'RRB_NTPC' ? 'RRB NTPC' : selectedExam.startsWith('TNPSC') ? 'TNPSC' : 'UPSC CSE';
                       const headings = [
-                        selectedHeadingIndex === 0 ? `🎯 ${selectedExam} CSE DAILY MCQ DRILL` : '',
-                        selectedHeadingIndex === 1 ? `🧠 Can You Crack These 5 Elite ${selectedExam} Questions?` : '',
-                        selectedHeadingIndex === 2 ? `🔥 ${selectedExam} Prelims Challenge` : '',
-                        selectedHeadingIndex === 3 ? `💡 5 Tough ${selectedExam} Prep MCQs` : ''
+                        `🎯 ${examName} DAILY MCQ DRILL`,
+                        `🧠 Can You Crack These 5 Elite ${examName} Questions?`,
+                        `🔥 ${selectedExam === 'IIT_JEE' ? 'IIT JEE Main & Adv Challenge' : examName + ' Prelims Challenge'}`,
+                        `💡 5 High-Yield ${examName} Prep MCQs`
                       ];
-                      const heading = headings[selectedHeadingIndex] || `🎯 ${selectedExam} Daily Challenge`;
+                      const heading = headings[selectedHeadingIndex] || `🎯 ${examName} Daily Challenge`;
                       let questionsText = '';
                       outreachQuestions.forEach((q, index) => {
                         const optionsText = q.options.map((opt, oIdx) => `${String.fromCharCode(65 + oIdx)}) ${opt}`).join('\n');
-                        questionsText += `${index + 1}️⃣ ${q.subject || 'GENERAL STUDIES'}: ${q.text}\n${optionsText}\n👉 Answer: ${String.fromCharCode(65 + q.correctAnswerIndex)}\n\n`;
+                        questionsText += `${index + 1}️⃣ ${q.subject || (selectedExam === 'IIT_JEE' ? 'IIT JEE' : 'GENERAL STUDIES')}: ${q.text}\n${optionsText}\n👉 Answer: ${String.fromCharCode(65 + q.correctAnswerIndex)}\n\n`;
                       });
                       const postText = `${heading}\n\n${questionsText}🔗 Practice on ASPIRES ACADEMY: https://aspiresacademy.in`;
                       window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent('https://aspiresacademy.in')}&quote=${encodeURIComponent(postText)}`, '_blank');
@@ -790,18 +828,19 @@ export default function App() {
                   {/* Copy Complete Post Text */}
                   <button
                     onClick={() => {
+                      const examName = selectedExam === 'IIT_JEE' ? 'IIT JEE' : selectedExam === 'SSC_CGL' ? 'SSC CGL' : selectedExam === 'RRB_NTPC' ? 'RRB NTPC' : selectedExam.startsWith('TNPSC') ? 'TNPSC' : 'UPSC CSE';
                       const headings = [
-                        selectedHeadingIndex === 0 ? `🎯 ${selectedExam} CSE DAILY MCQ DRILL – Test Your Limits!` : '',
-                        selectedHeadingIndex === 1 ? `🧠 Can You Crack These 5 Elite ${selectedExam} Questions?` : '',
-                        selectedHeadingIndex === 2 ? `🔥 ${selectedExam} Prelims Challenge: 5 High-Yield Questions from ASPIRES!` : '',
-                        selectedHeadingIndex === 3 ? `💡 5 Tough ${selectedExam} Prep MCQs to Boost Your Score Today!` : ''
+                        `🎯 ${examName} DAILY MCQ DRILL – Test Your Limits!`,
+                        `🧠 Can You Crack These 5 Elite ${examName} Questions?`,
+                        `🔥 ${selectedExam === 'IIT_JEE' ? 'IIT JEE Main & Adv Challenge' : examName + ' Prelims Challenge'}: 5 High-Yield Questions from ASPIRES!`,
+                        `💡 5 High-Yield ${examName} Prep MCQs to Boost Your Score Today!`
                       ];
-                      const heading = headings[selectedHeadingIndex] || `🎯 ${selectedExam} Daily Challenge`;
+                      const heading = headings[selectedHeadingIndex] || `🎯 ${examName} Daily Challenge`;
                       
                       let questionsText = '';
                       outreachQuestions.forEach((q, index) => {
                         const optionsText = q.options.map((opt, oIdx) => `${String.fromCharCode(65 + oIdx)}) ${opt}`).join('\n');
-                        questionsText += `${index + 1}️⃣ ${q.subject || 'GENERAL STUDIES'}: ${q.text}\n${optionsText}\n👉 Answer: ${String.fromCharCode(65 + q.correctAnswerIndex)} (${q.options[q.correctAnswerIndex]}) - ${q.explanation}\n\n`;
+                        questionsText += `${index + 1}️⃣ ${q.subject || (selectedExam === 'IIT_JEE' ? 'IIT JEE' : 'GENERAL STUDIES')}: ${q.text}\n${optionsText}\n👉 Answer: ${String.fromCharCode(65 + q.correctAnswerIndex)} (${q.options[q.correctAnswerIndex]}) - ${q.explanation}\n\n`;
                       });
 
                       const postText = `${heading}\n\n${questionsText}---\n🚀 ASPIRES ACADEMY (https://aspiresacademy.in) is an elite AI-powered prep portal for UPSC, TNPSC, SSC, RRB & IIT JEE. Practice interactive syllabus trackers, AI voice lessons, automated essay evaluation, flashcards & mock tests!\n🎟️ SPECIAL ASPIRANT DISCOUNT: Use Coupon Code "ANNUAL87" to get the ASPIRES Elite Annual Pass for just ₹299/year (87% OFF)!\n🔗 Start Your Prep: https://aspiresacademy.in`;
@@ -830,10 +869,13 @@ export default function App() {
               {/* Question Preview Box */}
               <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 max-h-80 overflow-y-auto space-y-3 text-xs text-slate-800 font-sans shadow-inner">
                 <div className="font-extrabold text-slate-900 font-display border-b border-slate-200 pb-1.5 mb-2 sticky top-0 bg-slate-50 pt-0.5">
-                  {selectedHeadingIndex === 0 && `🎯 ${selectedExam} CSE DAILY MCQ DRILL – Test Your Limits!`}
-                  {selectedHeadingIndex === 1 && `🧠 Can You Crack These 5 Elite ${selectedExam} Questions?`}
-                  {selectedHeadingIndex === 2 && `🔥 ${selectedExam} Prelims Challenge: 5 High-Yield Questions from ASPIRES!`}
-                  {selectedHeadingIndex === 3 && `💡 5 Tough ${selectedExam} Prep MCQs to Boost Your Score Today!`}
+                  {(() => {
+                    const examName = selectedExam === 'IIT_JEE' ? 'IIT JEE' : selectedExam === 'SSC_CGL' ? 'SSC CGL' : selectedExam === 'RRB_NTPC' ? 'RRB NTPC' : selectedExam.startsWith('TNPSC') ? 'TNPSC' : 'UPSC CSE';
+                    if (selectedHeadingIndex === 0) return `🎯 ${examName} DAILY MCQ DRILL – Test Your Limits!`;
+                    if (selectedHeadingIndex === 1) return `🧠 Can You Crack These 5 Elite ${examName} Questions?`;
+                    if (selectedHeadingIndex === 2) return `🔥 ${selectedExam === 'IIT_JEE' ? 'IIT JEE Main & Adv Challenge' : examName + ' Prelims Challenge'}: 5 High-Yield Questions from ASPIRES!`;
+                    return `💡 5 High-Yield ${examName} Prep MCQs to Boost Your Score Today!`;
+                  })()}
                 </div>
                 
                 <div className="space-y-3">

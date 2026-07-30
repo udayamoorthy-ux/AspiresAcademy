@@ -452,6 +452,97 @@ export const STATIC_QUIZ_QUESTIONS: Record<ExamType, Question[]> = {
       correctAnswerIndex: 1,
       explanation: 'tan x - sin x = sin x (1/cos x - 1) = sin x (1 - cos x) / cos x. As x -> 0, cos x -> 1. We know lim_{x->0} (sin x / x) = 1 and lim_{x->0} (1 - cos x)/x² = 1/2. Therefore, lim_{x->0} (sin x / x) * ((1 - cos x) / x²) * (1 / cos x) = 1 * (1/2) * 1 = 1/2.',
       subject: 'Mathematics',
+    },
+    {
+      id: 'jee-q4',
+      text: 'In Young\'s Double Slit Experiment (YDSE), if the distance between the two slits is halved and the distance between slits and screen is doubled, what happens to the fringe width β?',
+      options: [
+        'Remains unchanged',
+        'Doubled',
+        'Halved',
+        'Increases by 4 times'
+      ],
+      correctAnswerIndex: 3,
+      explanation: 'Fringe width β = λD / d. If d\' = d / 2 and D\' = 2D, new fringe width β\' = λ(2D) / (d / 2) = 4(λD / d) = 4β. Thus, fringe width increases 4 times.',
+      subject: 'Physics',
+    },
+    {
+      id: 'jee-q5',
+      text: 'Which of the following coordination complex ions exhibits optical isomerism?',
+      options: [
+        '[Co(NH₃)₆]³⁺',
+        'cis-[Co(en)₂Cl₂]⁺',
+        'trans-[Co(en)₂Cl₂]⁺',
+        '[Ni(CN)₄]²⁻'
+      ],
+      correctAnswerIndex: 1,
+      explanation: 'cis-[Co(en)₂Cl₂]⁺ lacks a plane of symmetry (C_s) and center of inversion (i), making it non-superimposable on its mirror image, thus showing optical isomerism. Trans-[Co(en)₂Cl₂]⁺ possesses a plane of symmetry and is optically inactive.',
+      subject: 'Chemistry',
+    },
+    {
+      id: 'jee-q6',
+      text: 'If A is a 3 × 3 non-singular matrix such that A Aᵀ = Aᵀ A and B = A⁻¹ Aᵀ, then what is B Bᵀ equal to?',
+      options: [
+        'I (Identity Matrix)',
+        'A',
+        'B²',
+        'A⁻¹'
+      ],
+      correctAnswerIndex: 0,
+      explanation: 'B Bᵀ = (A⁻¹ Aᵀ) (A⁻¹ Aᵀ)ᵀ = (A⁻¹ Aᵀ) (A (A⁻¹)ᵀ) = A⁻¹ (Aᵀ A) (Aᵀ)⁻¹ = A⁻¹ (A Aᵀ) (Aᵀ)⁻¹ = (A⁻¹ A) (Aᵀ (Aᵀ)⁻¹) = I * I = I.',
+      subject: 'Mathematics',
+    },
+    {
+      id: 'jee-q7',
+      text: 'An ideal gas undergoes an isothermal expansion at temperature T from volume V to 2V. What is the work done by the gas per mole?',
+      options: [
+        'RT ln 2',
+        '2 RT',
+        'RT / 2',
+        'Zero'
+      ],
+      correctAnswerIndex: 0,
+      explanation: 'Work done in isothermal reversible process W = nRT ln(V₂ / V₁). For 1 mole (n=1) expanding from V to 2V, W = 1 * RT ln(2V / V) = RT ln 2.',
+      subject: 'Physics',
+    },
+    {
+      id: 'jee-q8',
+      text: 'Which among the following has the highest molar conductivity at infinite dilution in aqueous solution?',
+      options: [
+        'Li⁺',
+        'Na⁺',
+        'K⁺',
+        'H⁺'
+      ],
+      correctAnswerIndex: 3,
+      explanation: 'H⁺ ion has exceptionally high ionic mobility and molar conductivity in water due to the Grotthuss mechanism (proton jumping / relay mechanism), surpassing all alkali metal cations.',
+      subject: 'Chemistry',
+    },
+    {
+      id: 'jee-q9',
+      text: 'Find the area bounded by the curve y = x² - 4x + 3 and the x-axis.',
+      options: [
+        '2 / 3 sq units',
+        '4 / 3 sq units',
+        '1 sq unit',
+        '5 / 3 sq units'
+      ],
+      correctAnswerIndex: 1,
+      explanation: 'Roots of y = x² - 4x + 3 = (x - 1)(x - 3) are x = 1 and x = 3. Area = ∫₁³ |x² - 4x + 3| dx = | [x³/3 - 2x² + 3x]₁³ | = | (9 - 18 + 9) - (1/3 - 2 + 3) | = | 0 - 4/3 | = 4/3 sq units.',
+      subject: 'Mathematics',
+    },
+    {
+      id: 'jee-q10',
+      text: 'The de Broglie wavelength of an electron accelerated through a potential difference of V volts is given approximately by:',
+      options: [
+        '12.27 / √V Å',
+        '1.227 / V Å',
+        '122.7 * √V Å',
+        '0.1227 / √V Å'
+      ],
+      correctAnswerIndex: 0,
+      explanation: 'λ = h / p = h / √(2m e V). Substituting physical constants (h, m_e, e), λ = √(150 / V) Å ≈ 12.27 / √V Å.',
+      subject: 'Physics',
     }
   ]
 };
