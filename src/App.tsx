@@ -32,6 +32,7 @@ import {
   generateAptitudeQuestion 
 } from './utils/questionPool';
 import { STATIC_QUIZ_QUESTIONS } from './data';
+import { MultiExamWhatsAppBroadcaster } from './components/MultiExamWhatsAppBroadcaster';
 
 import { 
   BookOpen, 
@@ -708,6 +709,16 @@ export default function App() {
 
           {/* Active Work Area Panel */}
           <div className="lg:col-span-9 space-y-6" id="active-work-area">
+
+            {/* Automated WhatsApp Multi-Exam Broadcast Hub */}
+            <MultiExamWhatsAppBroadcaster 
+              getQuestionsForExam={getDailyQuestionsForOutreach}
+              currentSeedOffset={dailySeedOffset}
+              onRefreshAll={() => {
+                setDailySeedOffset(prev => prev + 1);
+                setOutreachSource('daily');
+              }}
+            />
 
             {/* Prominent Daily 5 Questions to Post on FB, WhatsApp, Telegram */}
             <div 

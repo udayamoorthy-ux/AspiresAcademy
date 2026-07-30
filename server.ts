@@ -632,6 +632,142 @@ app.post('/api/generate-quiz', async (req, res) => {
   res.json({ questions: offlineQuestions, isOffline: true });
 });
 
+// 3b. Daily WhatsApp Broadcast Payload Endpoint for All Exam Types
+app.get('/api/daily-broadcast-payload', (req, res) => {
+  const requestedExam = (req.query.exam as string) || 'ALL';
+  const todayStr = new Date().toLocaleDateString('en-IN', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric'
+  });
+
+  const channels = [
+    { id: 'UPSC', name: 'UPSC Civil Services (CSE)', badge: 'UPSC CSE', groupName: 'ASPIRES UPSC Prelims Drill Group' },
+    { id: 'TNPSC_G1', name: 'TNPSC Group 1 (Deputy Collector / DSP)', badge: 'TNPSC G1', groupName: 'ASPIRES TNPSC Group 1 Officers Club' },
+    { id: 'TNPSC_G2', name: 'TNPSC Group 2 & 2A (Executive)', badge: 'TNPSC G2', groupName: 'ASPIRES TNPSC Group 2 Study Circle' },
+    { id: 'TNPSC_G4', name: 'TNPSC Group 4 & VAO', badge: 'TNPSC G4', groupName: 'ASPIRES TNPSC Group 4 & VAO Daily' },
+    { id: 'SSC_CGL', name: 'SSC CGL (Tiers 1 & 2)', badge: 'SSC CGL', groupName: 'ASPIRES SSC CGL Tier 1 & 2 Warriors' },
+    { id: 'RRB_NTPC', name: 'RRB NTPC (Railway CBT 1 & 2)', badge: 'RRB NTPC', groupName: 'ASPIRES RRB Railway Exams Prep' },
+    { id: 'IIT_JEE', name: 'IIT JEE (Main & Advanced)', badge: 'IIT JEE', groupName: 'ASPIRES IIT JEE Physics, Chem & Math Elite' }
+  ];
+
+  const targetChannels = requestedExam === 'ALL' 
+    ? channels 
+    : channels.filter(c => c.id === requestedExam);
+
+  const sampleIITQuestions = [
+    {
+      subject: 'Physics',
+      text: 'In Young\'s Double Slit Experiment (YDSE), if the distance between the two slits is halved and the distance between slits and screen is doubled, what happens to the fringe width β?',
+      options: ['Remains unchanged', 'Doubled', 'Halved', 'Increases by 4 times'],
+      correctAnswerIndex: 3,
+      explanation: 'Fringe width β = λD / d. If d\' = d / 2 and D\' = 2D, new fringe width β\' = λ(2D) / (d / 2) = 4(λD / d) = 4β. Thus, fringe width increases 4 times.'
+    },
+    {
+      subject: 'Chemistry',
+      text: 'Which of the following coordination complex ions exhibits optical isomerism?',
+      options: ['[Co(NH₃)₆]³⁺', 'cis-[Co(en)₂Cl₂]⁺', 'trans-[Co(en)₂Cl₂]⁺', '[Ni(CN)₄]²⁻'],
+      correctAnswerIndex: 1,
+      explanation: 'cis-[Co(en)₂Cl₂]⁺ lacks a plane of symmetry (C_s) and center of inversion (i), making it non-superimposable on its mirror image, thus showing optical isomerism.'
+    },
+    {
+      subject: 'Mathematics',
+      text: 'If A is a 3 × 3 non-singular matrix such that A Aᵀ = Aᵀ A and B = A⁻¹ Aᵀ, then what is B Bᵀ equal to?',
+      options: ['I (Identity Matrix)', 'A', 'B²', 'A⁻¹'],
+      correctAnswerIndex: 0,
+      explanation: 'B Bᵀ = (A⁻¹ Aᵀ) (A⁻¹ Aᵀ)ᵀ = (A⁻¹ Aᵀ) (A (A⁻¹)ᵀ) = A⁻¹ (Aᵀ A) (Aᵀ)⁻¹ = A⁻¹ (A Aᵀ) (Aᵀ)⁻¹ = I.'
+    },
+    {
+      subject: 'Physics',
+      text: 'An ideal gas undergoes an isothermal expansion at temperature T from volume V to 2V. What is the work done by the gas per mole?',
+      options: ['RT ln 2', '2 RT', 'RT / 2', 'Zero'],
+      correctAnswerIndex: 0,
+      explanation: 'Work done in isothermal reversible process W = nRT ln(V₂ / V₁). For 1 mole (n=1) expanding from V to 2V, W = RT ln 2.'
+    },
+    {
+      subject: 'Chemistry',
+      text: 'Which among the following has the highest molar conductivity at infinite dilution in aqueous solution?',
+      options: ['Li⁺', 'Na⁺', 'K⁺', 'H⁺'],
+      correctAnswerIndex: 3,
+      explanation: 'H⁺ ion has exceptionally high ionic mobility and molar conductivity in water due to the Grotthuss mechanism (proton jumping / relay mechanism).'
+    }
+  ];
+
+  const sampleCivilQuestions = [
+    {
+      subject: 'POLITY',
+      text: 'Which of the following constitutional provisions guarantees the Protection of Interests of Minorities in India?',
+      options: ['Article 21', 'Article 25', 'Article 29', 'Article 32'],
+      correctAnswerIndex: 2,
+      explanation: 'Article 29 provides that any section of citizens residing in India having a distinct language, script or culture of its own shall have the right to conserve the same.'
+    },
+    {
+      subject: 'HISTORY',
+      text: 'Who presided over the historic Karachi Session of the Indian National Congress in 1931 where the Resolution on Fundamental Rights was passed?',
+      options: ['Mahatma Gandhi', 'Sardar Vallabhbhai Patel', 'Jawaharlal Nehru', 'Subhas Chandra Bose'],
+      correctAnswerIndex: 1,
+      explanation: 'Sardar Vallabhbhai Patel presided over the 1931 Karachi Session of INC. The resolution on Fundamental Rights and National Economic Programme was drafted by Jawaharlal Nehru.'
+    },
+    {
+      subject: 'ECONOMY',
+      text: 'What is the statutory inflation target assigned to the Reserve Bank of India under the Flexible Inflation Targeting framework?',
+      options: ['2% with +/- 1%', '4% with +/- 2%', '6% with +/- 2%', '5% fixed'],
+      correctAnswerIndex: 1,
+      explanation: 'Under Section 45ZA of the RBI Act, 1934, the inflation target is 4% CPI headline inflation with an upper tolerance limit of 6% and lower tolerance limit of 2%.'
+    },
+    {
+      subject: 'TAMIL HERITAGE / GS',
+      text: 'Which ancient Tamil Sangam work is traditionally known as the "Tamil Veda" or "Utharavedham"?',
+      options: ['Silappatikaram', 'Manimekalai', 'Thirukkural', 'Thiruvilayadal Puranam'],
+      correctAnswerIndex: 2,
+      explanation: 'Thirukkural composed by Thiruvalluvar is widely revered as the "Tamil Veda" (Utharavedham) due to its universal ethical and moral maxims.'
+    },
+    {
+      subject: 'CSAT / APTITUDE',
+      text: 'If A can complete a piece of work in 12 days and B in 24 days, how many days will they take together?',
+      options: ['6 days', '8 days', '9 days', '10 days'],
+      correctAnswerIndex: 1,
+      explanation: 'Combined rate = 1/12 + 1/24 = 3/24 = 1/8. So together they complete the work in 8 days.'
+    }
+  ];
+
+  const broadcasts = targetChannels.map(ch => {
+    const qList = ch.id === 'IIT_JEE' ? sampleIITQuestions : sampleCivilQuestions;
+    let qText = '';
+    qList.forEach((q, idx) => {
+      const opts = q.options.map((o, oIdx) => `  ${String.fromCharCode(65 + oIdx)}) ${o}`).join('\n');
+      qText += `*Q${idx + 1}. [${q.subject}]* ${q.text}\n${opts}\n👉 *Answer:* ${String.fromCharCode(65 + q.correctAnswerIndex)} (${q.options[q.correctAnswerIndex]})\n💡 _${q.explanation}_\n\n`;
+    });
+
+    const formattedText = `🎯 *ASPIRES ACADEMY (${ch.badge}) DAILY 5 MCQ DRILL*
+📅 *Date:* ${todayStr}
+📍 *Group:* ${ch.groupName}
+
+${qText}---
+🚀 *ASPIRES ACADEMY* (https://aspiresacademy.in)
+Practice syllabus trackers, AI voice lessons, essay grading, flashcards & mock tests!
+🎟️ *SPECIAL DISCOUNT:* Coupon *ANNUAL87* for Annual Pass @ ₹299/year (87% OFF)
+🔗 *Start Practice:* https://aspiresacademy.in`;
+
+    return {
+      exam: ch.id,
+      examName: ch.name,
+      badge: ch.badge,
+      groupName: ch.groupName,
+      formattedText
+    };
+  });
+
+  res.json({
+    status: 'success',
+    date: todayStr,
+    website: 'https://aspiresacademy.in',
+    coupon: 'ANNUAL87',
+    broadcastCount: broadcasts.length,
+    broadcasts
+  });
+});
+
 // 4. Descriptive Essay/Mains Answer Evaluator
 app.post('/api/evaluate-essay', async (req, res) => {
   const { promptTitle, context, essayText, wordCountTarget } = req.body;
