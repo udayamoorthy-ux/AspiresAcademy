@@ -127,7 +127,7 @@ export const MultiExamWhatsAppBroadcaster: React.FC<MultiExamWhatsAppBroadcaster
   };
 
   // Helper to format post text for an exam
-  const buildExamPostText = (examInfo: ExamInfo): string => {
+  const buildExamPostText = (examInfo: ExamInfo, includeFooter: boolean = true): string => {
     const questions = getQuestionsForExam(examInfo.id, currentSeedOffset);
     const dateStr = new Date().toLocaleDateString('en-IN', {
       day: 'numeric',
@@ -141,13 +141,19 @@ export const MultiExamWhatsAppBroadcaster: React.FC<MultiExamWhatsAppBroadcaster
       qText += `*Q${idx + 1}. [${q.subject || examInfo.badge}]* ${q.text}\n${opts}\n👉 *Answer:* ${String.fromCharCode(65 + q.correctAnswerIndex)} (${q.options[q.correctAnswerIndex]})\n💡 _${q.explanation.replace(/\n/g, ' ')}_\n\n`;
     });
 
-    const groupUrl = whatsappGroupLink.trim() || 'https://chat.whatsapp.com/aspiresacademy';
-
-    return `🎯 *ASPIRES ACADEMY (${examInfo.badge}) DAILY 5 MCQ DRILL*
+    const headerAndQuestions = `🎯 *ASPIRES ACADEMY (${examInfo.badge}) DAILY 5 MCQ DRILL*
 📅 *Date:* ${dateStr}
 📍 *Group:* ${examInfo.groupName}
 
-${qText}---
+${qText}`;
+
+    if (!includeFooter) {
+      return headerAndQuestions;
+    }
+
+    const groupUrl = whatsappGroupLink.trim() || 'https://chat.whatsapp.com/aspiresacademy';
+
+    return `${headerAndQuestions}---
 🚀 *PRACTICE ON ASPIRES ACADEMY WEB PORTAL:* https://aspiresacademy.in
 🌟 *Web Portal Features:*
 • ✍️ Full-Length Mock Tests
@@ -160,16 +166,61 @@ ${qText}---
 🎟️ *SPECIAL DISCOUNT:* Coupon *ANNUAL87* for Annual Pass @ ₹299/year (87% OFF)`;
   };
 
+  // Helper to format ONE combined post for ALL 7 EXAMS with a SINGLE promotional broadcast footer at the very end
+  const buildCombinedAll7ExamsPostText = (): string => {
+    const dateStr = new Date().toLocaleDateString('en-IN', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric'
+    });
+
+    let combinedText = `=========================================\n🎯 *ASPIRES ACADEMY - ALL 7 EXAM GROUPS DAILY MCQs*\n📅 *Date:* ${dateStr}\n=========================================\n\n`;
+
+    EXAM_CHANNELS.forEach((channel, idx) => {
+      combinedText += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n📌 *EXAM [${idx + 1}/7]: ${channel.name} (${channel.badge})*\n📍 *Target Group:* ${channel.groupName}\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+      combinedText += buildExamPostText(channel, false); // NO repetitive footer per exam!
+      combinedText += `\n\n`;
+    });
+
+    const groupUrl = whatsappGroupLink.trim() || 'https://chat.whatsapp.com/aspiresacademy';
+
+    combinedText += `=========================================
+🚀 *PRACTICE ALL 7 EXAMS ON ASPIRES ACADEMY PORTAL:* https://aspiresacademy.in
+🌟 *Web Portal Features:*
+• ✍️ Full-Length Mock Tests for All 7 Exam Categories
+• 📚 Reference Materials & Study Notes
+• 📅 AI Study Planner & Tracker
+• 📊 Performance Analytics & Rank Predictor
+
+👥 *Join Official WhatsApp Group:* ${groupUrl}
+🔗 *Start Free Practice:* https://aspiresacademy.in
+🎟️ *SPECIAL DISCOUNT:* Coupon *ANNUAL87* for Annual Pass @ ₹299/year (87% OFF)
+=========================================`;
+
+    return combinedText;
+  };
+
   // Dispatch single exam to WhatsApp
   const handleSendToWhatsApp = (examInfo: ExamInfo) => {
-    const text = buildExamPostText(examInfo);
+    const text = buildExamPostText(examInfo, true);
     window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
     setSentExams(prev => ({ ...prev, [examInfo.id]: true }));
   };
 
+  // One-click send ALL 7 EXAMS together in a single WhatsApp message!
+  const handleSendAll7ExamsInOneClick = () => {
+    const combinedText = buildCombinedAll7ExamsPostText();
+    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(combinedText)}`, '_blank');
+    
+    // Mark all as sent
+    const allSent: Record<string, boolean> = {};
+    EXAM_CHANNELS.forEach(ch => { allSent[ch.id] = true; });
+    setSentExams(allSent);
+  };
+
   // Copy single exam post text
   const handleCopyPost = (examInfo: ExamInfo) => {
-    const text = buildExamPostText(examInfo);
+    const text = buildExamPostText(examInfo, true);
     navigator.clipboard.writeText(text);
     setCopiedExamId(examInfo.id);
     setTimeout(() => setCopiedExamId(null), 2500);
@@ -177,22 +228,9 @@ ${qText}---
 
   const [copiedAll, setCopiedAll] = useState<boolean>(false);
 
-  // Copy all 7 exam formatted posts into clipboard at once
+  // Copy all 7 exam formatted posts into clipboard at once (with single broadcast footer)
   const handleCopyAllExams = () => {
-    const dateStr = new Date().toLocaleDateString('en-IN', {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric'
-    });
-    
-    let combinedText = `=========================================\n📱 ASPIRES ACADEMY - ALL 7 EXAM GROUPS DAILY 5 MCQs\n📅 Date: ${dateStr}\n=========================================\n\n`;
-
-    EXAM_CHANNELS.forEach((channel, idx) => {
-      combinedText += `-----------------------------------------\n📌 CHANNEL [${idx + 1}/7]: ${channel.name} (${channel.badge})\n📍 Target Group: ${channel.groupName}\n-----------------------------------------\n\n`;
-      combinedText += buildExamPostText(channel);
-      combinedText += `\n\n\n`;
-    });
-
+    const combinedText = buildCombinedAll7ExamsPostText();
     navigator.clipboard.writeText(combinedText);
     setCopiedAll(true);
     setTimeout(() => setCopiedAll(false), 3000);
@@ -333,19 +371,27 @@ broadcastDaily5ToWhatsApp();`;
             </button>
             <button
               onClick={handleCopyAllExams}
-              className="bg-emerald-950/80 hover:bg-emerald-950 text-amber-300 border border-amber-400/40 font-bold text-xs px-3.5 py-2 rounded-xl flex items-center gap-1.5 transition-all shadow-xs active:scale-95 cursor-pointer"
-              title="Copy formatted post text for all 7 exam groups at once"
+              className="bg-emerald-950/80 hover:bg-emerald-950 text-amber-300 border border-amber-400/40 font-bold text-xs px-3 py-2 rounded-xl flex items-center gap-1.5 transition-all shadow-xs active:scale-95 cursor-pointer"
+              title="Copy formatted post text for all 7 exam groups with single ending broadcast notice"
             >
               {copiedAll ? <Check className="h-3.5 w-3.5 text-amber-300" /> : <Copy className="h-3.5 w-3.5 text-amber-300" />}
-              <span>{copiedAll ? 'Copied All 7 Posts!' : 'Copy All 7 Exam Posts'}</span>
+              <span>{copiedAll ? 'Copied All 7!' : 'Copy All 7 Posts'}</span>
+            </button>
+            <button
+              onClick={handleSendAll7ExamsInOneClick}
+              className="bg-gradient-to-r from-[#25D366] to-emerald-400 hover:from-[#20ba5a] hover:to-emerald-500 text-slate-950 font-black text-xs px-4 py-2 rounded-xl flex items-center gap-2 transition-all shadow-md active:scale-95 cursor-pointer"
+              title="Send all 7 exam MCQs in ONE single WhatsApp broadcast message with a single ending promotional notice!"
+            >
+              <Zap className="h-4 w-4 fill-slate-950" />
+              <span>Send All 7 Exams (1 Click)</span>
             </button>
             <button
               onClick={handleStartSequence}
-              className="bg-[#25D366] hover:bg-[#20ba5a] text-slate-950 font-black text-xs px-4 py-2 rounded-xl flex items-center gap-2 transition-all shadow-md active:scale-95 cursor-pointer"
-              title="Start step-by-step WhatsApp post dispatcher for all 7 exam categories"
+              className="bg-emerald-800 hover:bg-emerald-700 text-white font-extrabold text-xs px-3 py-2 rounded-xl flex items-center gap-1.5 transition-all cursor-pointer border border-emerald-600"
+              title="Open batch modal and send exams one by one or staggered"
             >
-              <Zap className="h-4 w-4 fill-slate-950" />
-              <span>Batch Send All 7 Exams</span>
+              <Layers className="h-3.5 w-3.5" />
+              <span>Batch Launcher</span>
             </button>
           </div>
         </div>
@@ -519,11 +565,19 @@ broadcastDaily5ToWhatsApp();`;
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
                   <button
+                    onClick={handleSendAll7ExamsInOneClick}
+                    className="bg-[#25D366] hover:bg-[#20ba5a] text-slate-950 font-black text-xs px-3.5 py-1.5 rounded-lg flex items-center gap-1.5 cursor-pointer shadow-xs active:scale-95 transition-all"
+                    title="Send all 7 exams in ONE single combined WhatsApp broadcast message"
+                  >
+                    <Zap className="h-3.5 w-3.5 fill-slate-950" />
+                    <span>Send All 7 Exams (1 Click)</span>
+                  </button>
+                  <button
                     onClick={handleOpenAllTabs}
                     className="bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold text-xs px-3 py-1.5 rounded-lg flex items-center gap-1.5 cursor-pointer shadow-2xs active:scale-95 transition-all"
                     title="Opens 7 WhatsApp tabs staggered by 450ms"
                   >
-                    <ExternalLink className="h-3.5 w-3.5" /> Stagger Open All 7 Tabs
+                    <ExternalLink className="h-3.5 w-3.5" /> Stagger 7 Tabs
                   </button>
                   <button
                     onClick={handleCopyAllExams}

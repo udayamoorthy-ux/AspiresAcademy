@@ -661,6 +661,10 @@ app.get('/api/daily-broadcast-payload', (req, res) => {
   const dateSeed = now.getFullYear() * 1000 + now.getMonth() * 100 + now.getDate();
   const globalUsedIds = new Set<string>();
 
+  const groupUrl = process.env.WHATSAPP_GROUP_URL || 'https://chat.whatsapp.com/aspiresacademy';
+
+  let combinedFormattedText = `=========================================\n🎯 *ASPIRES ACADEMY - ALL 7 EXAM GROUPS DAILY MCQs*\n📅 *Date:* ${todayStr}\n=========================================\n\n`;
+
   const broadcasts = targetChannels.map((ch, chIdx) => {
     const qList = getQuestionsForExam((ch.id as ExamType), dateSeed + chIdx * 10, 5, globalUsedIds);
     let qText = '';
@@ -669,7 +673,7 @@ app.get('/api/daily-broadcast-payload', (req, res) => {
       qText += `*Q${idx + 1}. [${q.subject}]* ${q.text}\n${opts}\n👉 *Answer:* ${String.fromCharCode(65 + q.correctAnswerIndex)} (${q.options[q.correctAnswerIndex]})\n💡 _${q.explanation}_\n\n`;
     });
 
-    const groupUrl = process.env.WHATSAPP_GROUP_URL || 'https://chat.whatsapp.com/aspiresacademy';
+    // Single exam format
     const formattedText = `🎯 *ASPIRES ACADEMY (${ch.badge}) DAILY 5 MCQ DRILL*
 📅 *Date:* ${todayStr}
 📍 *Group:* ${ch.groupName}
@@ -686,6 +690,9 @@ ${qText}---
 🔗 *Start Free Practice:* https://aspiresacademy.in
 🎟️ *SPECIAL DISCOUNT:* Coupon *ANNUAL87* for Annual Pass @ ₹299/year (87% OFF)`;
 
+    // Append to combined without repeating footer
+    combinedFormattedText += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n📌 *EXAM [${chIdx + 1}/7]: ${ch.name} (${ch.badge})*\n📍 *Target Group:* ${ch.groupName}\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n🎯 *ASPIRES ACADEMY (${ch.badge}) DAILY 5 MCQ DRILL*\n📅 *Date:* ${todayStr}\n\n${qText}\n\n`;
+
     return {
       exam: ch.id,
       examName: ch.name,
@@ -695,12 +702,27 @@ ${qText}---
     };
   });
 
+  // Master ending broadcast notice for combined text
+  combinedFormattedText += `=========================================
+🚀 *PRACTICE ALL 7 EXAMS ON ASPIRES ACADEMY PORTAL:* https://aspiresacademy.in
+🌟 *Web Portal Features:*
+• ✍️ Full-Length Mock Tests for All 7 Exam Categories
+• 📚 Reference Materials & Study Notes
+• 📅 AI Study Planner & Syllabus Tracker
+• 📊 Performance Analytics & Score Predictor
+
+👥 *Join Official WhatsApp Group:* ${groupUrl}
+🔗 *Start Free Practice:* https://aspiresacademy.in
+🎟️ *SPECIAL DISCOUNT:* Coupon *ANNUAL87* for Annual Pass @ ₹299/year (87% OFF)
+=========================================`;
+
   res.json({
     status: 'success',
     date: todayStr,
     website: 'https://aspiresacademy.in',
     coupon: 'ANNUAL87',
     broadcastCount: broadcasts.length,
+    combinedFormattedText,
     broadcasts
   });
 });

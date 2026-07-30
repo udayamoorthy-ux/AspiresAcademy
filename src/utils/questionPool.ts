@@ -162,6 +162,54 @@ export const UPSC_QUESTION_POOL: Question[] = [
     correctAnswerIndex: 1,
     explanation: 'Speed of current = (Downstream speed - Upstream speed) / 2 = (15 - 9) / 2 = 6 / 2 = 3 km/h.',
     subject: 'CSAT / Aptitude'
+  },
+  {
+    id: 'upsc-019',
+    text: 'Which committee recommended the inclusion of Fundamental Duties in the Constitution of India?',
+    options: ['Saran Singh Committee', 'Swaran Singh Committee', 'Verma Committee', 'Sarkaria Commission'],
+    correctAnswerIndex: 1,
+    explanation: 'The Swaran Singh Committee (1976) recommended the inclusion of Fundamental Duties, leading to the 42nd Constitutional Amendment Act.',
+    subject: 'Polity'
+  },
+  {
+    id: 'upsc-020',
+    text: 'Which among the following Harappan sites is famous for its unique water management system and reservoir tanks?',
+    options: ['Lothal', 'Dholavira', 'Kalibangan', 'Rakhigarhi'],
+    correctAnswerIndex: 1,
+    explanation: 'Dholavira in Rann of Kutch, Gujarat, is renowned for its sophisticated water harvesting reservoirs and underground drainage channels.',
+    subject: 'Ancient History'
+  },
+  {
+    id: 'upsc-021',
+    text: 'Which instrument is used by the Reserve Bank of India (RBI) under Liquidity Adjustment Facility (LAF) to absorb excess liquidity from banks?',
+    options: ['Repo Rate', 'Reverse Repo Rate / Standing Deposit Facility (SDF)', 'Bank Rate', 'Marginal Standing Facility (MSF)'],
+    correctAnswerIndex: 1,
+    explanation: 'Standing Deposit Facility (SDF) and Reverse Repo Rate allow the RBI to absorb excess liquidity from commercial banks.',
+    subject: 'Economy'
+  },
+  {
+    id: 'upsc-022',
+    text: 'With reference to Western Disturbances affecting North-Western India during winter, from which body of water do they originate?',
+    options: ['Arabian Sea', 'Bay of Bengal', 'Mediterranean Sea', 'Caspian Sea'],
+    correctAnswerIndex: 2,
+    explanation: 'Western Disturbances originate over the Mediterranean Sea as extra-tropical storms and travel eastwards embedded in westerlies, bringing winter precipitation to northern India.',
+    subject: 'Geography'
+  },
+  {
+    id: 'upsc-023',
+    text: 'What is the phenomenon where quantum particles remain interconnected regardless of distance, so measuring one instantly determines the state of the other?',
+    options: ['Quantum Superposition', 'Quantum Entanglement', 'Quantum Tunneling', 'Quantum Annealing'],
+    correctAnswerIndex: 1,
+    explanation: 'Quantum Entanglement is a fundamental quantum mechanics phenomenon where pairs or groups of particles interact in ways such that the quantum state of each particle cannot be described independently.',
+    subject: 'Science & Technology'
+  },
+  {
+    id: 'upsc-024',
+    text: 'If A and B together complete a work in 12 days, and A alone completes it in 20 days, in how many days can B alone complete the work?',
+    options: ['25 days', '30 days', '35 days', '40 days'],
+    correctAnswerIndex: 1,
+    explanation: '1/B = 1/12 - 1/20 = (5 - 3)/60 = 2/60 = 1/30. Thus, B alone takes 30 days.',
+    subject: 'CSAT / Aptitude'
   }
 ];
 
