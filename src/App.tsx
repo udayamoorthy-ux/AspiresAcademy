@@ -677,13 +677,13 @@ export default function App() {
                   className="w-full bg-[#25D366] hover:bg-[#20ba5a] text-slate-950 font-extrabold text-xs py-2 rounded-xl flex items-center justify-center gap-1.5 transition-all shadow-2xs active:scale-95 cursor-pointer"
                 >
                   <Send className="h-3.5 w-3.5" />
-                  <span>Join Official WhatsApp Group</span>
+                  <span>Join ASPIRES ACADEMY WhatsApp Group</span>
                 </a>
 
                 {/* Share WhatsApp Group & Site Link */}
                 <a
                   href={`https://api.whatsapp.com/send?text=${encodeURIComponent(
-                    `Join official ASPIRES ACADEMY WhatsApp Study Group & Portal (aspiresacademy.in) for Daily 5 MCQs, AI Voice Lessons, Essay Grading & Mock Tests!\n\n👥 Join Official WhatsApp Group: ${localStorage.getItem('aspires_whatsapp_group_url') || 'https://chat.whatsapp.com/aspiresacademy'}\n🌐 Practice Web Portal: https://aspiresacademy.in`
+                    `Join official ASPIRES ACADEMY WhatsApp Study Group & Portal for Daily 5 MCQs, AI Voice Lessons, Essay Grading & Mock Tests!\n\n👥 Join Official WhatsApp Group (ASPIRES ACADEMY Study Group): ${localStorage.getItem('aspires_whatsapp_group_url') || 'https://chat.whatsapp.com/aspiresacademy'}\n🌐 Practice Web Portal: https://aspiresacademy.in`
                   )}`}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -696,7 +696,7 @@ export default function App() {
                 <button
                   onClick={() => {
                     const groupUrl = localStorage.getItem('aspires_whatsapp_group_url') || 'https://chat.whatsapp.com/aspiresacademy';
-                    const shareText = `Hey! Join the official ASPIRES ACADEMY WhatsApp Study Group & Portal (https://aspiresacademy.in) for Daily 5 High-Yield MCQs (UPSC, TNPSC, SSC, RRB & IIT JEE), AI Voice Lessons, Essay Evaluation & Mock Tests!\n\n👥 Join Official WhatsApp Group: ${groupUrl}\n🌐 Practice Web Portal: https://aspiresacademy.in`;
+                    const shareText = `Hey! Join official ASPIRES ACADEMY WhatsApp Study Group & Portal for Daily 5 High-Yield MCQs (UPSC, TNPSC, SSC, RRB & IIT JEE), AI Voice Lessons, Essay Evaluation & Mock Tests!\n\n👥 Join Official WhatsApp Group (ASPIRES ACADEMY Study Group): ${groupUrl}\n🌐 Practice Web Portal: https://aspiresacademy.in`;
                     navigator.clipboard.writeText(shareText);
                     setCopiedLink(true);
                     setTimeout(() => setCopiedLink(false), 2000);
@@ -837,7 +837,17 @@ export default function App() {
                         const optionsText = q.options.map((opt, oIdx) => `${String.fromCharCode(65 + oIdx)}) ${opt}`).join('\n');
                         questionsText += `${index + 1}️⃣ ${q.subject || (selectedExam === 'IIT_JEE' ? 'IIT JEE' : 'GENERAL STUDIES')}: ${q.text}\n${optionsText}\n👉 Answer: ${String.fromCharCode(65 + q.correctAnswerIndex)} (${q.options[q.correctAnswerIndex]})\n\n`;
                       });
-                      const postText = `${heading}\n\n${questionsText}👥 Join Official WhatsApp Group: https://aspiresacademy.in\n🚀 Practice on ASPIRES ACADEMY: https://aspiresacademy.in`;
+                      const groupUrl = localStorage.getItem('aspires_whatsapp_group_url') || 'https://chat.whatsapp.com/aspiresacademy';
+                      const examGroupName = selectedExam === 'UPSC' ? 'ASPIRES UPSC Prelims Drill Group' :
+                        selectedExam === 'TNPSC_G1' ? 'ASPIRES TNPSC Group 1 Officers Club' :
+                        selectedExam === 'TNPSC_G2' ? 'ASPIRES TNPSC Group 2 Study Circle' :
+                        selectedExam === 'TNPSC_G4' ? 'ASPIRES TNPSC Group 4 & VAO Daily' :
+                        selectedExam === 'SSC_CGL' ? 'ASPIRES SSC CGL Tier 1 & 2 Warriors' :
+                        selectedExam === 'RRB_NTPC' ? 'ASPIRES RRB Railway Exams Prep' :
+                        selectedExam === 'IIT_JEE' ? 'ASPIRES IIT JEE Physics, Chem & Math Elite' :
+                        'ASPIRES ACADEMY Study Group';
+
+                      const postText = `${heading}\n\n${questionsText}👥 Join Official WhatsApp Group (${examGroupName}): ${groupUrl}\n\n🚀 Practice on ASPIRES ACADEMY Web Portal: https://aspiresacademy.in\n⚡ Web Portal Features:\n• ✍️ Full-Length Mock Tests\n• 📚 Reference Materials & Study Notes\n• 📅 AI Study Planner & Syllabus Tracker\n• 📊 Performance Analytics & Score Predictor`;
                       window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(postText)}`, '_blank');
                     }}
                     className="bg-[#25D366] hover:bg-[#20ba5a] text-white font-extrabold text-xs px-3.5 py-2 rounded-xl flex items-center gap-1.5 transition-all shadow-sm active:scale-95 cursor-pointer"
@@ -891,7 +901,17 @@ export default function App() {
                         questionsText += `${index + 1}️⃣ ${q.subject || (selectedExam === 'IIT_JEE' ? 'IIT JEE' : 'GENERAL STUDIES')}: ${q.text}\n${optionsText}\n👉 Answer: ${String.fromCharCode(65 + q.correctAnswerIndex)} (${q.options[q.correctAnswerIndex]}) - ${q.explanation}\n\n`;
                       });
 
-                      const postText = `${heading}\n\n${questionsText}---\n🚀 ASPIRES ACADEMY (https://aspiresacademy.in) is an elite AI-powered prep portal for UPSC, TNPSC, SSC, RRB & IIT JEE. Practice interactive syllabus trackers, AI voice lessons, automated essay evaluation, flashcards & mock tests!\n👥 Join Official WhatsApp Group: https://aspiresacademy.in\n🎟️ SPECIAL ASPIRANT DISCOUNT: Use Coupon Code "ANNUAL87" to get the ASPIRES Elite Annual Pass for just ₹299/year (87% OFF)!\n🔗 Start Your Prep: https://aspiresacademy.in`;
+                      const groupUrl = localStorage.getItem('aspires_whatsapp_group_url') || 'https://chat.whatsapp.com/aspiresacademy';
+                      const examGroupName = selectedExam === 'UPSC' ? 'ASPIRES UPSC Prelims Drill Group' :
+                        selectedExam === 'TNPSC_G1' ? 'ASPIRES TNPSC Group 1 Officers Club' :
+                        selectedExam === 'TNPSC_G2' ? 'ASPIRES TNPSC Group 2 Study Circle' :
+                        selectedExam === 'TNPSC_G4' ? 'ASPIRES TNPSC Group 4 & VAO Daily' :
+                        selectedExam === 'SSC_CGL' ? 'ASPIRES SSC CGL Tier 1 & 2 Warriors' :
+                        selectedExam === 'RRB_NTPC' ? 'ASPIRES RRB Railway Exams Prep' :
+                        selectedExam === 'IIT_JEE' ? 'ASPIRES IIT JEE Physics, Chem & Math Elite' :
+                        'ASPIRES ACADEMY Study Group';
+
+                      const postText = `${heading}\n\n${questionsText}---\n🌐 PRACTICE ON ASPIRES ACADEMY WEB PORTAL: https://aspiresacademy.in\n⚡ Web Portal Features:\n• ✍️ Full-Length Mock Tests\n• 📚 Reference Materials & Study Notes\n• 📅 AI Study Planner & Syllabus Tracker\n• 📊 Performance Analytics & Score Predictor\n\n👥 Join Official WhatsApp Group (${examGroupName}): ${groupUrl}\n🎟️ SPECIAL ASPIRANT DISCOUNT: Use Coupon Code "ANNUAL87" to get the ASPIRES Elite Annual Pass for just ₹299/year (87% OFF)!\n🔗 Start Practice on Web Portal: https://aspiresacademy.in`;
 
                       navigator.clipboard.writeText(postText);
                       setCopiedPost(true);

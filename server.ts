@@ -739,16 +739,22 @@ app.get('/api/daily-broadcast-payload', (req, res) => {
       qText += `*Q${idx + 1}. [${q.subject}]* ${q.text}\n${opts}\n👉 *Answer:* ${String.fromCharCode(65 + q.correctAnswerIndex)} (${q.options[q.correctAnswerIndex]})\n💡 _${q.explanation}_\n\n`;
     });
 
+    const groupUrl = process.env.WHATSAPP_GROUP_URL || 'https://chat.whatsapp.com/aspiresacademy';
     const formattedText = `🎯 *ASPIRES ACADEMY (${ch.badge}) DAILY 5 MCQ DRILL*
 📅 *Date:* ${todayStr}
-📍 *Group:* ${ch.groupName} (aspiresacademy.in)
+📍 *Group:* ${ch.groupName}
 
 ${qText}---
-🚀 *ASPIRES ACADEMY* (https://aspiresacademy.in)
-Practice syllabus trackers, AI voice lessons, essay grading, flashcards & mock tests!
-👥 *Join Official WhatsApp Group:* https://aspiresacademy.in
-🎟️ *SPECIAL DISCOUNT:* Coupon *ANNUAL87* for Annual Pass @ ₹299/year (87% OFF)
-🔗 *Start Practice:* https://aspiresacademy.in`;
+🌐 *PRACTICE ON ASPIRES ACADEMY WEB PORTAL:* https://aspiresacademy.in
+⚡ *Web Portal Features:*
+• ✍️ Full-Length Mock Tests
+• 📚 Reference Materials & Study Notes
+• 📅 AI Study Planner & Syllabus Tracker
+• 📊 Performance Analytics & Score Predictor
+
+👥 *Join Official WhatsApp Group (${ch.groupName}):* ${groupUrl}
+🔗 *Start Free Practice:* https://aspiresacademy.in
+🎟️ *SPECIAL DISCOUNT:* Coupon *ANNUAL87* for Annual Pass @ ₹299/year (87% OFF)`;
 
     return {
       exam: ch.id,

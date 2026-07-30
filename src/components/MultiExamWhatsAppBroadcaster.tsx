@@ -145,10 +145,15 @@ export const MultiExamWhatsAppBroadcaster: React.FC<MultiExamWhatsAppBroadcaster
 📍 *Group:* ${examInfo.groupName}
 
 ${qText}---
-🚀 *ASPIRES ACADEMY* (https://aspiresacademy.in)
-Practice syllabus trackers, AI voice lessons, essay grading, flashcards & mock tests!
-👥 *Join Official WhatsApp Group:* ${groupUrl}
-🌐 *Practice Web Portal:* https://aspiresacademy.in
+🚀 *PRACTICE ON ASPIRES ACADEMY WEB PORTAL:* https://aspiresacademy.in
+🌟 *Web Portal Features:*
+• ✍️ Full-Length Mock Tests
+• 📚 Reference Materials & Study Notes
+• 📅 AI Study Planner & Syllabus Tracker
+• 📊 Performance Analytics & Score Predictor
+
+👥 *Join Official WhatsApp Group (${examInfo.groupName}):* ${groupUrl}
+🔗 *Start Free Practice:* https://aspiresacademy.in
 🎟️ *SPECIAL DISCOUNT:* Coupon *ANNUAL87* for Annual Pass @ ₹299/year (87% OFF)`;
   };
 
