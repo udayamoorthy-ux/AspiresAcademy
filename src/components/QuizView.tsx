@@ -68,7 +68,7 @@ export default function QuizView({
   const [aiQuestionCount, setAiQuestionCount] = useState<number>(10);
   const [selectedAnswerIndex, setSelectedAnswerIndex] = useState<number | null>(null);
   const [hasAnswered, setHasAnswered] = useState<boolean>(false);
-  const [activePYQFilter, setActivePYQFilter] = useState<'ALL' | 'UPSC' | 'TNPSC' | 'SSC' | 'RRB'>('ALL');
+  const [activePYQFilter, setActivePYQFilter] = useState<'ALL' | 'UPSC' | 'TNPSC' | 'SSC' | 'RRB' | 'IIT_JEE'>('ALL');
 
   // Free Tier Usage Counting state for Mock Tests
   const [mockTestCount, setMockTestCount] = useState<number>(() => {
@@ -176,6 +176,19 @@ export default function QuizView({
   useEffect(() => {
     if (session && (session.id.startsWith('preset-') || session.id.startsWith('ai-'))) {
       startStaticQuiz();
+    }
+    if (selectedExam === 'IIT_JEE') {
+      setActivePYQFilter('IIT_JEE');
+    } else if (selectedExam === 'UPSC') {
+      setActivePYQFilter('UPSC');
+    } else if (selectedExam.startsWith('TNPSC')) {
+      setActivePYQFilter('TNPSC');
+    } else if (selectedExam === 'SSC_CGL') {
+      setActivePYQFilter('SSC');
+    } else if (selectedExam === 'RRB_NTPC') {
+      setActivePYQFilter('RRB');
+    } else {
+      setActivePYQFilter('ALL');
     }
   }, [selectedExam]);
 
@@ -289,13 +302,13 @@ export default function QuizView({
 
   // Filter practice tests based on toggle and selected exam
   const filteredTests = PREVIOUS_YEAR_PRACTICE_TESTS.filter(test => {
-    // Stage 1 filter: UPSC/TNPSC/SSC overall switch
+    // Stage 1 filter: UPSC/TNPSC/SSC/RRB/IIT_JEE overall switch
     if (activePYQFilter === 'UPSC' && test.exam !== 'UPSC') return false;
     if (activePYQFilter === 'TNPSC' && !test.exam.startsWith('TNPSC')) return false;
     if (activePYQFilter === 'SSC' && test.exam !== 'SSC_CGL') return false;
     if (activePYQFilter === 'RRB' && test.exam !== 'RRB_NTPC') return false;
+    if (activePYQFilter === 'IIT_JEE' && test.exam !== 'IIT_JEE') return false;
 
-    // Stage 2 filter: If they are on a specific exam screen, show relevant or matching years first
     return true;
   });
 
@@ -699,7 +712,8 @@ export default function QuizView({
                     { id: 'UPSC', label: 'UPSC CSE' },
                     { id: 'TNPSC', label: 'TNPSC Boards' },
                     { id: 'SSC', label: 'SSC CGL' },
-                    { id: 'RRB', label: 'RRB NTPC' }
+                    { id: 'RRB', label: 'RRB NTPC' },
+                    { id: 'IIT_JEE', label: 'IIT JEE' }
                   ].map((f) => (
                     <button
                       key={f.id}

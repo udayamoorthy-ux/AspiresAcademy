@@ -44,9 +44,9 @@ interface ResourceItem {
 
 interface PYQItem {
   id: string;
-  exam: 'UPSC' | 'TNPSC' | 'SSC';
+  exam: 'UPSC' | 'TNPSC' | 'SSC' | 'IIT_JEE';
   year: number;
-  paperType: 'Prelims' | 'Mains';
+  paperType: 'Prelims' | 'Mains' | 'JEE Main' | 'JEE Advanced';
   subjectName: string;
   title: string;
   officialPaperUrl: string;
@@ -673,6 +673,30 @@ export default function MaterialsLibraryView({ selectedExam }: MaterialsLibraryV
       officialPaperUrl: 'https://ssc.gov.in',
       syllabusMapping: 'Advanced Mathematics, Analytical Reasoning, Cloze Test, Reading Comprehension, Computer Basics',
       verifiedNotes: 'Features the updated 150-mark weightage system. Focus heavily on Section III Computer Awareness and speed metrics.'
+    },
+    {
+      id: 'jee-main-2025-p1',
+      exam: 'IIT_JEE',
+      year: 2025,
+      paperType: 'JEE Main',
+      subjectName: 'Physics, Chemistry & Mathematics',
+      title: 'IIT JEE Main 2025 Official Session Paper (Shift 1)',
+      officialPaperUrl: 'https://jeemain.nta.ac.in',
+      officialAnswerKeyUrl: 'https://jeemain.nta.ac.in',
+      syllabusMapping: 'Class 11 & 12 NCERT Physics, Chemistry & Higher Mathematics',
+      verifiedNotes: 'Official NTA question paper testing electrodynamics, organic reaction mechanisms, and differential calculus. Crosscheck step-by-step solutions with NCERT principles.'
+    },
+    {
+      id: 'jee-main-2024-p1',
+      exam: 'IIT_JEE',
+      year: 2024,
+      paperType: 'JEE Main',
+      subjectName: 'Physics, Chemistry & Mathematics',
+      title: 'IIT JEE Main 2024 Official Previous Year Paper',
+      officialPaperUrl: 'https://jeemain.nta.ac.in',
+      officialAnswerKeyUrl: 'https://jeemain.nta.ac.in',
+      syllabusMapping: 'Mechanics, Physical Chemistry, Vectors, Coordinate Geometry & Algebra',
+      verifiedNotes: 'High-yield past paper covering fundamental NCERT chemistry questions and numerical mechanics problems.'
     }
   ];
 
