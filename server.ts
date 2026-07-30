@@ -9,6 +9,8 @@ import dotenv from 'dotenv';
 import fs from 'fs';
 import { createServer as createViteServer } from 'vite';
 import { GoogleGenAI, Type } from '@google/genai';
+import { getQuestionsForExam } from './src/utils/questionPool';
+import { ExamType } from './src/types';
 
 dotenv.config();
 
@@ -655,84 +657,12 @@ app.get('/api/daily-broadcast-payload', (req, res) => {
     ? channels 
     : channels.filter(c => c.id === requestedExam);
 
-  const sampleIITQuestions = [
-    {
-      subject: 'Physics',
-      text: 'In Young\'s Double Slit Experiment (YDSE), if the distance between the two slits is halved and the distance between slits and screen is doubled, what happens to the fringe width β?',
-      options: ['Remains unchanged', 'Doubled', 'Halved', 'Increases by 4 times'],
-      correctAnswerIndex: 3,
-      explanation: 'Fringe width β = λD / d. If d\' = d / 2 and D\' = 2D, new fringe width β\' = λ(2D) / (d / 2) = 4(λD / d) = 4β. Thus, fringe width increases 4 times.'
-    },
-    {
-      subject: 'Chemistry',
-      text: 'Which of the following coordination complex ions exhibits optical isomerism?',
-      options: ['[Co(NH₃)₆]³⁺', 'cis-[Co(en)₂Cl₂]⁺', 'trans-[Co(en)₂Cl₂]⁺', '[Ni(CN)₄]²⁻'],
-      correctAnswerIndex: 1,
-      explanation: 'cis-[Co(en)₂Cl₂]⁺ lacks a plane of symmetry (C_s) and center of inversion (i), making it non-superimposable on its mirror image, thus showing optical isomerism.'
-    },
-    {
-      subject: 'Mathematics',
-      text: 'If A is a 3 × 3 non-singular matrix such that A Aᵀ = Aᵀ A and B = A⁻¹ Aᵀ, then what is B Bᵀ equal to?',
-      options: ['I (Identity Matrix)', 'A', 'B²', 'A⁻¹'],
-      correctAnswerIndex: 0,
-      explanation: 'B Bᵀ = (A⁻¹ Aᵀ) (A⁻¹ Aᵀ)ᵀ = (A⁻¹ Aᵀ) (A (A⁻¹)ᵀ) = A⁻¹ (Aᵀ A) (Aᵀ)⁻¹ = A⁻¹ (A Aᵀ) (Aᵀ)⁻¹ = I.'
-    },
-    {
-      subject: 'Physics',
-      text: 'An ideal gas undergoes an isothermal expansion at temperature T from volume V to 2V. What is the work done by the gas per mole?',
-      options: ['RT ln 2', '2 RT', 'RT / 2', 'Zero'],
-      correctAnswerIndex: 0,
-      explanation: 'Work done in isothermal reversible process W = nRT ln(V₂ / V₁). For 1 mole (n=1) expanding from V to 2V, W = RT ln 2.'
-    },
-    {
-      subject: 'Chemistry',
-      text: 'Which among the following has the highest molar conductivity at infinite dilution in aqueous solution?',
-      options: ['Li⁺', 'Na⁺', 'K⁺', 'H⁺'],
-      correctAnswerIndex: 3,
-      explanation: 'H⁺ ion has exceptionally high ionic mobility and molar conductivity in water due to the Grotthuss mechanism (proton jumping / relay mechanism).'
-    }
-  ];
+  const now = new Date();
+  const dateSeed = now.getFullYear() * 1000 + now.getMonth() * 100 + now.getDate();
+  const globalUsedIds = new Set<string>();
 
-  const sampleCivilQuestions = [
-    {
-      subject: 'POLITY',
-      text: 'Which of the following constitutional provisions guarantees the Protection of Interests of Minorities in India?',
-      options: ['Article 21', 'Article 25', 'Article 29', 'Article 32'],
-      correctAnswerIndex: 2,
-      explanation: 'Article 29 provides that any section of citizens residing in India having a distinct language, script or culture of its own shall have the right to conserve the same.'
-    },
-    {
-      subject: 'HISTORY',
-      text: 'Who presided over the historic Karachi Session of the Indian National Congress in 1931 where the Resolution on Fundamental Rights was passed?',
-      options: ['Mahatma Gandhi', 'Sardar Vallabhbhai Patel', 'Jawaharlal Nehru', 'Subhas Chandra Bose'],
-      correctAnswerIndex: 1,
-      explanation: 'Sardar Vallabhbhai Patel presided over the 1931 Karachi Session of INC. The resolution on Fundamental Rights and National Economic Programme was drafted by Jawaharlal Nehru.'
-    },
-    {
-      subject: 'ECONOMY',
-      text: 'What is the statutory inflation target assigned to the Reserve Bank of India under the Flexible Inflation Targeting framework?',
-      options: ['2% with +/- 1%', '4% with +/- 2%', '6% with +/- 2%', '5% fixed'],
-      correctAnswerIndex: 1,
-      explanation: 'Under Section 45ZA of the RBI Act, 1934, the inflation target is 4% CPI headline inflation with an upper tolerance limit of 6% and lower tolerance limit of 2%.'
-    },
-    {
-      subject: 'TAMIL HERITAGE / GS',
-      text: 'Which ancient Tamil Sangam work is traditionally known as the "Tamil Veda" or "Utharavedham"?',
-      options: ['Silappatikaram', 'Manimekalai', 'Thirukkural', 'Thiruvilayadal Puranam'],
-      correctAnswerIndex: 2,
-      explanation: 'Thirukkural composed by Thiruvalluvar is widely revered as the "Tamil Veda" (Utharavedham) due to its universal ethical and moral maxims.'
-    },
-    {
-      subject: 'CSAT / APTITUDE',
-      text: 'If A can complete a piece of work in 12 days and B in 24 days, how many days will they take together?',
-      options: ['6 days', '8 days', '9 days', '10 days'],
-      correctAnswerIndex: 1,
-      explanation: 'Combined rate = 1/12 + 1/24 = 3/24 = 1/8. So together they complete the work in 8 days.'
-    }
-  ];
-
-  const broadcasts = targetChannels.map(ch => {
-    const qList = ch.id === 'IIT_JEE' ? sampleIITQuestions : sampleCivilQuestions;
+  const broadcasts = targetChannels.map((ch, chIdx) => {
+    const qList = getQuestionsForExam((ch.id as ExamType), dateSeed + chIdx * 10, 5, globalUsedIds);
     let qText = '';
     qList.forEach((q, idx) => {
       const opts = q.options.map((o, oIdx) => `  ${String.fromCharCode(65 + oIdx)}) ${o}`).join('\n');
