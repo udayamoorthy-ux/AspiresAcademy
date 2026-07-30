@@ -516,7 +516,7 @@ export default function App() {
           
           {/* Navigation Sidebar */}
           <div className="lg:col-span-3 space-y-6" id="navigation-sidebar-column">
-            <div className="bg-white border border-slate-200/80 p-5 rounded-2xl shadow-sm space-y-6 sticky top-[100px] max-h-[calc(100vh-140px)] overflow-y-auto" id="navigation-card-container">
+            <div className="bg-white border border-slate-200/80 p-5 rounded-2xl shadow-sm space-y-6" id="navigation-card-container">
               <div>
                 <h3 className="text-sm font-black text-slate-900 tracking-tight font-display mb-0.5">Study Desk Dashboard</h3>
                 <p className="text-[11px] text-slate-400 font-medium">All modules aligned to {selectedExam}</p>
@@ -568,36 +568,33 @@ export default function App() {
 
             {/* Premium Status Widget / Promo Inside Sidebar */}
             {isPremium ? (
-              <div className="bg-gradient-to-br from-amber-500/10 to-emerald-500/10 border border-amber-500/35 p-5 rounded-2xl space-y-3 shadow-sm relative overflow-hidden" id="premium-sidebar-active">
+              <div className="bg-gradient-to-br from-amber-500/10 to-emerald-500/10 border border-amber-500/35 p-4 rounded-2xl space-y-2 shadow-sm" id="premium-sidebar-active">
                 <div className="flex items-center gap-2">
-                  <Crown className="h-5 w-5 text-amber-500 animate-pulse" />
-                  <h4 className="font-extrabold text-sm text-slate-900 font-display">Premium Active</h4>
+                  <Crown className="h-4 w-4 text-amber-500 shrink-0" />
+                  <h4 className="font-extrabold text-xs text-slate-900 font-display">Premium Active</h4>
                 </div>
-                <p className="text-xs text-slate-500 leading-relaxed font-sans">
-                  You have unlimited access to all AI evaluators, planners, diagnostic testing suites, and voice teachers.
+                <p className="text-[11px] text-slate-500 leading-relaxed font-sans">
+                  You have unlimited access to all AI evaluators, planners & mock tests.
                 </p>
-                <div className="flex items-center gap-1.5 text-[10px] font-mono text-emerald-800 font-black">
+                <div className="flex items-center gap-1 text-[10px] font-mono text-emerald-800 font-bold">
                   <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
-                  <span>ALL CAP LIMITS REMOVED</span>
+                  <span>ALL LIMITS REMOVED</span>
                 </div>
               </div>
             ) : (
-              <div className="bg-gradient-to-br from-slate-950 to-slate-900 text-white border border-slate-800 p-5 rounded-2xl space-y-3.5 shadow-xl relative overflow-hidden" id="premium-sidebar-promo">
-                <div className="absolute -right-3 -top-3 opacity-15">
-                  <Crown className="h-20 w-20 text-yellow-400 rotate-12" />
-                </div>
-                <div className="space-y-1">
-                  <span className="text-[9.5px] uppercase tracking-widest text-amber-400 font-black font-mono">Unlock Unlimited AI Power</span>
-                  <h4 className="font-extrabold text-sm text-white flex items-center gap-1.5 font-display">
-                    ASPIRES Premium 💎
+              <div className="bg-slate-900 text-white border border-slate-800 p-4.5 rounded-2xl space-y-3 shadow-md" id="premium-sidebar-promo">
+                <div className="space-y-0.5">
+                  <span className="text-[9px] uppercase tracking-widest text-amber-400 font-bold font-mono">ASPIRES Elite</span>
+                  <h4 className="font-extrabold text-xs text-white flex items-center gap-1.5 font-display">
+                    ASPIRES Premium 👑
                   </h4>
                 </div>
                 <p className="text-[11px] text-slate-400 leading-relaxed">
-                  Unlock limitless essay diagnostics, notes generators, custom schedules, and ad-free AI coaching chats.
+                  Unlock unlimited essay evaluations, AI notes & diagnostic mock tests.
                 </p>
                 <button
                   onClick={() => setIsSupportModalOpen(true)}
-                  className="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs py-2.5 rounded-xl transition-all shadow-md hover:shadow-lg hover:scale-101 cursor-pointer flex items-center justify-center gap-1"
+                  className="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs py-2 rounded-xl transition-all shadow-sm active:scale-95 cursor-pointer flex items-center justify-center gap-1"
                 >
                   <span>Activate Premium</span>
                   <ArrowRight className="h-3 w-3" />
@@ -616,273 +613,255 @@ export default function App() {
               </p>
             </div>
 
-            {/* Viral Growth & Share Widget */}
+            {/* Compact Invite & Outreach Link */}
             <div 
-              className={`bg-gradient-to-br from-emerald-600/5 to-teal-600/5 border p-5 rounded-2xl space-y-4 shadow-sm transition-all duration-500 ${
-                highlightShareCard 
-                  ? 'ring-4 ring-amber-400 border-amber-400 scale-[1.03] shadow-md animate-pulse' 
-                  : 'border-emerald-500/20'
-              }`} 
-              id="share-card"
+              className="bg-white border border-slate-200 p-4.5 rounded-2xl space-y-3 shadow-xs" 
+              id="share-card-sidebar"
             >
-              <div className="space-y-1">
-                <span className="text-[9px] uppercase tracking-widest text-emerald-700 font-bold font-mono">Spread the Word 📢</span>
-                <h4 className="font-extrabold text-sm text-slate-900 flex items-center gap-1.5 font-display">
-                  Invite Study Buddies
+              <div className="space-y-0.5">
+                <span className="text-[9px] uppercase tracking-widest text-emerald-700 font-bold font-mono">Growth & Outreach 📢</span>
+                <h4 className="font-extrabold text-xs text-slate-900 flex items-center gap-1.5 font-display">
+                  Daily 5 MCQs & Share
                 </h4>
               </div>
-              <p className="text-xs text-slate-500 leading-relaxed">
-                Help other civil services aspirants prepare smarter! Share ASPIRES ACADEMY with your UPSC & TNPSC peers on WhatsApp or Telegram.
+              <p className="text-[11px] text-slate-500 leading-relaxed font-sans">
+                Post daily 5 high-yield MCQs in your study groups on WhatsApp & Facebook!
               </p>
-              
-              <div className="grid grid-cols-1 gap-2">
+
+              <div className="grid grid-cols-1 gap-2 pt-0.5">
                 <button
                   onClick={() => {
-                    const shareText = `Hey! Check out ASPIRES ACADEMY (https://aspiresacademy.in) — an elite AI-Powered Civil Services Exam Prep Portal for UPSC & TNPSC! It features interactive syllabus trackers, AI voice lessons, automated essay evaluations, active recall flashcards, and 24/7 expert AI coaching. Try it here: https://aspiresacademy.in`;
+                    const el = document.getElementById('share-card');
+                    if (el) {
+                      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                      setHighlightShareCard(true);
+                      setTimeout(() => setHighlightShareCard(false), 2000);
+                    }
+                  }}
+                  className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs py-2 rounded-xl flex items-center justify-center gap-1.5 transition-all shadow-xs active:scale-95 cursor-pointer"
+                >
+                  <Share2 className="h-3.5 w-3.5" />
+                  <span>View Daily 5 Questions</span>
+                </button>
+
+                <button
+                  onClick={() => {
+                    const shareText = `Hey! Try ASPIRES ACADEMY (https://aspiresacademy.in) — an elite AI-Powered Civil Services Exam Prep Portal for UPSC, TNPSC, SSC & RRB! It features interactive syllabus trackers, AI voice lessons, automated essay evaluations & mock tests. Try it here: https://aspiresacademy.in`;
                     navigator.clipboard.writeText(shareText);
                     setCopiedLink(true);
                     setTimeout(() => setCopiedLink(false), 2000);
                   }}
-                  className="w-full bg-white hover:bg-slate-50 border border-slate-200 text-slate-750 font-bold text-xs py-2 rounded-xl flex items-center justify-center gap-1.5 transition-all shadow-sm active:scale-[0.98] cursor-pointer"
-                  id="btn-copy-invite"
+                  className="w-full bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 font-bold text-xs py-2 rounded-xl flex items-center justify-center gap-1.5 transition-all active:scale-95 cursor-pointer"
                 >
                   {copiedLink ? (
                     <>
-                      <Check className="h-3.5 w-3.5 text-emerald-600 animate-scaleIn" />
-                      <span className="text-emerald-700">Copied Invite Message!</span>
+                      <Check className="h-3.5 w-3.5 text-emerald-600" />
+                      <span className="text-emerald-700">Copied Invite Link!</span>
                     </>
                   ) : (
                     <>
                       <Copy className="h-3.5 w-3.5 text-slate-500" />
-                      <span>Copy Invite Message</span>
+                      <span>Copy Invite Link</span>
                     </>
                   )}
                 </button>
-
-                <div className="grid grid-cols-2 gap-2">
-                  <a
-                    href={`https://t.me/share/url?url=${encodeURIComponent('https://aspiresacademy.in')}&text=${encodeURIComponent('Prepare smarter for UPSC & TNPSC exams with ASPIRES ACADEMY (https://aspiresacademy.in). Interactive syllabus trackers, AI essay evaluations, flashcards, and personalized coaching!')}`}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="bg-[#24A1DE]/10 hover:bg-[#24A1DE]/20 text-[#1975a2] font-black text-xs py-2 rounded-xl flex items-center justify-center gap-1 transition-all active:scale-[0.98]"
-                    id="btn-share-telegram"
-                  >
-                    <Share2 className="h-3 w-3" />
-                    <span>Telegram</span>
-                  </a>
-                  <a
-                    href={`https://api.whatsapp.com/send?text=${encodeURIComponent('Hey! Try ASPIRES ACADEMY (https://aspiresacademy.in) — an amazing AI-powered prep portal for UPSC & TNPSC civil service exams with syllabus trackers, AI essay evaluation, flashcards, and mock tests! Here: https://aspiresacademy.in')}`}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="bg-[#25D366]/10 hover:bg-[#25D366]/20 text-[#128C7E] font-black text-xs py-2 rounded-xl flex items-center justify-center gap-1 transition-all active:scale-[0.98]"
-                    id="btn-share-whatsapp"
-                  >
-                    <Share2 className="h-3 w-3" />
-                    <span>WhatsApp</span>
-                  </a>
-                </div>
-
-                {/* Dynamic Community Outreach Post Builder */}
-                <div className="border-t border-slate-200/60 pt-3 mt-2 space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-bold text-emerald-800 uppercase tracking-wider flex items-center gap-1">
-                      <Sparkles className="h-3 w-3 animate-pulse" /> Outreach Kit
-                    </span>
-                    <button
-                      onClick={() => setShowOutreachKit(!showOutreachKit)}
-                      className="text-[11px] font-bold text-slate-600 hover:text-slate-800 underline cursor-pointer"
-                    >
-                      {showOutreachKit ? 'Hide' : 'Show Daily 5 Questions'}
-                    </button>
-                  </div>
-
-                  {showOutreachKit && (
-                    <div className="bg-white/80 border border-emerald-500/10 rounded-xl p-3 space-y-3 animate-fadeIn text-xs">
-                      {/* Dynamic Refresh Controls */}
-                      <div className="flex items-center gap-2 justify-between border-b border-slate-100 pb-2 mb-1">
-                        <div className="text-[9px] text-slate-500 font-mono uppercase tracking-wide">
-                          Mode: <span className="font-extrabold text-emerald-700">{outreachSource === 'daily' ? `Daily Rotation (Set #${dailySeedOffset + 1})` : 'AI Custom'}</span>
-                        </div>
-                        <div className="flex items-center gap-1.5">
-                          <button
-                            onClick={() => {
-                              setDailySeedOffset(prev => prev + 1);
-                              setOutreachSource('daily');
-                            }}
-                            className="text-[9px] font-bold text-emerald-800 hover:text-emerald-950 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-100 cursor-pointer active:scale-95 transition-all"
-                            title="Load next daily set of questions"
-                          >
-                            🔄 Next Daily
-                          </button>
-                          <button
-                            onClick={handleGenerateAIOutreach}
-                            disabled={isGeneratingOutreach}
-                            className={`text-[9px] font-bold text-white bg-emerald-600 hover:bg-emerald-700 px-1.5 py-0.5 rounded cursor-pointer active:scale-95 transition-all flex items-center gap-0.5 ${isGeneratingOutreach ? 'opacity-50 pointer-events-none' : ''}`}
-                            title="Generate 5 fresh questions with Gemini AI"
-                          >
-                            {isGeneratingOutreach ? 'Generating...' : '✨ Gen AI'}
-                          </button>
-                        </div>
-                      </div>
-
-                      <div className="space-y-1">
-                        <label className="text-[10px] font-bold text-slate-500 uppercase font-mono">Select Title Heading:</label>
-                        <select
-                          value={selectedHeadingIndex}
-                          onChange={(e) => setSelectedHeadingIndex(Number(e.target.value))}
-                          className="w-full bg-white border border-slate-200 text-slate-750 text-xs rounded-lg px-2 py-1.5 font-sans focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 outline-none"
-                        >
-                          <option value={0}>🎯 Daily MCQ Drill</option>
-                          <option value={1}>🧠 Can You Crack These 5?</option>
-                          <option value={2}>🔥 Prelims Challenge</option>
-                          <option value={3}>💡 5 High-Yield MCQs</option>
-                        </select>
-                      </div>
-
-                      <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 max-h-60 overflow-y-auto space-y-3 text-[11px] text-slate-750 font-sans shadow-inner">
-                        <div className="font-extrabold text-slate-850 font-display border-b border-slate-200 pb-1.5 mb-2 sticky top-0 bg-slate-50 pt-0.5">
-                          {selectedHeadingIndex === 0 && `🎯 ${selectedExam} CSE DAILY MCQ DRILL – Test Your Limits!`}
-                          {selectedHeadingIndex === 1 && `🧠 Can You Crack These 5 Elite ${selectedExam} Questions?`}
-                          {selectedHeadingIndex === 2 && `🔥 ${selectedExam} Prelims Challenge: 5 High-Yield Questions from ASPIRES!`}
-                          {selectedHeadingIndex === 3 && `💡 5 Tough ${selectedExam} Prep MCQs to Boost Your Score Today!`}
-                        </div>
-                        
-                        <div className="space-y-3">
-                          {outreachQuestions.map((q, index) => (
-                            <div key={q.id || index} className="p-2 bg-white rounded-lg border border-slate-200/60 shadow-xs">
-                              <span className="font-bold text-emerald-700 font-mono text-[9px] uppercase tracking-wider">
-                                {index + 1}️⃣ {q.subject || 'GENERAL STUDIES'}
-                              </span>
-                              <p className="font-semibold text-slate-850 mt-0.5">{q.text}</p>
-                              <div className="grid grid-cols-2 gap-1 mt-1 pl-2 text-slate-500 font-mono text-[10px]">
-                                {q.options.map((opt, oIdx) => (
-                                  <div key={oIdx}>{String.fromCharCode(65 + oIdx)}) {opt}</div>
-                                ))}
-                              </div>
-                              <div className="mt-1.5 text-[10px] text-emerald-800 font-semibold bg-emerald-50 p-1 rounded">
-                                👉 Answer: {String.fromCharCode(65 + q.correctAnswerIndex)} ({q.options[q.correctAnswerIndex]}) - {q.explanation}
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-
-                        {/* CTA Footer Preview */}
-                        <div className="pt-2.5 mt-2.5 border-t border-slate-200/80 text-[10px] text-slate-500 space-y-2 font-sans">
-                          <p className="font-mono text-[8px] uppercase tracking-wider text-slate-400">🎁 Description & Offer Included in Share Post:</p>
-                          <p className="font-semibold text-slate-700 leading-relaxed">
-                            🚀 <strong>ASPIRES ACADEMY</strong> is an elite, state-of-the-art AI-powered preparation portal designed specifically for UPSC Civil Services, TNPSC Group 1, 2, 4, and SSC CGL exams. Learn with interactive syllabus trackers, AI voice lessons, automated essay evaluation, active recall flashcards, and live mock tests.
-                          </p>
-                          <div className="bg-amber-50 border border-amber-300 rounded-xl p-2.5 text-slate-800 space-y-1">
-                            <p className="text-[10px] font-black text-amber-900 uppercase tracking-wide">🎟️ SPECIAL ASPIRANT DISCOUNT ACTIVE</p>
-                            <p className="text-[10px] font-medium leading-relaxed">
-                              Use Coupon Code <strong className="text-emerald-700 bg-emerald-50 px-1 py-0.5 rounded font-mono border border-emerald-200">ANNUAL87</strong> to get the Elite Annual Pass for just <strong>₹299/year</strong> (87% Off, Regular ₹2,299/yr). Get unlimited essay checks and instant portal alerts!
-                            </p>
-                          </div>
-                          <p className="text-blue-600 font-extrabold flex items-center gap-1">
-                            <span>🔗 Start Your Prep Journey:</span>
-                            <a href="https://aspiresacademy.in" target="_blank" rel="noopener noreferrer" className="underline hover:text-blue-800">https://aspiresacademy.in</a>
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-1 gap-2 pt-1">
-                        <button
-                          onClick={() => {
-                            const headings = [
-                              selectedHeadingIndex === 0 ? `🎯 ${selectedExam} CSE DAILY MCQ DRILL – Test Your Limits!` : '',
-                              selectedHeadingIndex === 1 ? `🧠 Can You Crack These 5 Elite ${selectedExam} Questions?` : '',
-                              selectedHeadingIndex === 2 ? `🔥 ${selectedExam} Prelims Challenge: 5 High-Yield Questions from ASPIRES!` : '',
-                              selectedHeadingIndex === 3 ? `💡 5 Tough ${selectedExam} Prep MCQs to Boost Your Score Today!` : ''
-                            ];
-                            const heading = headings[selectedHeadingIndex] || `🎯 ${selectedExam} Daily Civil Services Challenge`;
-                            
-                            let questionsText = '';
-                            outreachQuestions.forEach((q, index) => {
-                              const optionsText = q.options.map((opt, oIdx) => `${String.fromCharCode(65 + oIdx)}) ${opt}`).join('\n');
-                              questionsText += `${index + 1}️⃣ ${q.subject || 'GENERAL STUDIES'}: ${q.text}\n${optionsText}\n👉 Answer: ${String.fromCharCode(65 + q.correctAnswerIndex)} (${q.options[q.correctAnswerIndex]}) - ${q.explanation}\n\n`;
-                            });
-
-                            const postText = `${heading}\n\n${questionsText}---\n🚀 ASPIRES ACADEMY (https://aspiresacademy.in) is an elite, state-of-the-art AI-powered preparation portal for UPSC Civil Services, TNPSC Group 1/2/4, SSC CGL, RRB NTPC, and IIT JEE. Learn with interactive syllabus trackers, AI voice lessons, automated essay evaluation, active recall flashcards, and live mock tests!\n🎟️ SPECIAL ASPIRANT DISCOUNT: Use Coupon Code "ANNUAL87" to get the ASPIRES Elite Annual Pass for just ₹299/year (87% OFF, Regular ₹2,299/yr) - valid for fast-acting aspirants only!\n🔗 Start Your Prep Journey: https://aspiresacademy.in`;
-
-                            navigator.clipboard.writeText(postText);
-                            setCopiedPost(true);
-                            setTimeout(() => setCopiedPost(false), 2500);
-                          }}
-                          className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 rounded-xl flex items-center justify-center gap-1.5 transition-colors shadow-sm active:scale-[0.98] cursor-pointer text-xs"
-                        >
-                          {copiedPost ? (
-                            <>
-                              <Check className="h-3.5 w-3.5" />
-                              <span>Copied Outreach Post!</span>
-                            </>
-                          ) : (
-                            <>
-                              <Copy className="h-3.5 w-3.5" />
-                              <span>Copy Daily 5 Questions Post</span>
-                            </>
-                          )}
-                        </button>
-
-                        <div className="grid grid-cols-2 gap-1.5 pt-1">
-                          <button
-                            onClick={() => {
-                              const headings = [
-                                selectedHeadingIndex === 0 ? `🎯 ${selectedExam} CSE DAILY MCQ DRILL` : '',
-                                selectedHeadingIndex === 1 ? `🧠 Can You Crack These 5 Elite ${selectedExam} Questions?` : '',
-                                selectedHeadingIndex === 2 ? `🔥 ${selectedExam} Prelims Challenge` : '',
-                                selectedHeadingIndex === 3 ? `💡 5 Tough ${selectedExam} Prep MCQs` : ''
-                              ];
-                              const heading = headings[selectedHeadingIndex] || `🎯 ${selectedExam} Daily Civil Services Challenge`;
-                              let questionsText = '';
-                              outreachQuestions.forEach((q, index) => {
-                                const optionsText = q.options.map((opt, oIdx) => `${String.fromCharCode(65 + oIdx)}) ${opt}`).join('\n');
-                                questionsText += `${index + 1}️⃣ ${q.subject || 'GENERAL STUDIES'}: ${q.text}\n${optionsText}\n👉 Answer: ${String.fromCharCode(65 + q.correctAnswerIndex)} (${q.options[q.correctAnswerIndex]})\n\n`;
-                              });
-                              const postText = `${heading}\n\n${questionsText}🔗 Practice More: https://aspiresacademy.in`;
-                              window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(postText)}`, '_blank');
-                            }}
-                            className="bg-[#25D366] hover:bg-[#20ba5a] text-white font-extrabold text-[11px] py-2 rounded-xl flex items-center justify-center gap-1 transition-all active:scale-[0.98] shadow-sm cursor-pointer"
-                            id="btn-post-outreach-whatsapp"
-                          >
-                            <Share2 className="h-3 w-3" />
-                            <span>Post on WhatsApp</span>
-                          </button>
-
-                          <button
-                            onClick={() => {
-                              const headings = [
-                                selectedHeadingIndex === 0 ? `🎯 ${selectedExam} CSE DAILY MCQ DRILL` : '',
-                                selectedHeadingIndex === 1 ? `🧠 Can You Crack These 5 Elite ${selectedExam} Questions?` : '',
-                                selectedHeadingIndex === 2 ? `🔥 ${selectedExam} Prelims Challenge` : '',
-                                selectedHeadingIndex === 3 ? `💡 5 Tough ${selectedExam} Prep MCQs` : ''
-                              ];
-                              const heading = headings[selectedHeadingIndex] || `🎯 ${selectedExam} Daily Civil Services Challenge`;
-                              let questionsText = '';
-                              outreachQuestions.forEach((q, index) => {
-                                const optionsText = q.options.map((opt, oIdx) => `${String.fromCharCode(65 + oIdx)}) ${opt}`).join('\n');
-                                questionsText += `${index + 1}️⃣ ${q.subject || 'GENERAL STUDIES'}: ${q.text}\n${optionsText}\n👉 Answer: ${String.fromCharCode(65 + q.correctAnswerIndex)}\n\n`;
-                              });
-                              const postText = `${heading}\n\n${questionsText}🔗 Practice on ASPIRES ACADEMY: https://aspiresacademy.in`;
-                              window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent('https://aspiresacademy.in')}&quote=${encodeURIComponent(postText)}`, '_blank');
-                            }}
-                            className="bg-[#1877F2] hover:bg-[#166fe5] text-white font-extrabold text-[11px] py-2 rounded-xl flex items-center justify-center gap-1 transition-all active:scale-[0.98] shadow-sm cursor-pointer"
-                            id="btn-post-outreach-facebook"
-                          >
-                            <Share2 className="h-3 w-3" />
-                            <span>Post on Facebook</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
               </div>
             </div>
+
           </div>
 
           {/* Active Work Area Panel */}
-          <div className="lg:col-span-9" id="active-work-area">
+          <div className="lg:col-span-9 space-y-6" id="active-work-area">
+
+            {/* Prominent Daily 5 Questions to Post on FB, WhatsApp, Telegram */}
+            <div 
+              className={`bg-white border p-5 md:p-6 rounded-2xl space-y-4 shadow-sm transition-all duration-300 ${
+                highlightShareCard 
+                  ? 'ring-4 ring-amber-400 border-amber-400 shadow-md' 
+                  : 'border-slate-200'
+              }`} 
+              id="share-card"
+            >
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-150 pb-3">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-mono">
+                      {selectedExam} Daily Feed
+                    </span>
+                    <span className="text-xs text-slate-400 font-medium">Updated for Today</span>
+                  </div>
+                  <h3 className="text-base font-black text-slate-900 font-display mt-1 flex items-center gap-2">
+                    📢 Daily 5 MCQs – Post on WhatsApp & Facebook
+                  </h3>
+                  <p className="text-xs text-slate-500 font-sans">
+                    Publish 5 daily high-yield practice MCQs directly to your WhatsApp study groups, Facebook pages, or Telegram channels!
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-2 shrink-0">
+                  <button
+                    onClick={() => {
+                      setDailySeedOffset(prev => prev + 1);
+                      setOutreachSource('daily');
+                    }}
+                    className="text-xs font-bold text-emerald-800 hover:text-emerald-950 bg-emerald-50 hover:bg-emerald-100 px-3 py-1.5 rounded-xl border border-emerald-200 cursor-pointer active:scale-95 transition-all flex items-center gap-1"
+                    title="Load next daily set of questions"
+                  >
+                    🔄 Next Daily Set
+                  </button>
+                  <button
+                    onClick={handleGenerateAIOutreach}
+                    disabled={isGeneratingOutreach}
+                    className={`text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 px-3 py-1.5 rounded-xl shadow-sm cursor-pointer active:scale-95 transition-all flex items-center gap-1 ${isGeneratingOutreach ? 'opacity-50 pointer-events-none' : ''}`}
+                    title="Generate 5 fresh questions with Gemini AI"
+                  >
+                    {isGeneratingOutreach ? 'Generating...' : '✨ Gen AI Set'}
+                  </button>
+                </div>
+              </div>
+
+              {/* Title & Sharing Controls */}
+              <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
+                <div className="md:col-span-4 space-y-1">
+                  <label className="text-[10px] font-extrabold text-slate-500 uppercase font-mono">Select Title Heading:</label>
+                  <select
+                    value={selectedHeadingIndex}
+                    onChange={(e) => setSelectedHeadingIndex(Number(e.target.value))}
+                    className="w-full bg-slate-50 border border-slate-200 text-slate-800 text-xs rounded-xl px-3 py-2 font-sans focus:ring-1 focus:ring-emerald-500 outline-none"
+                  >
+                    <option value={0}>🎯 Daily MCQ Drill</option>
+                    <option value={1}>🧠 Can You Crack These 5?</option>
+                    <option value={2}>🔥 Prelims Challenge</option>
+                    <option value={3}>💡 5 High-Yield MCQs</option>
+                  </select>
+                </div>
+
+                <div className="md:col-span-8 flex flex-wrap items-center justify-start md:justify-end gap-2 pt-1 md:pt-4">
+                  {/* WhatsApp Direct Post Button */}
+                  <button
+                    onClick={() => {
+                      const headings = [
+                        selectedHeadingIndex === 0 ? `🎯 ${selectedExam} CSE DAILY MCQ DRILL – Test Your Limits!` : '',
+                        selectedHeadingIndex === 1 ? `🧠 Can You Crack These 5 Elite ${selectedExam} Questions?` : '',
+                        selectedHeadingIndex === 2 ? `🔥 ${selectedExam} Prelims Challenge: 5 High-Yield Questions from ASPIRES!` : '',
+                        selectedHeadingIndex === 3 ? `💡 5 Tough ${selectedExam} Prep MCQs to Boost Your Score Today!` : ''
+                      ];
+                      const heading = headings[selectedHeadingIndex] || `🎯 ${selectedExam} Daily Challenge`;
+                      let questionsText = '';
+                      outreachQuestions.forEach((q, index) => {
+                        const optionsText = q.options.map((opt, oIdx) => `${String.fromCharCode(65 + oIdx)}) ${opt}`).join('\n');
+                        questionsText += `${index + 1}️⃣ ${q.subject || 'GENERAL STUDIES'}: ${q.text}\n${optionsText}\n👉 Answer: ${String.fromCharCode(65 + q.correctAnswerIndex)} (${q.options[q.correctAnswerIndex]})\n\n`;
+                      });
+                      const postText = `${heading}\n\n${questionsText}🚀 Practice on ASPIRES ACADEMY: https://aspiresacademy.in`;
+                      window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(postText)}`, '_blank');
+                    }}
+                    className="bg-[#25D366] hover:bg-[#20ba5a] text-white font-extrabold text-xs px-3.5 py-2 rounded-xl flex items-center gap-1.5 transition-all shadow-sm active:scale-95 cursor-pointer"
+                    id="btn-post-outreach-whatsapp"
+                  >
+                    <Share2 className="h-3.5 w-3.5" />
+                    <span>Post on WhatsApp</span>
+                  </button>
+
+                  {/* Facebook Direct Post Button */}
+                  <button
+                    onClick={() => {
+                      const headings = [
+                        selectedHeadingIndex === 0 ? `🎯 ${selectedExam} CSE DAILY MCQ DRILL` : '',
+                        selectedHeadingIndex === 1 ? `🧠 Can You Crack These 5 Elite ${selectedExam} Questions?` : '',
+                        selectedHeadingIndex === 2 ? `🔥 ${selectedExam} Prelims Challenge` : '',
+                        selectedHeadingIndex === 3 ? `💡 5 Tough ${selectedExam} Prep MCQs` : ''
+                      ];
+                      const heading = headings[selectedHeadingIndex] || `🎯 ${selectedExam} Daily Challenge`;
+                      let questionsText = '';
+                      outreachQuestions.forEach((q, index) => {
+                        const optionsText = q.options.map((opt, oIdx) => `${String.fromCharCode(65 + oIdx)}) ${opt}`).join('\n');
+                        questionsText += `${index + 1}️⃣ ${q.subject || 'GENERAL STUDIES'}: ${q.text}\n${optionsText}\n👉 Answer: ${String.fromCharCode(65 + q.correctAnswerIndex)}\n\n`;
+                      });
+                      const postText = `${heading}\n\n${questionsText}🔗 Practice on ASPIRES ACADEMY: https://aspiresacademy.in`;
+                      window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent('https://aspiresacademy.in')}&quote=${encodeURIComponent(postText)}`, '_blank');
+                    }}
+                    className="bg-[#1877F2] hover:bg-[#166fe5] text-white font-extrabold text-xs px-3.5 py-2 rounded-xl flex items-center gap-1.5 transition-all shadow-sm active:scale-95 cursor-pointer"
+                    id="btn-post-outreach-facebook"
+                  >
+                    <Share2 className="h-3.5 w-3.5" />
+                    <span>Post on Facebook</span>
+                  </button>
+
+                  {/* Copy Complete Post Text */}
+                  <button
+                    onClick={() => {
+                      const headings = [
+                        selectedHeadingIndex === 0 ? `🎯 ${selectedExam} CSE DAILY MCQ DRILL – Test Your Limits!` : '',
+                        selectedHeadingIndex === 1 ? `🧠 Can You Crack These 5 Elite ${selectedExam} Questions?` : '',
+                        selectedHeadingIndex === 2 ? `🔥 ${selectedExam} Prelims Challenge: 5 High-Yield Questions from ASPIRES!` : '',
+                        selectedHeadingIndex === 3 ? `💡 5 Tough ${selectedExam} Prep MCQs to Boost Your Score Today!` : ''
+                      ];
+                      const heading = headings[selectedHeadingIndex] || `🎯 ${selectedExam} Daily Challenge`;
+                      
+                      let questionsText = '';
+                      outreachQuestions.forEach((q, index) => {
+                        const optionsText = q.options.map((opt, oIdx) => `${String.fromCharCode(65 + oIdx)}) ${opt}`).join('\n');
+                        questionsText += `${index + 1}️⃣ ${q.subject || 'GENERAL STUDIES'}: ${q.text}\n${optionsText}\n👉 Answer: ${String.fromCharCode(65 + q.correctAnswerIndex)} (${q.options[q.correctAnswerIndex]}) - ${q.explanation}\n\n`;
+                      });
+
+                      const postText = `${heading}\n\n${questionsText}---\n🚀 ASPIRES ACADEMY (https://aspiresacademy.in) is an elite AI-powered prep portal for UPSC, TNPSC, SSC, RRB & IIT JEE. Practice interactive syllabus trackers, AI voice lessons, automated essay evaluation, flashcards & mock tests!\n🎟️ SPECIAL ASPIRANT DISCOUNT: Use Coupon Code "ANNUAL87" to get the ASPIRES Elite Annual Pass for just ₹299/year (87% OFF)!\n🔗 Start Your Prep: https://aspiresacademy.in`;
+
+                      navigator.clipboard.writeText(postText);
+                      setCopiedPost(true);
+                      setTimeout(() => setCopiedPost(false), 2500);
+                    }}
+                    className="bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs px-3.5 py-2 rounded-xl flex items-center gap-1.5 transition-colors shadow-sm active:scale-95 cursor-pointer"
+                  >
+                    {copiedPost ? (
+                      <>
+                        <Check className="h-3.5 w-3.5" />
+                        <span>Copied Complete Post!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="h-3.5 w-3.5" />
+                        <span>Copy Post Text</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              {/* Question Preview Box */}
+              <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 max-h-80 overflow-y-auto space-y-3 text-xs text-slate-800 font-sans shadow-inner">
+                <div className="font-extrabold text-slate-900 font-display border-b border-slate-200 pb-1.5 mb-2 sticky top-0 bg-slate-50 pt-0.5">
+                  {selectedHeadingIndex === 0 && `🎯 ${selectedExam} CSE DAILY MCQ DRILL – Test Your Limits!`}
+                  {selectedHeadingIndex === 1 && `🧠 Can You Crack These 5 Elite ${selectedExam} Questions?`}
+                  {selectedHeadingIndex === 2 && `🔥 ${selectedExam} Prelims Challenge: 5 High-Yield Questions from ASPIRES!`}
+                  {selectedHeadingIndex === 3 && `💡 5 Tough ${selectedExam} Prep MCQs to Boost Your Score Today!`}
+                </div>
+                
+                <div className="space-y-3">
+                  {outreachQuestions.map((q, qIdx) => (
+                    <div key={q.id || qIdx} className="bg-white border border-slate-200 p-3 rounded-lg space-y-2 shadow-2xs">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-slate-100 text-slate-700">
+                          Q{qIdx + 1} • {q.subject || 'GENERAL STUDIES'}
+                        </span>
+                      </div>
+                      <p className="font-bold text-slate-900 leading-snug">{q.text}</p>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 pl-1 text-[11px] text-slate-650">
+                        {q.options.map((opt, oIdx) => (
+                          <div key={oIdx} className={oIdx === q.correctAnswerIndex ? 'font-bold text-emerald-800' : ''}>
+                            {String.fromCharCode(65 + oIdx)}) {opt}
+                          </div>
+                        ))}
+                      </div>
+                      <div className="text-[10.5px] text-emerald-700 bg-emerald-50/60 p-2 rounded border border-emerald-100 font-medium leading-relaxed">
+                        <strong>Correct Answer:</strong> Option {String.fromCharCode(65 + q.correctAnswerIndex)} ({q.options[q.correctAnswerIndex]}).
+                        <div className="text-[10px] text-slate-500 mt-0.5">{q.explanation}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
             {React.createElement(ActiveComponent as any, {
               selectedExam,
               onSelectExam: handleSelectExam,
