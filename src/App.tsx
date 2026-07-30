@@ -29,7 +29,8 @@ import {
   AUTHENTIC_HISTORY_POOL, 
   AUTHENTIC_ECONOMY_POOL, 
   AUTHENTIC_TAMIL_POOL, 
-  generateAptitudeQuestion 
+  generateAptitudeQuestion,
+  getQuestionsForExam
 } from './utils/questionPool';
 import { STATIC_QUIZ_QUESTIONS } from './data';
 import { MultiExamWhatsAppBroadcaster } from './components/MultiExamWhatsAppBroadcaster';
@@ -116,66 +117,7 @@ export default function App() {
   const [dailySeedOffset, setDailySeedOffset] = useState(0);
 
   const getDailyQuestionsForOutreach = (exam: ExamType, seedOffset = 0) => {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = today.getMonth() + 1;
-    const date = today.getDate();
-    const baseSeed = year * 1000 + month * 100 + date + seedOffset;
-
-    const selectedQuestions: Question[] = [];
-
-    // Special handling for IIT_JEE exam
-    if (exam === 'IIT_JEE') {
-      const pool = STATIC_QUIZ_QUESTIONS.IIT_JEE || [];
-      if (pool.length > 0) {
-        for (let i = 0; i < 5; i++) {
-          const qIdx = (baseSeed + i * 2) % pool.length;
-          selectedQuestions.push(pool[qIdx]);
-        }
-        return selectedQuestions;
-      }
-    }
-
-    // Handling for SSC_CGL or RRB_NTPC
-    if (exam === 'SSC_CGL' || exam === 'RRB_NTPC') {
-      const pool = STATIC_QUIZ_QUESTIONS[exam] || [];
-      if (pool.length > 0) {
-        for (let i = 0; i < 5; i++) {
-          const qIdx = (baseSeed + i) % pool.length;
-          selectedQuestions.push(pool[qIdx]);
-        }
-        return selectedQuestions;
-      }
-    }
-
-    // Default Civil Services (UPSC / TNPSC) logic
-    // 1. Polity
-    const polityIdx = baseSeed % AUTHENTIC_POLITY_POOL.length;
-    selectedQuestions.push({ ...AUTHENTIC_POLITY_POOL[polityIdx], subject: 'POLITY' });
-
-    // 2. History
-    const historyIdx = (baseSeed + 3) % AUTHENTIC_HISTORY_POOL.length;
-    selectedQuestions.push({ ...AUTHENTIC_HISTORY_POOL[historyIdx], subject: 'HISTORY' });
-
-    // 3. Economy
-    const economyIdx = (baseSeed + 7) % AUTHENTIC_ECONOMY_POOL.length;
-    selectedQuestions.push({ ...AUTHENTIC_ECONOMY_POOL[economyIdx], subject: 'ECONOMY' });
-
-    // 4. Tamil History or general history based on Exam
-    if (exam.startsWith('TNPSC')) {
-      const tamilIdx = (baseSeed + 11) % AUTHENTIC_TAMIL_POOL.length;
-      selectedQuestions.push({ ...AUTHENTIC_TAMIL_POOL[tamilIdx], subject: 'TAMIL HERITAGE' });
-    } else {
-      const otherHistoryIdx = (baseSeed + 11) % AUTHENTIC_HISTORY_POOL.length;
-      const finalHistIdx = otherHistoryIdx === historyIdx ? (otherHistoryIdx + 1) % AUTHENTIC_HISTORY_POOL.length : otherHistoryIdx;
-      selectedQuestions.push({ ...AUTHENTIC_HISTORY_POOL[finalHistIdx], subject: 'WORLD & INDIAN HISTORY' });
-    }
-
-    // 5. Aptitude
-    const aptQ = generateAptitudeQuestion(baseSeed + 15);
-    selectedQuestions.push({ ...aptQ, subject: 'CSAT / APTITUDE' });
-
-    return selectedQuestions;
+    return getQuestionsForExam(exam, seedOffset, 5);
   };
 
   useEffect(() => {

@@ -171,6 +171,38 @@ ${qText}---
     setTimeout(() => setCopiedExamId(null), 2500);
   };
 
+  const [copiedAll, setCopiedAll] = useState<boolean>(false);
+
+  // Copy all 7 exam formatted posts into clipboard at once
+  const handleCopyAllExams = () => {
+    const dateStr = new Date().toLocaleDateString('en-IN', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric'
+    });
+    
+    let combinedText = `=========================================\n📱 ASPIRES ACADEMY - ALL 7 EXAM GROUPS DAILY 5 MCQs\n📅 Date: ${dateStr}\n=========================================\n\n`;
+
+    EXAM_CHANNELS.forEach((channel, idx) => {
+      combinedText += `-----------------------------------------\n📌 CHANNEL [${idx + 1}/7]: ${channel.name} (${channel.badge})\n📍 Target Group: ${channel.groupName}\n-----------------------------------------\n\n`;
+      combinedText += buildExamPostText(channel);
+      combinedText += `\n\n\n`;
+    });
+
+    navigator.clipboard.writeText(combinedText);
+    setCopiedAll(true);
+    setTimeout(() => setCopiedAll(false), 3000);
+  };
+
+  // Launch all 7 WhatsApp tabs at once
+  const handleOpenAllTabs = () => {
+    EXAM_CHANNELS.forEach((channel, idx) => {
+      setTimeout(() => {
+        handleSendToWhatsApp(channel);
+      }, idx * 400);
+    });
+  };
+
   // Sequential batch launcher
   const handleStartSequence = () => {
     setSequenceStep(0);
@@ -286,18 +318,27 @@ broadcastDaily5ToWhatsApp();`;
             </div>
           </div>
 
-          <div className="flex items-center gap-2 shrink-0">
+          <div className="flex flex-wrap items-center gap-2 shrink-0">
             <button
               onClick={onRefreshAll}
-              className="bg-emerald-900/60 hover:bg-emerald-900 text-emerald-100 hover:text-white border border-emerald-400/30 font-bold text-xs px-3.5 py-2 rounded-xl flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer"
+              className="bg-emerald-900/60 hover:bg-emerald-900 text-emerald-100 hover:text-white border border-emerald-400/30 font-bold text-xs px-3 py-2 rounded-xl flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer"
               title="Refresh questions seed for today"
             >
               <RefreshCw className="h-3.5 w-3.5" />
               <span>Next Daily Seed</span>
             </button>
             <button
+              onClick={handleCopyAllExams}
+              className="bg-emerald-950/80 hover:bg-emerald-950 text-amber-300 border border-amber-400/40 font-bold text-xs px-3.5 py-2 rounded-xl flex items-center gap-1.5 transition-all shadow-xs active:scale-95 cursor-pointer"
+              title="Copy formatted post text for all 7 exam groups at once"
+            >
+              {copiedAll ? <Check className="h-3.5 w-3.5 text-amber-300" /> : <Copy className="h-3.5 w-3.5 text-amber-300" />}
+              <span>{copiedAll ? 'Copied All 7 Posts!' : 'Copy All 7 Exam Posts'}</span>
+            </button>
+            <button
               onClick={handleStartSequence}
               className="bg-[#25D366] hover:bg-[#20ba5a] text-slate-950 font-black text-xs px-4 py-2 rounded-xl flex items-center gap-2 transition-all shadow-md active:scale-95 cursor-pointer"
+              title="Start step-by-step WhatsApp post dispatcher for all 7 exam categories"
             >
               <Zap className="h-4 w-4 fill-slate-950" />
               <span>Batch Send All 7 Exams</span>

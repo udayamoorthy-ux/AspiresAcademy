@@ -138,6 +138,30 @@ export const UPSC_QUESTION_POOL: Question[] = [
     correctAnswerIndex: 2,
     explanation: 'Under Article 131 of the Constitution, disputes between Centre and States fall exclusively under the Supreme Court\'s Original Jurisdiction.',
     subject: 'Polity'
+  },
+  {
+    id: 'upsc-016',
+    text: 'Which gene-editing technology utilizes the Cas9 endonuclease enzyme to target specific DNA sequences?',
+    options: ['CRISPR-Cas9', 'Sanger Sequencing', 'Polymerase Chain Reaction (PCR)', 'TALENs'],
+    correctAnswerIndex: 0,
+    explanation: 'CRISPR-Cas9 is a revolutionary gene-editing technology that allows precise modification of DNA sequences within organisms.',
+    subject: 'Science & Technology'
+  },
+  {
+    id: 'upsc-017',
+    text: 'The "Nilgiri Biosphere Reserve", India\'s first biosphere reserve established in 1986, spans across which three states?',
+    options: ['Tamil Nadu, Kerala, and Karnataka', 'Tamil Nadu, Andhra Pradesh, and Kerala', 'Kerala, Karnataka, and Goa', 'Tamil Nadu, Puducherry, and Kerala'],
+    correctAnswerIndex: 0,
+    explanation: 'The Nilgiri Biosphere Reserve encompasses parts of Tamil Nadu, Kerala, and Karnataka in the Western Ghats region.',
+    subject: 'Geography & Environment'
+  },
+  {
+    id: 'upsc-018',
+    text: 'A boat moves downstream at 15 km/h and upstream at 9 km/h. What is the speed of the river current?',
+    options: ['2 km/h', '3 km/h', '4 km/h', '6 km/h'],
+    correctAnswerIndex: 1,
+    explanation: 'Speed of current = (Downstream speed - Upstream speed) / 2 = (15 - 9) / 2 = 6 / 2 = 3 km/h.',
+    subject: 'CSAT / Aptitude'
   }
 ];
 
@@ -822,6 +846,7 @@ export function getQuestionsForExam(
   const pool = EXAM_QUESTION_POOLS[exam] || EXAM_QUESTION_POOLS.UPSC;
   const result: Question[] = [];
   const localUsed = new Set<string>();
+  const usedSubjects = new Set<string>();
 
   // Distinct offset per exam so different exams don't align on identical indices
   const examOffsets: Record<string, number> = {
@@ -835,7 +860,8 @@ export function getQuestionsForExam(
   };
   const eOffset = examOffsets[exam] || 0;
 
-  for (let step = 0; step < pool.length * 3 && result.length < count; step++) {
+  // PASS 1: Select distinct subjects to ensure full syllabus breadth in daily MCQs
+  for (let step = 0; step < pool.length * 4 && result.length < count; step++) {
     const idx = (baseSeed + eOffset + step * 2) % pool.length;
     const q = pool[idx];
 
@@ -845,12 +871,31 @@ export function getQuestionsForExam(
     // Skip if already selected globally across batch categories
     if (globalUsedIds && globalUsedIds.has(q.id)) continue;
 
-    localUsed.add(q.id);
-    if (globalUsedIds) globalUsedIds.add(q.id);
-    result.push({ ...q });
+    // Prioritize subject diversity
+    if (!usedSubjects.has(q.subject)) {
+      localUsed.add(q.id);
+      usedSubjects.add(q.subject);
+      if (globalUsedIds) globalUsedIds.add(q.id);
+      result.push({ ...q });
+    }
   }
 
-  // Safeguard fallback: if pool items were filtered out by globalUsedIds, fill remaining from local pool
+  // PASS 2: If we still need more questions, pick remaining unused questions
+  if (result.length < count) {
+    for (let step = 0; step < pool.length * 3 && result.length < count; step++) {
+      const idx = (baseSeed + eOffset + step * 3) % pool.length;
+      const q = pool[idx];
+
+      if (localUsed.has(q.id)) continue;
+      if (globalUsedIds && globalUsedIds.has(q.id)) continue;
+
+      localUsed.add(q.id);
+      if (globalUsedIds) globalUsedIds.add(q.id);
+      result.push({ ...q });
+    }
+  }
+
+  // PASS 3 Safeguard fallback: fill remaining from pool if global filters were restrictive
   if (result.length < count) {
     for (let i = 0; i < pool.length && result.length < count; i++) {
       const q = pool[i];
