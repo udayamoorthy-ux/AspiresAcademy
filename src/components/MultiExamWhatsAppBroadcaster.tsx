@@ -113,6 +113,15 @@ export const MultiExamWhatsAppBroadcaster: React.FC<MultiExamWhatsAppBroadcaster
   const [sequenceStep, setSequenceStep] = useState<number | null>(null);
   const [copiedScript, setCopiedScript] = useState<boolean>(false);
   const [copiedEndpoint, setCopiedEndpoint] = useState<boolean>(false);
+  const [whatsappGroupLink, setWhatsappGroupLink] = useState<string>(() => {
+    return localStorage.getItem('aspires_whatsapp_group_url') || 'https://chat.whatsapp.com/aspiresacademy';
+  });
+  const [isEditingLink, setIsEditingLink] = useState<boolean>(false);
+
+  const handleSaveGroupLink = (newUrl: string) => {
+    setWhatsappGroupLink(newUrl);
+    localStorage.setItem('aspires_whatsapp_group_url', newUrl);
+  };
 
   // Helper to format post text for an exam
   const buildExamPostText = (examInfo: ExamInfo): string => {
@@ -129,16 +138,18 @@ export const MultiExamWhatsAppBroadcaster: React.FC<MultiExamWhatsAppBroadcaster
       qText += `*Q${idx + 1}. [${q.subject || examInfo.badge}]* ${q.text}\n${opts}\n👉 *Answer:* ${String.fromCharCode(65 + q.correctAnswerIndex)} (${q.options[q.correctAnswerIndex]})\n💡 _${q.explanation.replace(/\n/g, ' ')}_\n\n`;
     });
 
+    const groupUrl = whatsappGroupLink.trim() || 'https://chat.whatsapp.com/aspiresacademy';
+
     return `🎯 *ASPIRES ACADEMY (${examInfo.badge}) DAILY 5 MCQ DRILL*
 📅 *Date:* ${dateStr}
-📍 *Group:* ${examInfo.groupName} (aspiresacademy.in)
+📍 *Group:* ${examInfo.groupName}
 
 ${qText}---
 🚀 *ASPIRES ACADEMY* (https://aspiresacademy.in)
 Practice syllabus trackers, AI voice lessons, essay grading, flashcards & mock tests!
-👥 *Join Official WhatsApp Group:* https://aspiresacademy.in
-🎟️ *SPECIAL DISCOUNT:* Coupon *ANNUAL87* for Annual Pass @ ₹299/year (87% OFF)
-🔗 *Start Practice:* https://aspiresacademy.in`;
+👥 *Join Official WhatsApp Group:* ${groupUrl}
+🌐 *Practice Web Portal:* https://aspiresacademy.in
+🎟️ *SPECIAL DISCOUNT:* Coupon *ANNUAL87* for Annual Pass @ ₹299/year (87% OFF)`;
   };
 
   // Dispatch single exam to WhatsApp
@@ -226,6 +237,48 @@ broadcastDaily5ToWhatsApp();`;
             <p className="text-xs md:text-sm text-emerald-100/90 font-sans max-w-2xl">
               Automated daily 5 MCQs for all 7 exam categories ready for instant WhatsApp group dispatching & background cron bots!
             </p>
+
+            {/* Editable WhatsApp Group Invite URL */}
+            <div className="bg-emerald-900/80 border border-emerald-500/40 p-2.5 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mt-2">
+              <div className="flex items-center gap-2 text-xs font-mono text-emerald-100">
+                <span className="font-extrabold text-amber-300 flex items-center gap-1 shrink-0">
+                  👥 Group Invite URL:
+                </span>
+                {isEditingLink ? (
+                  <input
+                    type="url"
+                    value={whatsappGroupLink}
+                    onChange={(e) => setWhatsappGroupLink(e.target.value)}
+                    className="bg-emerald-950 border border-emerald-400 text-white font-mono text-xs px-2 py-1 rounded w-64 focus:outline-none"
+                    placeholder="https://chat.whatsapp.com/..."
+                  />
+                ) : (
+                  <span className="bg-emerald-950/70 text-emerald-300 font-mono px-2 py-0.5 rounded border border-emerald-700/50 truncate max-w-xs sm:max-w-md">
+                    {whatsappGroupLink}
+                  </span>
+                )}
+              </div>
+              <div className="flex items-center gap-1.5 shrink-0">
+                {isEditingLink ? (
+                  <button
+                    onClick={() => {
+                      handleSaveGroupLink(whatsappGroupLink);
+                      setIsEditingLink(false);
+                    }}
+                    className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-[11px] px-2.5 py-1 rounded cursor-pointer transition-all"
+                  >
+                    Save URL
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => setIsEditingLink(true)}
+                    className="bg-emerald-800 hover:bg-emerald-700 text-emerald-100 text-[11px] font-bold px-2 py-1 rounded cursor-pointer border border-emerald-600 transition-all"
+                  >
+                    Edit Group URL
+                  </button>
+                )}
+              </div>
+            </div>
           </div>
 
           <div className="flex items-center gap-2 shrink-0">

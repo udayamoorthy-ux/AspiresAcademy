@@ -19,6 +19,7 @@ import {
   Trash2
 } from 'lucide-react';
 import { ExamType } from '../types';
+import { isOwnerEmail } from '../utils/authUtils';
 
 interface Review {
   id: string;
@@ -84,7 +85,7 @@ export default function ReviewsView({ userEmail = '' }: ReviewsViewProps) {
   const [selectedExamType, setSelectedExamType] = useState<string>('all');
   const [isAdminMode, setIsAdminMode] = useState(false);
   
-  const isUserAdmin = userEmail.trim().toLowerCase() === 'udayamoorthy@gmail.com';
+  const isUserAdmin = isOwnerEmail(userEmail);
 
   useEffect(() => {
     if (!isUserAdmin) {

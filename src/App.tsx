@@ -33,6 +33,7 @@ import {
 } from './utils/questionPool';
 import { STATIC_QUIZ_QUESTIONS } from './data';
 import { MultiExamWhatsAppBroadcaster } from './components/MultiExamWhatsAppBroadcaster';
+import { isOwnerEmail } from './utils/authUtils';
 
 import { 
   BookOpen, 
@@ -235,20 +236,20 @@ export default function App() {
     return localStorage.getItem('aspires_logged_in_email') || '';
   });
 
-  const isUserAdmin = userEmail.trim().toLowerCase() === 'udayamoorthy@gmail.com';
+  const isUserAdmin = isOwnerEmail(userEmail);
 
   // Premium Subscription State loaded securely from Cache standard
   const [isPremium, setIsPremium] = useState<boolean>(() => {
-    // If they are udayamoorthy@gmail.com, auto unlock
+    // If they are owner, auto unlock
     const savedEmail = localStorage.getItem('aspires_logged_in_email') || '';
-    if (savedEmail.trim().toLowerCase() === 'udayamoorthy@gmail.com') {
+    if (isOwnerEmail(savedEmail)) {
       return true;
     }
     return localStorage.getItem('aspires_is_premium') === 'true';
   });
   const [premiumPlan, setPremiumPlan] = useState<string>(() => {
     const savedEmail = localStorage.getItem('aspires_logged_in_email') || '';
-    if (savedEmail.trim().toLowerCase() === 'udayamoorthy@gmail.com') {
+    if (isOwnerEmail(savedEmail)) {
       return 'annual';
     }
     return localStorage.getItem('aspires_premium_plan') || '';
@@ -258,7 +259,7 @@ export default function App() {
     localStorage.setItem('aspires_logged_in_email', email);
     setUserEmail(email);
     
-    if (email === 'udayamoorthy@gmail.com') {
+    if (isOwnerEmail(email)) {
       localStorage.setItem('aspires_is_premium', 'true');
       localStorage.setItem('aspires_premium_plan', 'annual');
       setIsPremium(true);
@@ -270,8 +271,7 @@ export default function App() {
     localStorage.removeItem('aspires_logged_in_email');
     setUserEmail('');
     
-    // If they logged out and we want to reset premium (if it was the VIP auto premium)
-    if (userEmail === 'udayamoorthy@gmail.com') {
+    if (isOwnerEmail(userEmail)) {
       localStorage.removeItem('aspires_is_premium');
       localStorage.removeItem('aspires_premium_plan');
       setIsPremium(false);
@@ -294,9 +294,9 @@ export default function App() {
   };
 
   useEffect(() => {
-    // Auto-align premium state if they are logged in as udayamoorthy@gmail.com on launch
+    // Auto-align premium state if they are logged in as owner on launch
     const savedEmail = localStorage.getItem('aspires_logged_in_email') || '';
-    if (savedEmail.trim().toLowerCase() === 'udayamoorthy@gmail.com') {
+    if (isOwnerEmail(savedEmail)) {
       localStorage.setItem('aspires_is_premium', 'true');
       localStorage.setItem('aspires_premium_plan', 'annual');
       setIsPremium(true);
@@ -669,34 +669,34 @@ export default function App() {
               </p>
 
               <div className="grid grid-cols-1 gap-2 pt-0.5">
+                {/* Direct Join WhatsApp Group Link */}
                 <a
-                  href={`https://api.whatsapp.com/send?text=${encodeURIComponent('Join official ASPIRES ACADEMY WhatsApp Study Group (aspiresacademy.in) for Daily 5 MCQs, AI Voice Lessons, Essay Grading & Mock Tests!\n\n📲 Join Group: https://aspiresacademy.in')}`}
+                  href={localStorage.getItem('aspires_whatsapp_group_url') || 'https://chat.whatsapp.com/aspiresacademy'}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-full bg-[#25D366] hover:bg-[#20ba5a] text-slate-950 font-extrabold text-xs py-2 rounded-xl flex items-center justify-center gap-1.5 transition-all shadow-2xs active:scale-95 cursor-pointer"
                 >
                   <Send className="h-3.5 w-3.5" />
-                  <span>WhatsApp Group (aspiresacademy.in)</span>
+                  <span>Join Official WhatsApp Group</span>
+                </a>
+
+                {/* Share WhatsApp Group & Site Link */}
+                <a
+                  href={`https://api.whatsapp.com/send?text=${encodeURIComponent(
+                    `Join official ASPIRES ACADEMY WhatsApp Study Group & Portal (aspiresacademy.in) for Daily 5 MCQs, AI Voice Lessons, Essay Grading & Mock Tests!\n\n👥 Join Official WhatsApp Group: ${localStorage.getItem('aspires_whatsapp_group_url') || 'https://chat.whatsapp.com/aspiresacademy'}\n🌐 Practice Web Portal: https://aspiresacademy.in`
+                  )}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-800 font-bold text-xs py-2 rounded-xl flex items-center justify-center gap-1.5 transition-all active:scale-95 cursor-pointer"
+                >
+                  <Share2 className="h-3.5 w-3.5 text-emerald-600" />
+                  <span>Share Group on WhatsApp</span>
                 </a>
 
                 <button
                   onClick={() => {
-                    const el = document.getElementById('share-card');
-                    if (el) {
-                      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                      setHighlightShareCard(true);
-                      setTimeout(() => setHighlightShareCard(false), 2000);
-                    }
-                  }}
-                  className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs py-2 rounded-xl flex items-center justify-center gap-1.5 transition-all shadow-xs active:scale-95 cursor-pointer"
-                >
-                  <Share2 className="h-3.5 w-3.5" />
-                  <span>View Daily 5 Questions</span>
-                </button>
-
-                <button
-                  onClick={() => {
-                    const shareText = `Hey! Join the official ASPIRES ACADEMY WhatsApp Study Group & Portal (https://aspiresacademy.in) for Daily 5 High-Yield MCQs (UPSC, TNPSC, SSC, RRB & IIT JEE), AI Voice Lessons, Essay Evaluation & Mock Tests!\n\n📲 Join WhatsApp Group & Portal: https://aspiresacademy.in`;
+                    const groupUrl = localStorage.getItem('aspires_whatsapp_group_url') || 'https://chat.whatsapp.com/aspiresacademy';
+                    const shareText = `Hey! Join the official ASPIRES ACADEMY WhatsApp Study Group & Portal (https://aspiresacademy.in) for Daily 5 High-Yield MCQs (UPSC, TNPSC, SSC, RRB & IIT JEE), AI Voice Lessons, Essay Evaluation & Mock Tests!\n\n👥 Join Official WhatsApp Group: ${groupUrl}\n🌐 Practice Web Portal: https://aspiresacademy.in`;
                     navigator.clipboard.writeText(shareText);
                     setCopiedLink(true);
                     setTimeout(() => setCopiedLink(false), 2000);
@@ -706,12 +706,12 @@ export default function App() {
                   {copiedLink ? (
                     <>
                       <Check className="h-3.5 w-3.5 text-emerald-600" />
-                      <span className="text-emerald-700">Copied WhatsApp Invite Link!</span>
+                      <span className="text-emerald-700">Copied Group & Site Links!</span>
                     </>
                   ) : (
                     <>
                       <Copy className="h-3.5 w-3.5 text-slate-500" />
-                      <span>Copy WhatsApp Invite Link</span>
+                      <span>Copy Group & Site Link</span>
                     </>
                   )}
                 </button>

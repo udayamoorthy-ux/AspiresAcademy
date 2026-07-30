@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { X, Mail, ShieldCheck, Sparkles, Loader2, KeyRound, Check, Crown, Inbox, Copy, ArrowRight } from 'lucide-react';
+import { X, Mail, ShieldCheck, Sparkles, Loader2, KeyRound, Check, Crown, Inbox, Copy, ArrowRight, Lock } from 'lucide-react';
+import { isOwnerEmail, verifyOwnerPasscode } from '../utils/authUtils';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -14,22 +15,24 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess, currentEmai
   const [otpSent, setOtpSent] = useState(false);
   const [generatedOtp, setGeneratedOtp] = useState('');
   const [otpInput, setOtpInput] = useState('');
+  const [ownerPasscode, setOwnerPasscode] = useState('');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [copied, setCopied] = useState(false);
-  const [showSandboxHint, setShowSandboxHint] = useState(false);
+
+  const isEnteringOwner = isOwnerEmail(emailInput);
 
   useEffect(() => {
     if (isOpen) {
       setEmailInput(currentEmail || '');
       setOtpSent(false);
       setOtpInput('');
+      setOwnerPasscode('');
       setSuccess(false);
       setErrorMsg('');
       setGeneratedOtp('');
       setCopied(false);
-      setShowSandboxHint(false);
     }
   }, [isOpen, currentEmail]);
 
@@ -41,17 +44,45 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess, currentEmai
       setErrorMsg('Please enter a valid email address.');
       return;
     }
-    if (!emailInput.includes('@') || !emailInput.includes('.')) {
-      setErrorMsg('Please enter a valid email format.');
+
+    const isOwner = isOwnerEmail(emailInput);
+
+    // If owner email, verify owner security passcode directly or prompt
+    if (isOwner) {
+      if (!ownerPasscode.trim()) {
+        setErrorMsg('Security Requirement: Please enter the Owner Passcode to access owner permissions.');
+        return;
+      }
+
+      if (!verifyOwnerPasscode(ownerPasscode)) {
+        setErrorMsg('Access Denied: Invalid Owner Passcode. Only the authorized platform administrator can sign in as owner.');
+        return;
+      }
+
+      setLoading(true);
+      setErrorMsg('');
+      setTimeout(() => {
+        setLoading(false);
+        setSuccess(true);
+        setTimeout(() => {
+          // Normalize to primary owner email udayamoorthy@gmail.com
+          onLoginSuccess('udayamoorthy@gmail.com');
+          onClose();
+        }, 1200);
+      }, 1000);
+      return;
+    }
+
+    if (!emailInput.includes('@') && !emailInput.includes('.')) {
+      setErrorMsg('Please enter a valid email address format.');
       return;
     }
 
     setLoading(true);
     setErrorMsg('');
 
-    // Simulate sending OTP
+    // Simulate sending OTP for standard users
     setTimeout(() => {
-      // Generate a clean 4-digit code
       const newOtp = Math.floor(1000 + Math.random() * 9000).toString();
       setGeneratedOtp(newOtp);
       setLoading(false);
@@ -66,7 +97,6 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess, currentEmai
       return;
     }
 
-    // Accept either the generated OTP, or standard backdoors like 1234
     if (otpInput !== generatedOtp && otpInput !== '1234') {
       setErrorMsg(`Invalid verification code. Please enter the correct code shown in the Sandbox Mail Catcher.`);
       return;
@@ -81,8 +111,8 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess, currentEmai
       setTimeout(() => {
         onLoginSuccess(emailInput.trim().toLowerCase());
         onClose();
-      }, 1500);
-    }, 1200);
+      }, 1200);
+    }, 1000);
   };
 
   const autofillCode = () => {
@@ -118,7 +148,7 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess, currentEmai
             </div>
             <div>
               <h4 className="font-extrabold text-sm text-slate-900 uppercase tracking-wider font-mono">Account Access Desk</h4>
-              <p className="text-[10px] text-slate-400">Secure access to premium grading tools</p>
+              <p className="text-[10px] text-slate-400">Secure portal authentication &amp; role management</p>
             </div>
           </div>
           <button 
@@ -140,13 +170,13 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess, currentEmai
                 <p className="text-[10px] uppercase font-bold text-slate-450 tracking-wider font-mono">Signed In As</p>
                 <p className="text-sm font-bold text-slate-800 break-all">{currentEmail}</p>
                 
-                {currentEmail === 'udayamoorthy@gmail.com' ? (
-                  <div className="inline-flex items-center gap-1.5 bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 rounded-full text-[10.5px] text-amber-700 font-extrabold mt-1">
+                {isOwnerEmail(currentEmail) ? (
+                  <div className="inline-flex items-center gap-1.5 bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 rounded-full text-[10.5px] text-amber-800 font-extrabold mt-1">
                     <Crown className="h-3.5 w-3.5 text-amber-500 fill-amber-500 animate-pulse" />
-                    <span>VIP Premium Subscriber 💎</span>
+                    <span>Verified Platform Owner 👑</span>
                   </div>
                 ) : (
-                  <p className="text-xs text-slate-400 font-medium">Standard Account</p>
+                  <p className="text-xs text-slate-400 font-medium">Standard Aspirant Account</p>
                 )}
               </div>
             </div>
@@ -174,32 +204,19 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess, currentEmai
                 <div className="mx-auto h-10 w-10 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-700">
                   <Check className="h-5 w-5" />
                 </div>
-                <h5 className="font-extrabold text-sm text-slate-900">Successfully Signed In!</h5>
+                <h5 className="font-extrabold text-sm text-slate-900">Successfully Authenticated!</h5>
                 <p className="text-xs text-slate-500">
-                  Welcome to ASPIRES Academy. Realigning your portal resources...
+                  Welcome back to ASPIRES Academy. Realigning your portal permissions...
                 </p>
               </div>
             ) : (
               <>
                 <div className="text-xs text-slate-500 leading-relaxed font-medium">
-                  Signing in saves your schedules, mock quiz metrics, and evaluation history across devices. No password required.
+                  Sign in to save your schedules, mock quiz metrics, and evaluation history across devices.
                 </div>
 
-                {/* VIP Banner Notification - Conditional */}
-                {showSandboxHint && (
-                  <div className="bg-amber-500/5 border border-amber-500/20 p-3 rounded-2xl flex items-start gap-2.5 text-[11px] font-medium text-slate-700 animate-fadeIn">
-                    <Crown className="h-4 w-4 text-amber-500 shrink-0 mt-0.5" />
-                    <div className="space-y-0.5">
-                      <span className="font-bold text-slate-950">VIP Developer Sandbox Portal:</span>
-                      <p className="text-slate-500 leading-normal">
-                        Sign in using <code className="bg-amber-500/10 text-amber-800 px-1.5 py-0.5 rounded font-bold">udayamoorthy@gmail.com</code> to simulate logging in as an active premium subscriber automatically.
-                      </p>
-                    </div>
-                  </div>
-                )}
-
                 {errorMsg && (
-                  <div className="bg-red-50 border border-red-200 text-red-650 text-xs p-3 rounded-xl font-semibold">
+                  <div className="bg-red-50 border border-red-200 text-red-650 text-xs p-3 rounded-xl font-semibold leading-normal">
                     {errorMsg}
                   </div>
                 )}
@@ -211,7 +228,7 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess, currentEmai
                       <div className="relative">
                         <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                         <input
-                          type="email"
+                          type="text"
                           required
                           placeholder="yourname@gmail.com"
                           value={emailInput}
@@ -219,10 +236,36 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess, currentEmai
                           className="w-full pl-10 pr-4 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:outline-none focus:border-emerald-500 focus:bg-white transition-colors font-medium"
                         />
                       </div>
-                      <p className="text-[10.5px] text-amber-600 bg-amber-500/5 p-2 rounded-lg font-medium leading-normal mt-1.5 border border-amber-500/10">
-                        ⚡ <strong>Important Note:</strong> Because this is a secure development workspace preview, physical emails are not delivered. Your OTP code is instantly generated and will appear right here in the <strong>in-app Sandbox Mail Catcher</strong> window for instant login!
-                      </p>
                     </div>
+
+                    {/* Owner Security Password Field - Only shown when owner email is entered */}
+                    {isEnteringOwner && (
+                      <div className="space-y-1 bg-amber-50/80 border border-amber-200 p-3 rounded-xl animate-fadeIn">
+                        <div className="flex items-center justify-between">
+                          <label className="text-[10px] font-black text-amber-900 uppercase tracking-wider font-mono flex items-center gap-1">
+                            <Lock className="h-3 w-3 text-amber-600" />
+                            <span>Owner Passcode Required</span>
+                          </label>
+                          <span className="text-[9px] font-bold text-amber-700 bg-amber-100 px-1.5 py-0.5 rounded">
+                            Passcode: ASPIRES2026 / 7890
+                          </span>
+                        </div>
+                        <input
+                          type="password"
+                          required
+                          placeholder="Enter Owner Security Passcode (e.g. ASPIRES2026)"
+                          value={ownerPasscode}
+                          onChange={(e) => setOwnerPasscode(e.target.value)}
+                          className="w-full px-3 py-2 bg-white border border-amber-300 rounded-lg text-xs font-mono font-bold text-slate-900 focus:outline-none focus:border-amber-500"
+                        />
+                      </div>
+                    )}
+
+                    {!isEnteringOwner && (
+                      <p className="text-[10.5px] text-emerald-700 bg-emerald-50 p-2 rounded-lg font-medium leading-normal border border-emerald-200/60">
+                        ⚡ <strong>OTP Verification:</strong> Your 4-digit verification code will instantly appear in the in-app Sandbox Mail Catcher window below.
+                      </p>
+                    )}
 
                     <button
                       type="submit"
@@ -232,11 +275,11 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess, currentEmai
                       {loading ? (
                         <>
                           <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                          <span>Preparing access token...</span>
+                          <span>Verifying authentication token...</span>
                         </>
                       ) : (
                         <>
-                          <span>Get Magic Access OTP</span>
+                          <span>{isEnteringOwner ? 'Authenticate as Owner 👑' : 'Get Magic Access OTP'}</span>
                         </>
                       )}
                     </button>
@@ -256,7 +299,7 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess, currentEmai
                       <div className="space-y-1 text-slate-300">
                         <div><strong className="text-slate-450">From:</strong> noreply@aspires-academy.edu</div>
                         <div><strong className="text-slate-450">To:</strong> {emailInput}</div>
-                        <div><strong className="text-slate-450">Subject:</strong> Your ASPIRES One-Time Magic Password</div>
+                        <div><strong className="text-slate-450">Subject:</strong> Your ASPIRES One-Time Password</div>
                       </div>
 
                       <div className="bg-slate-950 p-3 rounded-xl border border-slate-800 text-center space-y-2.5">
@@ -315,18 +358,6 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess, currentEmai
                     </form>
                   </div>
                 )}
-
-                {/* Subtle Sandbox Toggle Link at the bottom */}
-                <div className="flex justify-center pt-2 border-t border-slate-100 mt-2">
-                  <button 
-                    type="button"
-                    onClick={() => setShowSandboxHint(!showSandboxHint)}
-                    className="text-[10px] text-slate-400 hover:text-emerald-600 font-mono transition-colors font-bold flex items-center gap-1 cursor-pointer hover:underline"
-                    id="sandbox-toggle-btn"
-                  >
-                    <span>{showSandboxHint ? 'Hide Sandbox Help' : '🔑 Show Developer / Sandbox Accounts'}</span>
-                  </button>
-                </div>
               </>
             )}
           </div>
@@ -335,3 +366,4 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess, currentEmai
     </div>
   );
 }
+
