@@ -104,7 +104,7 @@ export default function App() {
   const [copiedLink, setCopiedLink] = useState(false);
   const [copiedPost, setCopiedPost] = useState(false);
   const [selectedHeadingIndex, setSelectedHeadingIndex] = useState(0);
-  const [showOutreachKit, setShowOutreachKit] = useState(false);
+  const [showOutreachKit, setShowOutreachKit] = useState(true);
   const [highlightShareCard, setHighlightShareCard] = useState(false);
   const [outreachQuestions, setOutreachQuestions] = useState<Question[]>([]);
   const [isGeneratingOutreach, setIsGeneratingOutreach] = useState(false);
@@ -785,42 +785,94 @@ export default function App() {
                         </div>
                       </div>
 
-                      <button
-                        onClick={() => {
-                          const headings = [
-                            selectedHeadingIndex === 0 ? `🎯 ${selectedExam} CSE DAILY MCQ DRILL – Test Your Limits!` : '',
-                            selectedHeadingIndex === 1 ? `🧠 Can You Crack These 5 Elite ${selectedExam} Questions?` : '',
-                            selectedHeadingIndex === 2 ? `🔥 ${selectedExam} Prelims Challenge: 5 High-Yield Questions from ASPIRES!` : '',
-                            selectedHeadingIndex === 3 ? `💡 5 Tough ${selectedExam} Prep MCQs to Boost Your Score Today!` : ''
-                          ];
-                          const heading = headings[selectedHeadingIndex] || `🎯 ${selectedExam} Daily Civil Services Challenge`;
-                          
-                          let questionsText = '';
-                          outreachQuestions.forEach((q, index) => {
-                            const optionsText = q.options.map((opt, oIdx) => `${String.fromCharCode(65 + oIdx)}) ${opt}`).join('\n');
-                            questionsText += `${index + 1}️⃣ ${q.subject || 'GENERAL STUDIES'}: ${q.text}\n${optionsText}\n👉 Answer: ${String.fromCharCode(65 + q.correctAnswerIndex)} (${q.options[q.correctAnswerIndex]}) - ${q.explanation}\n\n`;
-                          });
+                      <div className="grid grid-cols-1 gap-2 pt-1">
+                        <button
+                          onClick={() => {
+                            const headings = [
+                              selectedHeadingIndex === 0 ? `🎯 ${selectedExam} CSE DAILY MCQ DRILL – Test Your Limits!` : '',
+                              selectedHeadingIndex === 1 ? `🧠 Can You Crack These 5 Elite ${selectedExam} Questions?` : '',
+                              selectedHeadingIndex === 2 ? `🔥 ${selectedExam} Prelims Challenge: 5 High-Yield Questions from ASPIRES!` : '',
+                              selectedHeadingIndex === 3 ? `💡 5 Tough ${selectedExam} Prep MCQs to Boost Your Score Today!` : ''
+                            ];
+                            const heading = headings[selectedHeadingIndex] || `🎯 ${selectedExam} Daily Civil Services Challenge`;
+                            
+                            let questionsText = '';
+                            outreachQuestions.forEach((q, index) => {
+                              const optionsText = q.options.map((opt, oIdx) => `${String.fromCharCode(65 + oIdx)}) ${opt}`).join('\n');
+                              questionsText += `${index + 1}️⃣ ${q.subject || 'GENERAL STUDIES'}: ${q.text}\n${optionsText}\n👉 Answer: ${String.fromCharCode(65 + q.correctAnswerIndex)} (${q.options[q.correctAnswerIndex]}) - ${q.explanation}\n\n`;
+                            });
 
-                          const postText = `${heading}\n\n${questionsText}---\n🚀 ASPIRES ACADEMY (https://aspiresacademy.in) is an elite, state-of-the-art AI-powered preparation portal for UPSC Civil Services, TNPSC Group 1/2/4, and SSC CGL. Learn with interactive syllabus trackers, AI voice lessons, automated essay evaluation, active recall flashcards, and live mock tests!\n🎟️ SPECIAL ASPIRANT DISCOUNT: Use Coupon Code "ANNUAL87" to get the ASPIRES Elite Annual Pass for just ₹299/year (87% OFF, Regular ₹2,299/yr) - valid for fast-acting aspirants only!\n🔗 Start Your Prep Journey: https://aspiresacademy.in`;
+                            const postText = `${heading}\n\n${questionsText}---\n🚀 ASPIRES ACADEMY (https://aspiresacademy.in) is an elite, state-of-the-art AI-powered preparation portal for UPSC Civil Services, TNPSC Group 1/2/4, SSC CGL, RRB NTPC, and IIT JEE. Learn with interactive syllabus trackers, AI voice lessons, automated essay evaluation, active recall flashcards, and live mock tests!\n🎟️ SPECIAL ASPIRANT DISCOUNT: Use Coupon Code "ANNUAL87" to get the ASPIRES Elite Annual Pass for just ₹299/year (87% OFF, Regular ₹2,299/yr) - valid for fast-acting aspirants only!\n🔗 Start Your Prep Journey: https://aspiresacademy.in`;
 
-                          navigator.clipboard.writeText(postText);
-                          setCopiedPost(true);
-                          setTimeout(() => setCopiedPost(false), 2500);
-                        }}
-                        className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 rounded-xl flex items-center justify-center gap-1.5 transition-colors shadow-sm active:scale-[0.98] cursor-pointer"
-                      >
-                        {copiedPost ? (
-                          <>
-                            <Check className="h-3.5 w-3.5" />
-                            <span>Copied Outreach Post!</span>
-                          </>
-                        ) : (
-                          <>
-                            <Copy className="h-3.5 w-3.5" />
-                            <span>Copy Outreach Post</span>
-                          </>
-                        )}
-                      </button>
+                            navigator.clipboard.writeText(postText);
+                            setCopiedPost(true);
+                            setTimeout(() => setCopiedPost(false), 2500);
+                          }}
+                          className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 rounded-xl flex items-center justify-center gap-1.5 transition-colors shadow-sm active:scale-[0.98] cursor-pointer text-xs"
+                        >
+                          {copiedPost ? (
+                            <>
+                              <Check className="h-3.5 w-3.5" />
+                              <span>Copied Outreach Post!</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="h-3.5 w-3.5" />
+                              <span>Copy Daily 5 Questions Post</span>
+                            </>
+                          )}
+                        </button>
+
+                        <div className="grid grid-cols-2 gap-1.5 pt-1">
+                          <button
+                            onClick={() => {
+                              const headings = [
+                                selectedHeadingIndex === 0 ? `🎯 ${selectedExam} CSE DAILY MCQ DRILL` : '',
+                                selectedHeadingIndex === 1 ? `🧠 Can You Crack These 5 Elite ${selectedExam} Questions?` : '',
+                                selectedHeadingIndex === 2 ? `🔥 ${selectedExam} Prelims Challenge` : '',
+                                selectedHeadingIndex === 3 ? `💡 5 Tough ${selectedExam} Prep MCQs` : ''
+                              ];
+                              const heading = headings[selectedHeadingIndex] || `🎯 ${selectedExam} Daily Civil Services Challenge`;
+                              let questionsText = '';
+                              outreachQuestions.forEach((q, index) => {
+                                const optionsText = q.options.map((opt, oIdx) => `${String.fromCharCode(65 + oIdx)}) ${opt}`).join('\n');
+                                questionsText += `${index + 1}️⃣ ${q.subject || 'GENERAL STUDIES'}: ${q.text}\n${optionsText}\n👉 Answer: ${String.fromCharCode(65 + q.correctAnswerIndex)} (${q.options[q.correctAnswerIndex]})\n\n`;
+                              });
+                              const postText = `${heading}\n\n${questionsText}🔗 Practice More: https://aspiresacademy.in`;
+                              window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(postText)}`, '_blank');
+                            }}
+                            className="bg-[#25D366] hover:bg-[#20ba5a] text-white font-extrabold text-[11px] py-2 rounded-xl flex items-center justify-center gap-1 transition-all active:scale-[0.98] shadow-sm cursor-pointer"
+                            id="btn-post-outreach-whatsapp"
+                          >
+                            <Share2 className="h-3 w-3" />
+                            <span>Post on WhatsApp</span>
+                          </button>
+
+                          <button
+                            onClick={() => {
+                              const headings = [
+                                selectedHeadingIndex === 0 ? `🎯 ${selectedExam} CSE DAILY MCQ DRILL` : '',
+                                selectedHeadingIndex === 1 ? `🧠 Can You Crack These 5 Elite ${selectedExam} Questions?` : '',
+                                selectedHeadingIndex === 2 ? `🔥 ${selectedExam} Prelims Challenge` : '',
+                                selectedHeadingIndex === 3 ? `💡 5 Tough ${selectedExam} Prep MCQs` : ''
+                              ];
+                              const heading = headings[selectedHeadingIndex] || `🎯 ${selectedExam} Daily Civil Services Challenge`;
+                              let questionsText = '';
+                              outreachQuestions.forEach((q, index) => {
+                                const optionsText = q.options.map((opt, oIdx) => `${String.fromCharCode(65 + oIdx)}) ${opt}`).join('\n');
+                                questionsText += `${index + 1}️⃣ ${q.subject || 'GENERAL STUDIES'}: ${q.text}\n${optionsText}\n👉 Answer: ${String.fromCharCode(65 + q.correctAnswerIndex)}\n\n`;
+                              });
+                              const postText = `${heading}\n\n${questionsText}🔗 Practice on ASPIRES ACADEMY: https://aspiresacademy.in`;
+                              window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent('https://aspiresacademy.in')}&quote=${encodeURIComponent(postText)}`, '_blank');
+                            }}
+                            className="bg-[#1877F2] hover:bg-[#166fe5] text-white font-extrabold text-[11px] py-2 rounded-xl flex items-center justify-center gap-1 transition-all active:scale-[0.98] shadow-sm cursor-pointer"
+                            id="btn-post-outreach-facebook"
+                          >
+                            <Share2 className="h-3 w-3" />
+                            <span>Post on Facebook</span>
+                          </button>
+                        </div>
+                      </div>
                     </div>
                   )}
                 </div>

@@ -240,7 +240,7 @@ export default function MentorChatView({ selectedExam, isPremium = false, onPrem
         {!isPremium && (
           <div className="bg-amber-500/10 border border-amber-500/30 px-3.5 py-2.5 rounded-xl flex items-center justify-between gap-4 text-xs font-semibold text-slate-800 animate-fadeIn">
             <div className="flex items-center gap-1.5">
-              <Crown className="h-4 w-4 text-amber-500 animate-bounce shrink-0" />
+              <Crown className="h-4 w-4 text-amber-500 shrink-0" />
               <span>Personal Coach Free Daily Limit: <strong className="text-amber-700">{chatCount} / 3</strong> replies.</span>
             </div>
             <button

@@ -227,7 +227,7 @@ export default function EssayEvaluatorView({ isPremium = false, onPremiumClick }
           {!isPremium && (
             <div className="bg-amber-500/10 border border-amber-500/30 p-3 rounded-xl flex items-center justify-between gap-4 text-xs font-semibold text-slate-800 animate-fadeIn mb-1">
               <div className="flex items-center gap-2">
-                <Crown className="h-4 w-4 text-amber-500 animate-bounce shrink-0" />
+                <Crown className="h-4 w-4 text-amber-500 shrink-0" />
                 <span>Free Daily Limit: <strong className="text-amber-700">{evalCount} / 1</strong> evaluation used.</span>
               </div>
               <button

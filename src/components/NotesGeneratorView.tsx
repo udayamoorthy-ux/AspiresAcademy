@@ -371,7 +371,7 @@ ${note.activeRecallQuestions.map((q, idx) => `### Q${idx + 1}: ${q.question}\n**
             {!isPremium && (
               <div className="bg-amber-500/10 border border-amber-500/35 p-3 rounded-xl flex items-center justify-between gap-2.5 text-xs font-semibold text-slate-800 animate-fadeIn mb-2.5">
                 <div className="flex items-center gap-1.5">
-                  <Crown className="h-4 w-4 text-amber-500 animate-bounce shrink-0" />
+                  <Crown className="h-4 w-4 text-amber-500 shrink-0" />
                   <span>Free Notes: <strong className="text-amber-700">{notesCount} / 2</strong> generated.</span>
                 </div>
                 <button

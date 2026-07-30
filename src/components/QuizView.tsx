@@ -319,7 +319,7 @@ export default function QuizView({
       {!isPremium && !session && (
         <div className="bg-amber-500/10 border border-amber-500/35 p-4 rounded-2xl flex items-center justify-between gap-4 text-xs font-semibold text-slate-800 animate-fadeIn" id="quiz-limit-banner">
           <div className="flex items-center gap-2">
-            <Crown className="h-4.5 w-4.5 text-amber-500 animate-bounce shrink-0" />
+            <Crown className="h-4.5 w-4.5 text-amber-500 shrink-0" />
             <span>Practice Center Free Limit: <strong className="text-amber-700">{mockTestCount} / 1</strong> mock test used. Upgrade to unlock all 15+ full-length PYQs & infinite AI mock compilations!</span>
           </div>
           <button

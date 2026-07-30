@@ -229,7 +229,7 @@ export default function GPaySupportCard({
             <div className="bg-gradient-to-r from-amber-500/15 via-yellow-500/10 to-emerald-500/10 border border-amber-300/60 p-4.5 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm animate-fadeIn">
               <div className="flex items-center gap-3">
                 <div className="h-10 w-10 rounded-full bg-amber-500 flex items-center justify-center text-white shadow-md shadow-amber-500/25">
-                  <Crown className="h-5.5 w-5.5 animate-bounce" />
+                  <Crown className="h-5.5 w-5.5" />
                 </div>
                 <div className="space-y-0.5 text-center sm:text-left">
                   <h4 className="text-sm font-black text-slate-900 flex items-center justify-center sm:justify-start gap-1.5 font-display">
@@ -376,7 +376,7 @@ export default function GPaySupportCard({
                     <div className="bg-amber-500/10 border border-amber-500/35 rounded-2xl p-3.5 space-y-2.5 animate-fadeIn">
                       <div className="flex items-center justify-between">
                         <span className="text-[9px] uppercase font-mono font-black tracking-wider text-amber-700 flex items-center gap-1">
-                          <Crown className="h-3.5 w-3.5 text-amber-600 animate-bounce" />
+                          <Crown className="h-3.5 w-3.5 text-amber-600" />
                           Exclusive Annual-Only VIP Benefits
                         </span>
                         <span className="text-[8px] px-1.5 py-0.5 font-bold rounded bg-amber-500 text-slate-950 uppercase font-mono tracking-tight shrink-0">Best Seller</span>
