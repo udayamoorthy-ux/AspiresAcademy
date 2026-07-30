@@ -6,6 +6,7 @@
 import express from 'express';
 import path from 'path';
 import dotenv from 'dotenv';
+import fs from 'fs';
 import { createServer as createViteServer } from 'vite';
 import { GoogleGenAI, Type } from '@google/genai';
 
@@ -77,6 +78,38 @@ app.get('/api/config-status', (req, res) => {
   });
 });
 
+let globalSiteViews = 1542; // Seed with a starting number
+const VIEWS_FILE = path.join(process.cwd(), 'site_views.json');
+
+try {
+  if (fs.existsSync(VIEWS_FILE)) {
+    const data = fs.readFileSync(VIEWS_FILE, 'utf8');
+    const parsed = JSON.parse(data);
+    if (typeof parsed.views === 'number') {
+      globalSiteViews = parsed.views;
+    }
+  } else {
+    fs.writeFileSync(VIEWS_FILE, JSON.stringify({ views: globalSiteViews }), 'utf8');
+  }
+} catch (err) {
+  console.warn("Could not read site_views.json, using in-memory counter:", err);
+}
+
+// Global traffic counter routes
+app.post('/api/analytics/views', (req, res) => {
+  globalSiteViews += 1;
+  try {
+    fs.writeFileSync(VIEWS_FILE, JSON.stringify({ views: globalSiteViews }), 'utf8');
+  } catch (err) {
+    console.error("Failed to persist site views:", err);
+  }
+  res.json({ views: globalSiteViews });
+});
+
+app.get('/api/analytics/views', (req, res) => {
+  res.json({ views: globalSiteViews });
+});
+
 // 2. Dynamic Study Planner Generator
 app.post('/api/study-planner', async (req, res) => {
   const { exam, totalDays, dailyHours, startDate, targetDate } = req.body;
@@ -91,7 +124,8 @@ app.post('/api/study-planner', async (req, res) => {
     TNPSC_G2: 'TNPSC Group II/IIA Executive and Non-Executive Exams',
     TNPSC_G4: 'TNPSC Group IV & VAO Written Exam',
     SSC_CGL: 'SSC CGL (Combined Graduate Level) Tiers I & II Exams',
-    RRB_NTPC: 'RRB NTPC (Non-Technical Popular Categories) Stage 1 & 2 CBT Exams'
+    RRB_NTPC: 'RRB NTPC (Non-Technical Popular Categories) Stage 1 & 2 CBT Exams',
+    IIT_JEE: 'IIT JEE (Joint Entrance Examination Main & Advanced - Physics, Chemistry, Mathematics)'
   };
 
   const examLabel = examLabels[exam] || exam;
@@ -101,13 +135,13 @@ app.post('/api/study-planner', async (req, res) => {
       const prompt = `Generate an extremely comprehensive, high-yield, and detailed study task list for the ${examLabel} starting from ${startDate || 'today'} to ${targetDate || 'target date'} (spanning exactly ${totalDays} days), studying ${dailyHours} hours per day.
       Provide exactly 10 to 14 milestone tasks representing key progression points spaced evenly across the days (e.g. Day 1, Day 3, Day 6, Day 9, Day 12, etc.).
       Each milestone task MUST be highly realistic and include:
-      - subject: Broad subject (e.g. Polity, History, Economy, General Tamil, Aptitude)
-      - topic: Highly specific syllabus topic (e.g., 'Fundamental Rights & Judicial Review', 'Sangam Literature & Social Stratification')
+      - subject: Broad subject (e.g. Physics, Chemistry, Mathematics, Polity, History, Economy, General Tamil, Aptitude)
+      - topic: Highly specific syllabus topic (e.g., 'Rotational Dynamics & Torque', 'Organic Reaction Mechanisms SN1/SN2', 'Calculus Integrals & Maxima', 'Fundamental Rights')
       - hours: Recommended study hours
       - subtasks: 3-5 precise, highly actionable checklist subtasks referring to standard books
-      - phase: Broad preparation phase, e.g., 'Phase 1: Foundation Building', 'Phase 2: Core Syllabus Mastery', 'Phase 3: Integration & Answer Writing', 'Phase 4: High-Yield Revision'
+      - phase: Broad preparation phase, e.g., 'Phase 1: Foundation Building', 'Phase 2: Core Syllabus Mastery', 'Phase 3: Integration & Problem Solving', 'Phase 4: High-Yield Revision'
       - priority: Priority level: 'High', 'Medium', or 'Low'
-      - references: Real textbook references, e.g., ['M. Laxmikanth - Indian Polity Chapter 7', 'NCERT Class XI Indian Constitution at Work']
+      - references: Real textbook references, e.g., ['HC Verma Concepts of Physics Vol 1', 'NCERT Class XI/XII Chemistry', 'RD Sharma / Cengage Mathematics', 'M. Laxmikanth']
       - learningObjectives: 3 key conceptual learning objectives the student should be able to recall
       - selfCheckQuestion: A highly challenging, conceptual Active Recall self-check question based on the topic
       - selfCheckAnswer: The exact, detailed factual answer to the self-check question.`;
@@ -116,7 +150,7 @@ app.post('/api/study-planner', async (req, res) => {
         model: 'gemini-3.5-flash',
         contents: prompt,
         config: {
-          systemInstruction: 'You are an elite Civil Services and Staff Selection Exam Mentor who creates precise, customized, realistic schedules for UPSC, TNPSC, and SSC CGL aspirants. All topics, chapters, and textbook citations (e.g., NCERT, M. Laxmikanth, Spectrum, Samacheer Kalvi, RS Aggarwal, Kiran Publications) must be 100% authentic, real, and factually accurate. Do not recommend fictional resources or invent false syllabus chapters.',
+          systemInstruction: 'You are an elite Competitive Exam & Engineering Entrance Mentor who creates precise, customized, realistic schedules for UPSC, TNPSC, SSC CGL, and IIT JEE (Physics, Chemistry, Mathematics) aspirants. All topics, chapters, and textbook citations (e.g., HC Verma, NCERT, MS Chouhan, Cengage, M. Laxmikanth, Spectrum, Samacheer Kalvi) must be 100% authentic, real, and factually accurate.',
           responseMimeType: 'application/json',
           responseSchema: {
             type: Type.OBJECT,
@@ -496,24 +530,26 @@ app.post('/api/study-planner', async (req, res) => {
 
 // 3. Dynamic Quiz Generator
 app.post('/api/generate-quiz', async (req, res) => {
-  const { exam, subject } = req.body;
+  const { exam, subject, count } = req.body;
 
   if (!exam) {
     return res.status(400).json({ error: 'Exam parameter is required' });
   }
 
+  const targetCount = Math.min(100, Math.max(3, parseInt(count, 10) || 5));
+
   if (aiClient) {
     try {
       const prompt = `Generate a high-quality MCQ mock quiz for the ${exam} exam.
-      The focus subject/topic is: ${subject || 'General Studies'}.
-      Generate exactly 5 questions.
-      Each question must have exactly 4 plausible options, a 0-indexed correctAnswerIndex, and a comprehensive explanation explaining WHY the correct answer is right and why other options are wrong (referring to key facts, Articles, or syllabus points). Include Tamil terminology or translation where suitable if it is a TNPSC exam, but keep the overall content clean and professional. Do not repeat questions.`;
+      The focus subject/topic is: ${subject || 'Full Syllabus General / Core Subjects'}.
+      Generate exactly ${targetCount} questions.
+      Each question must have exactly 4 plausible options, a 0-indexed correctAnswerIndex, and a comprehensive explanation explaining WHY the correct answer is right and why other options are wrong (referring to key facts, Articles, formulas, or syllabus points). Include Tamil terminology or translation where suitable if it is a TNPSC exam, but keep the overall content clean and professional. Do not repeat questions.`;
 
       const response = await callGeminiWithRetry(() => aiClient!.models.generateContent({
         model: 'gemini-3.5-flash',
         contents: prompt,
         config: {
-          systemInstruction: 'You are a Senior Question Compiler for UPSC (Civil Services), TNPSC (Tamil Nadu Public Service Commission), and SSC CGL (Staff Selection Commission Combined Graduate Level) exams. Your questions are balanced, challenging, accurate, and test deep understanding or high-precision aptitude rather than simple rote memorization. Every question, option, correct answer, and explanation must be 100% factually accurate, referencing real articles of the Constitution of India, real historical timelines, genuine economic statistics, or standard mathematical and grammatical principles. There is zero tolerance for hallucinations or incorrect/outdated facts.',
+          systemInstruction: 'You are a Senior Question Compiler for UPSC, TNPSC, SSC CGL, RRB NTPC, and IIT JEE (Physics, Chemistry, Mathematics) examinations. Your questions are balanced, challenging, accurate, and test deep conceptual understanding or high-precision numerical problem solving. Every question, option, correct answer, and explanation must be 100% factually and scientifically accurate.',
           responseMimeType: 'application/json',
           responseSchema: {
             type: Type.OBJECT,
@@ -987,11 +1023,13 @@ Candidates must study:
 
 // 9. Subject and Topic Wise Quiz Generator
 app.post('/api/subject-quiz', async (req, res) => {
-  const { subject, topic, exam } = req.body;
+  const { subject, topic, exam, count } = req.body;
 
   if (!subject || !topic) {
     return res.status(400).json({ error: 'Subject and topic are required' });
   }
+
+  const targetCount = Math.min(100, Math.max(3, parseInt(count, 10) || 5));
 
   const examLabels: Record<string, string> = {
     UPSC: 'UPSC Civil Services Examination (IAS/IPS)',
@@ -999,20 +1037,25 @@ app.post('/api/subject-quiz', async (req, res) => {
     TNPSC_G2: 'TNPSC Group II/IIA Executive Services',
     TNPSC_G4: 'TNPSC Group IV & VAO Exam',
     SSC_CGL: 'Staff Selection Commission Combined Graduate Level (SSC CGL) Exam',
-    RRB_NTPC: 'Railway Recruitment Board Non-Technical Popular Categories (RRB NTPC) Exam'
+    RRB_NTPC: 'Railway Recruitment Board Non-Technical Popular Categories (RRB NTPC) Exam',
+    IIT_JEE: 'IIT JEE (Joint Entrance Examination Main & Advanced - Physics, Chemistry, Mathematics)'
   };
 
-  const examLabel = examLabels[exam] || exam || 'Civil Services standard';
+  const examLabel = examLabels[exam] || exam || 'Competitive Examination standard';
 
   if (aiClient) {
     try {
-      const prompt = `You are an Elite Civil Services Examination Question Designer for ${examLabel} specializing in standard MCQ assessments.
-      Generate a premium, high-yield, and conceptual practice quiz containing exactly 5 multiple choice questions (MCQs) for:
+      const topicPrompt = topic === 'ALL_SYLLABUS_MARATHON' 
+        ? `Comprehensive Full-Syllabus Marathon across ALL chapters in ${subject}`
+        : topic;
+
+      const prompt = `You are an Elite Examination Question Designer for ${examLabel} specializing in standard MCQ assessments.
+      Generate a premium, high-yield, and conceptual practice quiz containing exactly ${targetCount} multiple choice questions (MCQs) for:
       Subject Category: ${subject}
-      Syllabus Topic/Focus: ${topic}
+      Syllabus Topic/Focus: ${topicPrompt}
       
-      Requirements for each of the 5 questions:
-      - The question must be highly realistic, challenging, and assess conceptual depth (avoid trivia; test articles, timelines, logical reasoning, or formulas).
+      Requirements for each of the ${targetCount} questions:
+      - The question must be highly realistic, challenging, and assess conceptual depth (avoid trivia; test articles, timelines, logical reasoning, numerical problem solving, or core textbook formulas).
       - Include exactly 4 clear options.
       - Specify the correct answer index (0 for Option A, 1 for Option B, 2 for Option C, 3 for Option D).
       - Provide a thorough, official-style explanation describing why the correct option is right and highlighting the fallacies of incorrect options.

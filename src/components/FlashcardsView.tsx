@@ -183,6 +183,41 @@ const FLASHCARD_DECKS: Record<ExamType, Flashcard[]> = {
       ]
     }
   ],
+  IIT_JEE: [
+    {
+      id: 'jee-fc-1',
+      category: 'Physics (Mechanics)',
+      question: 'What is the condition for Rolling Without Slipping on an inclined plane?',
+      answer: 'The velocity of the point of contact with the surface must be zero relative to the surface. v_cm = R * ω and acceleration a_cm = R * α.',
+      points: [
+        'Static friction provides torque for rotational acceleration without doing work.',
+        'Total kinetic energy = Rotational KE (1/2 I ω²) + Translational KE (1/2 m v²).',
+        'Acceleration down incline of angle θ: a = (g sin θ) / (1 + I_cm / (m R²)).'
+      ]
+    },
+    {
+      id: 'jee-fc-2',
+      category: 'Chemistry (Organic)',
+      question: 'What is the mechanism and stereochemistry of SN2 reactions?',
+      answer: 'Bimolecular Nucleophilic Substitution proceeding via a single-step concerted mechanism with a pentacoordinate transition state, resulting in 100% inversion of configuration (Walden Inversion).',
+      points: [
+        'Rate = k [Substrate] [Nucleophile]. Favored by strong nucleophiles and polar aprotic solvents (DMSO, Acetone).',
+        'Reactivity order: Methyl > Primary (1°) > Secondary (2°) >> Tertiary (3°).',
+        'Steric hindrance in substrate slows down the rate of SN2 significantly.'
+      ]
+    },
+    {
+      id: 'jee-fc-3',
+      category: 'Mathematics (Calculus)',
+      question: 'What is L\'Hôpital\'s Rule and when can it be applied?',
+      answer: 'If lim_{x->a} f(x)/g(x) results in an indeterminate form (0/0 or ∞/∞), then lim_{x->a} f(x)/g(x) = lim_{x->a} f\'(x)/g\'(x), provided the limit of derivatives exists.',
+      points: [
+        'Must check that both f(x) and g(x) are differentiable near x=a.',
+        'Must confirm indeterminate form 0/0 or ∞/∞ before taking derivatives of numerator and denominator independently.',
+        'Can be applied iteratively if the result remains in 0/0 or ∞/∞ form.'
+      ]
+    }
+  ]
 };
 
 export default function FlashcardsView({ selectedExam }: { selectedExam: ExamType }) {

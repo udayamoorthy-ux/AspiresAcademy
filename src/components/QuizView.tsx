@@ -65,6 +65,7 @@ export default function QuizView({
   const [session, setSession] = useState<QuizSession | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [customSubject, setCustomSubject] = useState<string>('');
+  const [aiQuestionCount, setAiQuestionCount] = useState<number>(10);
   const [selectedAnswerIndex, setSelectedAnswerIndex] = useState<number | null>(null);
   const [hasAnswered, setHasAnswered] = useState<boolean>(false);
   const [activePYQFilter, setActivePYQFilter] = useState<'ALL' | 'UPSC' | 'TNPSC' | 'SSC' | 'RRB'>('ALL');
@@ -141,7 +142,8 @@ export default function QuizView({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           exam: selectedExam,
-          subject: customSubject.trim() || undefined
+          subject: customSubject.trim() || undefined,
+          count: aiQuestionCount
         }),
       });
       const data = await response.json();
@@ -854,27 +856,54 @@ export default function QuizView({
                   />
                 </div>
 
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest block">Number of Questions to Generate</label>
+                  <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
+                    {[
+                      { count: 5, label: '5 MCQs' },
+                      { count: 10, label: '10 MCQs' },
+                      { count: 15, label: '15 MCQs' },
+                      { count: 25, label: '25 MCQs' },
+                      { count: 50, label: '50 MCQs' },
+                      { count: 100, label: '100 Full' }
+                    ].map((item) => (
+                      <button
+                        key={item.count}
+                        type="button"
+                        onClick={() => setAiQuestionCount(item.count)}
+                        className={`py-2 px-2 text-xs font-extrabold rounded-xl border transition-all cursor-pointer ${
+                          aiQuestionCount === item.count
+                            ? 'bg-amber-500 text-slate-950 border-amber-500 shadow-sm'
+                            : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200'
+                        }`}
+                      >
+                        {item.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
                 <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200 text-xs text-slate-500 flex items-start gap-2.5">
                   <BookOpen className="h-4 w-4 text-emerald-600 flex-shrink-0 mt-0.5" />
                   <p className="leading-relaxed">
-                    AI generation is aligned strictly with official textbook standards. The questions constructed will reference real provisions of the Constitution, genuine archaeological carbon dates, and correct NCERT definitions.
+                    AI generation is aligned strictly with official textbook standards and full syllabus guidelines. The questions constructed will reference real provisions of the Constitution, NCERT physics/chemistry/maths formulas, and past paper trends.
                   </p>
                 </div>
 
                 <button
                   disabled={loading}
                   onClick={generateAIQuiz}
-                  className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs md:text-sm py-3 px-6 rounded-xl flex items-center justify-center gap-2 transition-all shadow-md shadow-amber-500/10 disabled:opacity-40"
+                  className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs md:text-sm py-3 px-6 rounded-xl flex items-center justify-center gap-2 transition-all shadow-md shadow-amber-500/10 disabled:opacity-40 cursor-pointer"
                 >
                   {loading ? (
                     <>
                       <RefreshCw className="h-4 w-4 animate-spin" />
-                      Compiling Verified Questions...
+                      Compiling {aiQuestionCount} Verified Questions...
                     </>
                   ) : (
                     <>
                       <Play className="h-4 w-4" />
-                      Compile & Launch Live Mock
+                      Compile & Launch {aiQuestionCount}-Question Mock
                     </>
                   )}
                 </button>

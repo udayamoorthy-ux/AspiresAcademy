@@ -325,6 +325,79 @@ const ncertBooksList: NcertBook[] = [
     description: 'Organisms and populations, ecosystem dynamics, biodiversity conservation, and environmental issues.',
     importance: 'Extremely high yield source for environmental biology, food web concepts, and species interactions in Prelims.',
     url: 'https://ncert.nic.in/textbook.php?lebo1=0-16'
+  },
+  // PHYSICS, CHEMISTRY & MATHEMATICS (IIT JEE & SCIENCE)
+  {
+    id: 'nc-phy-11-1',
+    title: 'NCERT Physics Class XI - Part 1 & 2',
+    class: 'Class XI',
+    subject: 'science-sociology',
+    description: 'Units & Measurements, Kinematics, Laws of Motion, Work, Energy & Power, System of Particles & Rotational Motion, Gravitation, Thermodynamics, Oscillations & Waves.',
+    importance: 'The fundamental textbook for IIT JEE Physics foundation and conceptual theory.',
+    url: 'https://ncert.nic.in/textbook.php?keph1=0-8'
+  },
+  {
+    id: 'nc-phy-12-1',
+    title: 'NCERT Physics Class XII - Part 1 & 2',
+    class: 'Class XII',
+    subject: 'science-sociology',
+    description: 'Electrostatics, Current Electricity, Magnetism, Electromagnetic Induction, Wave Optics, Dual Nature of Matter, Atoms, Nuclei, Semiconductor Electronics.',
+    importance: 'Essential for IIT JEE Main & Advanced Electrodynamics and Modern Physics questions.',
+    url: 'https://ncert.nic.in/textbook.php?leph1=0-8'
+  },
+  {
+    id: 'nc-chem-11-1',
+    title: 'NCERT Chemistry Class XI - Part 1 & 2',
+    class: 'Class XI',
+    subject: 'science-sociology',
+    description: 'Structure of Atom, Periodic Classification, Chemical Bonding, Thermodynamics, Equilibrium, Redox Reactions, Organic Chemistry Hydrocarbons.',
+    importance: 'Core syllabus textbook for IIT JEE Physical and Organic Chemistry fundamentals.',
+    url: 'https://ncert.nic.in/textbook.php?kech1=0-7'
+  },
+  {
+    id: 'nc-chem-12-1',
+    title: 'NCERT Chemistry Class XII - Part 1 & 2',
+    class: 'Class XII',
+    subject: 'science-sociology',
+    description: 'Solutions, Electrochemistry, Chemical Kinetics, d & f Block Elements, Coordination Compounds, Haloalkanes, Alcohols, Aldehydes, Amines, Biomolecules.',
+    importance: 'High-frequency source for direct NCERT-based Inorganic and Organic mechanisms in IIT JEE.',
+    url: 'https://ncert.nic.in/textbook.php?lech1=0-9'
+  },
+  {
+    id: 'nc-math-11-1',
+    title: 'NCERT Mathematics Class XI & XII',
+    class: 'Class XI / XII',
+    subject: 'science-sociology',
+    description: 'Sets, Relations & Functions, Trigonometry, Complex Numbers, Permutations & Combinations, Binomial Theorem, Sequences & Series, Calculus, Vectors, 3D Geometry, Probability.',
+    importance: 'Standard base curriculum for IIT JEE Mathematics rigor and algebra foundations.',
+    url: 'https://ncert.nic.in/textbook.php?kemh1=0-16'
+  },
+  {
+    id: 'ref-hcv-physics',
+    title: 'Concepts of Physics (Vol 1 & 2) - Dr. H.C. Verma',
+    class: 'Reference Text',
+    subject: 'science-sociology',
+    description: 'The golden reference text for mechanics, thermodynamics, optics, electrodynamics, and quantum physics problem solving.',
+    importance: 'Must-read benchmark book for conceptual clarity and numerical problem-solving for IIT JEE.',
+    url: 'https://ncert.nic.in'
+  },
+  {
+    id: 'ref-ms-chouhan',
+    title: 'Advanced Problems in Organic Chemistry - M.S. Chouhan / Morrison & Boyd',
+    class: 'Reference Text',
+    subject: 'science-sociology',
+    description: 'In-depth reaction mechanisms, stereochemistry, electrophilic additions, and synthetic transformations for JEE Advanced.',
+    importance: 'Essential reference material for high-level organic mechanisms and reaction pathways.',
+    url: 'https://ncert.nic.in'
+  },
+  {
+    id: 'ref-cengage-maths',
+    title: 'Advanced Mathematics Series (Algebra, Calculus, Coordinate Geometry) - Cengage / RD Sharma',
+    class: 'Reference Text',
+    subject: 'science-sociology',
+    description: 'Comprehensive problem banks, differential & integral calculus, vectors, 3D geometry, and matrices for competitive math exams.',
+    importance: 'High-yield problem solving book covering the complete IIT JEE Advanced mathematics syllabus.',
+    url: 'https://ncert.nic.in'
   }
 ];
 
@@ -351,7 +424,7 @@ export default function MaterialsLibraryView({ selectedExam }: MaterialsLibraryV
   };
   const [verifiedCheckmarks, setVerifiedCheckmarks] = useState<Record<string, boolean>>({});
   const [subTab, setSubTab] = useState<'portals' | 'ncert-books' | 'pyqs' | 'sample-tracker'>('ncert-books');
-  const [pyqExamFilter, setPyqExamFilter] = useState<'ALL' | 'UPSC' | 'TNPSC' | 'SSC'>('ALL');
+  const [pyqExamFilter, setPyqExamFilter] = useState<'ALL' | 'UPSC' | 'TNPSC' | 'SSC' | 'IIT_JEE'>('ALL');
   
   // NCERT study tracker state
   const [completedNcertBooks, setCompletedNcertBooks] = useState<string[]>(() => {
@@ -1247,7 +1320,8 @@ export default function MaterialsLibraryView({ selectedExam }: MaterialsLibraryV
                 { id: 'ALL', label: 'All Papers' },
                 { id: 'UPSC', label: 'UPSC Papers' },
                 { id: 'TNPSC', label: 'TNPSC Papers' },
-                { id: 'SSC', label: 'SSC Papers' }
+                { id: 'SSC', label: 'SSC Papers' },
+                { id: 'IIT_JEE', label: 'IIT JEE Papers' }
               ].map((btn) => (
                 <button
                   key={btn.id}

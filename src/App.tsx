@@ -84,6 +84,11 @@ const TICKER_HEADLINES: Record<ExamType, string[]> = {
     'RRB NTPC 2026: Official Stage 1 Computer-Based Tests (CBT-1) are scheduled to begin in Autumn 2026.',
     'Syllabus Advisory: Focus intensively on 10th-standard General Science (Physics, Chemistry, Life Sciences) which constitutes 40% of CBT General Awareness.',
     'Preparation Tip: Practice high-speed quantitative tricks and alphabetical logic series regularly to optimize your 90-minute limit.'
+  ],
+  IIT_JEE: [
+    'JEE Main 2027 Session 1 & Session 2 Information Bulletin & Registration dates published by NTA at jeemain.nta.nic.in.',
+    'JEE Advanced 2027 organizing IIT syllabus press release: Focus on Physics Mechanics, Organic Mechanisms, and Calculus Integration.',
+    'JoSAA Counseling 2026: Seat allocation round results and opening/closing ranks updated for IITs, NITs, and IIITs.'
   ]
 };
 
@@ -276,20 +281,20 @@ export default function App() {
   };
 
   const tabDetails = [
-    { id: 'syllabus', label: 'Official Exam Syllabus', icon: Compass, component: SyllabusView },
-    { id: 'notifications', label: 'Govt Notification Desk', icon: Bell, component: FlashNewsDesk },
-    { id: 'materials', label: 'Official References', icon: ShieldCheck, component: MaterialsLibraryView },
+    { id: 'syllabus', label: 'Official Syllabus', icon: Compass, component: SyllabusView },
     { id: 'planner', label: 'AI Study Planner', icon: Calendar, component: PlannerView },
-    { id: 'quiz', label: 'Practice Mock Tests', icon: Award, component: QuizView },
-    { id: 'subjectQuiz', label: 'Syllabus Topic Quizzes', icon: Sparkles, component: SubjectQuizView },
-    { id: 'activeRecall', label: 'Active Recall SRS Deck', icon: Layers, component: FlashcardsView },
-    { id: 'mainsSprints', label: 'Mains Daily Sprints', icon: FileText, component: MainsSprintsView },
-    { id: 'essay', label: 'Mains Essay Evaluator', icon: GraduationCap, component: EssayEvaluatorView },
-    { id: 'gk', label: 'Current Affairs Deep Dive', icon: Globe, component: GKFeedView },
     { id: 'notes', label: 'AI Notes Generator', icon: BrainCircuit, component: NotesGeneratorView },
-    { id: 'analytics', label: 'Performance Analytics', icon: TrendingUp, component: PerformanceAnalyticsView },
+    { id: 'materials', label: 'Reference Materials', icon: ShieldCheck, component: MaterialsLibraryView },
+    { id: 'subjectQuiz', label: 'Topic Quizzes', icon: Sparkles, component: SubjectQuizView },
+    { id: 'activeRecall', label: 'Recall Flashcards', icon: Layers, component: FlashcardsView },
+    { id: 'quiz', label: 'Practice Mock Tests', icon: Award, component: QuizView },
+    { id: 'mainsSprints', label: 'Daily Sprints', icon: FileText, component: MainsSprintsView },
+    { id: 'essay', label: 'Essay Evaluator', icon: GraduationCap, component: EssayEvaluatorView },
     { id: 'mentor', label: 'Personal AI Coach', icon: MessageSquare, component: MentorChatView },
-    { id: 'reviews', label: 'Reviews & Testimonials', icon: Star, component: ReviewsView },
+    { id: 'gk', label: 'Current Affairs Feed', icon: Globe, component: GKFeedView },
+    { id: 'notifications', label: 'Notification Desk', icon: Bell, component: FlashNewsDesk },
+    { id: 'analytics', label: 'Performance Tracker', icon: TrendingUp, component: PerformanceAnalyticsView },
+    { id: 'reviews', label: 'Reviews & Feedback', icon: Star, component: ReviewsView },
   ] as const;
 
   const handleSelectExam = (exam: ExamType) => {
@@ -298,116 +303,136 @@ export default function App() {
 
   const ActiveComponent = tabDetails.find(tab => tab.id === activeTab)?.component || SyllabusView;
 
+  const NAVIGATION_GROUPS = [
+    {
+      title: 'Study Planning',
+      tabs: ['syllabus', 'planner', 'notes', 'materials']
+    },
+    {
+      title: 'Practice & Prep',
+      tabs: ['subjectQuiz', 'activeRecall', 'quiz']
+    },
+    {
+      title: 'Mains & Writing',
+      tabs: ['mainsSprints', 'essay']
+    },
+    {
+      title: 'Support & Analytics',
+      tabs: ['mentor', 'gk', 'notifications', 'analytics', 'reviews']
+    }
+  ];
+
   return (
-    <div className="min-h-screen bg-[#f8fafc] font-sans selection:bg-emerald-600 selection:text-white" id="portal-app-root">
-      {/* Top Navigation Banner */}
-      <header className="border-b border-slate-200 bg-white/95 backdrop-blur-md sticky top-0 z-50 px-6 py-4.5 shadow-sm" id="portal-header">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div className="min-h-screen bg-gradient-to-b from-slate-50 via-slate-100 to-slate-50 font-sans selection:bg-emerald-600 selection:text-white text-slate-800 antialiased" id="portal-app-root">
+      {/* Top Floating Navigation Header */}
+      <header className="border-b border-slate-200/60 bg-white/90 backdrop-blur-md sticky top-0 z-50 px-6 py-4 transition-all duration-300" id="portal-header">
+        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           
           {/* Logo & Headline */}
-          <div className="flex items-center gap-3.5">
-            <div className="flex-shrink-0">
-              <AspiresLogo size={46} showText={false} className="rounded-xl bg-white border border-slate-200 p-0.5 shadow-sm" />
+          <div className="flex items-center gap-4">
+            <div className="flex-shrink-0 transition-transform duration-300 hover:scale-105">
+              <AspiresLogo size={50} showText={false} className="rounded-xl bg-white border border-slate-150 p-1 shadow-sm" />
             </div>
             <div>
-              <h1 className="text-xl md:text-2xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2 font-display">
-                ASPIRES ACADEMY
-                <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-emerald-600/10 border border-emerald-600/20 text-emerald-700 font-mono">
-                  AI-Powered
+              <div className="flex items-center gap-2">
+                <h1 className="text-xl md:text-2xl font-black text-slate-900 tracking-tight font-display">
+                  ASPIRES <span className="text-emerald-600">ACADEMY</span>
+                </h1>
+                <span className="text-[9px] uppercase font-black px-2 py-0.5 rounded-full bg-emerald-100/60 border border-emerald-200/50 text-emerald-800 font-mono tracking-wider">
+                  AI-Powered ⚡
                 </span>
-              </h1>
-              <p className="text-xs md:text-sm text-slate-500 font-medium font-sans">TNPSC, UPSC Aspirants • Professional Study Blueprint & AI Evaluation</p>
+              </div>
+              <p className="text-xs text-slate-500 font-semibold mt-0.5 font-sans leading-none">
+                UPSC • TNPSC • SSC • RRB Prep & Automated Descriptive Evaluation
+              </p>
             </div>
           </div>
 
           {/* Quick Info Bar & Premium Controls */}
-          <div className="flex items-center gap-4 flex-wrap" id="header-quick-info">
-            <button
-              onClick={() => {
-                // Scroll to share card
-                const el = document.getElementById('share-card');
-                if (el) {
-                  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                  setHighlightShareCard(true);
-                  setTimeout(() => setHighlightShareCard(false), 2500);
-                }
-              }}
-              className="bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-800 font-extrabold text-xs px-3.5 py-1.5 rounded-xl flex items-center gap-1.5 transition-all shadow-sm cursor-pointer active:scale-95"
-              id="header-share-btn"
-            >
-              <Share2 className="h-3.5 w-3.5 text-emerald-600 animate-pulse" />
-              <span>Invite Buddies</span>
-            </button>
-
-            <span className="h-4 w-px bg-slate-200 hidden sm:inline" />
-
-            <button 
-              onClick={() => setIsContactModalOpen(true)}
-              className="border border-slate-200 hover:bg-slate-50 text-slate-700 font-extrabold text-xs px-3.5 py-1.5 rounded-xl flex items-center gap-1.5 transition-colors cursor-pointer"
-              id="header-support-btn"
-            >
-              <MessageSquare className="h-3.5 w-3.5 text-emerald-600" />
-              <span>Support Desk</span>
-            </button>
-
-            <span className="h-4 w-px bg-slate-200 hidden sm:inline" />
-
-            {userEmail ? (
-              <button 
-                onClick={() => setIsAuthModalOpen(true)}
-                className="flex items-center gap-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 px-3 py-1.5 rounded-xl cursor-pointer transition-colors"
-                id="header-user-profile-btn"
+          <div className="flex items-center gap-3.5 flex-wrap justify-between lg:justify-end w-full lg:w-auto" id="header-quick-info">
+            
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => {
+                  const el = document.getElementById('share-card');
+                  if (el) {
+                    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    setHighlightShareCard(true);
+                    setTimeout(() => setHighlightShareCard(false), 2500);
+                  }
+                }}
+                className="bg-emerald-50/50 hover:bg-emerald-100/80 border border-emerald-200/60 text-emerald-800 font-extrabold text-xs px-3.5 py-2.5 rounded-xl flex items-center gap-2 transition-all cursor-pointer active:scale-95 shadow-sm hover:shadow"
+                id="header-share-btn"
               >
-                <div className="h-6 w-6 rounded-full bg-emerald-600 text-white font-extrabold text-[10.5px] flex items-center justify-center shadow-sm">
-                  {userEmail.charAt(0).toUpperCase()}
-                </div>
-                <span className="text-xs font-bold text-slate-700 truncate max-w-[120px]" title={userEmail}>
-                  {userEmail.split('@')[0]}
-                </span>
+                <Share2 className="h-3.5 w-3.5 text-emerald-600" />
+                <span className="hidden sm:inline">Invite Buddies</span>
               </button>
-            ) : (
+
               <button 
-                onClick={() => setIsAuthModalOpen(true)}
-                className="border border-slate-200 hover:bg-slate-50 text-slate-700 font-extrabold text-xs px-3.5 py-1.5 rounded-xl flex items-center gap-1.5 transition-colors cursor-pointer"
-                id="header-sign-in-btn"
+                onClick={() => setIsContactModalOpen(true)}
+                className="bg-slate-50 hover:bg-slate-100 border border-slate-200/80 text-slate-700 font-extrabold text-xs px-3.5 py-2.5 rounded-xl flex items-center gap-2 transition-all cursor-pointer active:scale-95 shadow-sm hover:shadow"
+                id="header-support-btn"
               >
-                <UserCheck className="h-3.5 w-3.5 text-slate-500" />
-                <span>Login</span>
+                <MessageSquare className="h-3.5 w-3.5 text-slate-500" />
+                <span className="hidden sm:inline">Support Desk</span>
               </button>
-            )}
+            </div>
 
-            <span className="h-4 w-px bg-slate-200 hidden sm:inline" />
+            <span className="h-5 w-px bg-slate-200 hidden lg:inline" />
 
-            {isPremium ? (
-              <div className="flex items-center gap-2">
-                <div className="bg-gradient-to-r from-amber-500 to-yellow-500 border border-amber-400 text-slate-950 font-extrabold text-[10.5px] px-3.5 py-1.5 rounded-full flex items-center gap-1.5 shadow-sm shadow-amber-500/10 animate-fadeIn">
-                  <Crown className="h-3.5 w-3.5 text-slate-950 fill-slate-950 animate-pulse animate-bounce" />
-                  <span>PREMIUM ACTIVE ({premiumPlan === 'annual' ? 'Annual Pass' : 'Monthly Pass'})</span>
+            <div className="flex items-center gap-3">
+              {userEmail ? (
+                <button 
+                  onClick={() => setIsAuthModalOpen(true)}
+                  className="flex items-center gap-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 px-3 py-1.5 rounded-xl cursor-pointer transition-all active:scale-95 shadow-sm hover:shadow"
+                  id="header-user-profile-btn"
+                >
+                  <div className="h-5.5 w-5.5 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-600 text-white font-extrabold text-[10px] flex items-center justify-center shadow-sm">
+                    {userEmail.charAt(0).toUpperCase()}
+                  </div>
+                  <span className="text-xs font-bold text-slate-700 truncate max-w-[100px]" title={userEmail}>
+                    {userEmail.split('@')[0]}
+                  </span>
+                </button>
+              ) : (
+                <button 
+                  onClick={() => setIsAuthModalOpen(true)}
+                  className="border border-slate-200 hover:bg-slate-50 text-slate-700 font-extrabold text-xs px-3.5 py-2.5 rounded-xl flex items-center gap-2 transition-all active:scale-95 cursor-pointer shadow-sm hover:shadow"
+                  id="header-sign-in-btn"
+                >
+                  <UserCheck className="h-3.5 w-3.5 text-slate-500" />
+                  <span>Login</span>
+                </button>
+              )}
+
+              {isPremium ? (
+                <div className="flex items-center gap-1 bg-gradient-to-r from-amber-500/10 to-yellow-500/15 border border-amber-500/30 text-amber-900 font-extrabold text-[10.5px] px-3.5 py-2 rounded-xl shadow-sm">
+                  <Crown className="h-3.5 w-3.5 text-amber-500 fill-amber-500 animate-pulse" />
+                  <span className="font-display">PREMIUM ACTIVE</span>
+                  <button
+                    onClick={() => setIsSupportModalOpen(true)}
+                    className="text-[9.5px] text-amber-800 hover:text-amber-950 font-mono underline ml-1.5 cursor-pointer"
+                  >
+                    Manage
+                  </button>
                 </div>
+              ) : (
                 <button
                   onClick={() => setIsSupportModalOpen(true)}
-                  className="text-[10px] text-slate-400 hover:text-slate-600 font-mono underline ml-1 cursor-pointer"
-                  title="Manage subscription"
+                  className="bg-gradient-to-r from-slate-900 to-slate-950 hover:from-slate-850 hover:to-slate-900 text-white font-extrabold text-xs px-4.5 py-2.5 rounded-xl flex items-center gap-2 shadow-sm hover:shadow transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer group"
+                  id="header-upgrade-btn"
                 >
-                  Manage
+                  <Crown className="h-3.5 w-3.5 text-amber-400 group-hover:rotate-12 transition-transform" />
+                  <span>Upgrade</span>
                 </button>
-              </div>
-            ) : (
-              <button
-                onClick={() => setIsSupportModalOpen(true)}
-                className="bg-gradient-to-r from-slate-950 to-slate-900 hover:from-slate-900 hover:to-slate-850 text-white font-extrabold text-xs px-4 py-2 rounded-xl flex items-center gap-1.5 shadow-sm hover:shadow transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer group"
-                id="header-upgrade-btn"
-              >
-                <Crown className="h-3.5 w-3.5 text-amber-400 group-hover:rotate-12 transition-transform" />
-                <span>Go Premium</span>
-              </button>
-            )}
+              )}
+            </div>
 
-            <span className="h-4 w-px bg-slate-200 hidden sm:inline" />
+            <span className="h-5 w-px bg-slate-200 hidden lg:inline" />
 
-            <div className="flex items-center gap-4 text-xs md:text-sm font-semibold text-slate-600">
-              <span className="text-slate-800 flex items-center gap-1.5">
-                Mode: <strong className="text-emerald-600 font-black bg-emerald-50 border border-emerald-100 px-2.5 py-0.5 rounded">{selectedExam}</strong>
+            <div className="flex items-center gap-2 text-xs md:text-sm font-semibold text-slate-600">
+              <span className="text-slate-700 flex items-center gap-1.5">
+                Goal: <strong className="text-emerald-700 font-black bg-emerald-50 border border-emerald-100 px-2.5 py-1 rounded-lg">{selectedExam}</strong>
               </span>
             </div>
           </div>
@@ -441,26 +466,31 @@ export default function App() {
       <main className="max-w-7xl mx-auto px-6 py-8 space-y-8" id="portal-main-stage">
         
         {/* Exam Quick Select & Pitch Banner */}
-        <div className="bg-white border border-slate-200/80 p-6.5 rounded-2xl flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 shadow-sm" id="exam-pitch-banner">
-          <div className="space-y-1.5 max-w-xl">
-            <h2 className="text-xl md:text-2xl font-bold text-slate-900 flex items-center gap-2 font-display">
-              <Sparkles className="h-5.5 w-5.5 text-emerald-600" />
-              Configure Your Civil Services Focus
+        <div className="bg-white border border-slate-200/80 p-6 rounded-2xl flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 shadow-sm relative overflow-hidden" id="exam-pitch-banner">
+          <div className="absolute right-0 top-0 w-80 h-80 bg-emerald-500/5 rounded-full blur-3xl pointer-events-none" />
+          <div className="space-y-1.5 max-w-xl relative z-10">
+            <div className="inline-flex items-center gap-1.5 bg-emerald-50 border border-emerald-100 px-3 py-1 rounded-full text-[10px] font-bold text-emerald-800 uppercase tracking-wider font-mono">
+              <Sparkles className="h-3 w-3 text-emerald-600 animate-pulse" />
+              Active Goal Configuration
+            </div>
+            <h2 className="text-xl md:text-2xl font-black text-slate-900 tracking-tight font-display">
+              Select Your Target Examination
             </h2>
-            <p className="text-sm text-slate-500 leading-relaxed">
-              Toggle your goal exam below. Our study planner, MCQs diagnostic quizzes, descriptive answer evaluations, and AI personal assistant chatbot will automatically realign to the selected board syllabus.
+            <p className="text-xs text-slate-500 leading-relaxed font-sans">
+              All study materials, practice quizzes, syllabus items, and AI responses automatically realign to the selected board pattern.
             </p>
           </div>
 
           {/* Selector Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-6 gap-2.5 w-full lg:w-auto" id="exam-selector-buttons">
+          <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-7 gap-2 w-full lg:w-auto relative z-10" id="exam-selector-buttons">
             {[
               { id: 'UPSC', label: 'UPSC IAS/IPS' },
               { id: 'TNPSC_G1', label: 'TNPSC Group 1' },
               { id: 'TNPSC_G2', label: 'TNPSC Group 2' },
               { id: 'TNPSC_G4', label: 'TNPSC Group 4' },
               { id: 'SSC_CGL', label: 'SSC CGL' },
-              { id: 'RRB_NTPC', label: 'RRB NTPC' }
+              { id: 'RRB_NTPC', label: 'RRB NTPC' },
+              { id: 'IIT_JEE', label: 'IIT JEE (Main/Adv)' }
             ].map((examItem) => {
               const isActive = selectedExam === examItem.id;
               return (
@@ -468,10 +498,10 @@ export default function App() {
                   key={examItem.id}
                   id={`btn-select-exam-${examItem.id}`}
                   onClick={() => handleSelectExam(examItem.id as ExamType)}
-                  className={`px-4 py-3 rounded-xl text-xs md:text-sm font-bold transition-all ${
+                  className={`px-3.5 py-2.5 rounded-xl text-xs font-extrabold transition-all cursor-pointer ${
                     isActive
-                      ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/15'
-                      : 'bg-white border border-slate-200 hover:border-slate-350 text-slate-700 hover:text-slate-950'
+                      ? 'bg-emerald-600 border border-emerald-500 text-white shadow-sm'
+                      : 'bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 hover:text-slate-950'
                   }`}
                 >
                   {examItem.label}
@@ -485,30 +515,56 @@ export default function App() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8" id="dashboard-main-grid">
           
           {/* Navigation Sidebar */}
-          <div className="lg:col-span-3 space-y-4" id="navigation-sidebar-column">
-            <span className="text-xs uppercase font-bold tracking-widest text-slate-450 px-1 font-mono">Study Modules</span>
-            
-            <nav className="flex flex-col gap-1.5" id="navigation-menu">
-              {tabDetails.map((tab) => {
-                const isActive = activeTab === tab.id;
-                const Icon = tab.icon;
-                return (
-                  <button
-                    key={tab.id}
-                    id={`nav-tab-${tab.id}`}
-                    onClick={() => setActiveTab(tab.id)}
-                    className={`w-full text-left p-4 rounded-xl text-sm md:text-base font-bold flex items-center gap-3.5 transition-all border ${
-                      isActive
-                        ? 'bg-emerald-50 border-emerald-300 text-emerald-900 font-extrabold shadow-sm'
-                        : 'bg-white hover:bg-slate-50 border-slate-200/80 text-slate-600 hover:text-slate-950'
-                    }`}
-                  >
-                    <Icon className={`h-5 w-5 ${isActive ? 'text-emerald-600' : 'text-slate-500'}`} />
-                    {tab.label}
-                  </button>
-                );
-              })}
-            </nav>
+          <div className="lg:col-span-3 space-y-6" id="navigation-sidebar-column">
+            <div className="bg-white border border-slate-200/80 p-5 rounded-2xl shadow-sm space-y-6 sticky top-[100px] max-h-[calc(100vh-140px)] overflow-y-auto" id="navigation-card-container">
+              <div>
+                <h3 className="text-sm font-black text-slate-900 tracking-tight font-display mb-0.5">Study Desk Dashboard</h3>
+                <p className="text-[11px] text-slate-400 font-medium">All modules aligned to {selectedExam}</p>
+              </div>
+
+              <nav className="space-y-5" id="navigation-menu">
+                {NAVIGATION_GROUPS.map((group) => (
+                  <div key={group.title} className="space-y-1.5">
+                    <div className="px-1">
+                      <span className="text-[10px] font-extrabold tracking-wider text-slate-400 font-mono uppercase">
+                        {group.title}
+                      </span>
+                    </div>
+
+                    <div className="space-y-1">
+                      {group.tabs.map((tabId) => {
+                        const tab = tabDetails.find((t) => t.id === tabId);
+                        if (!tab) return null;
+                        const isActive = activeTab === tabId;
+                        const Icon = tab.icon;
+
+                        return (
+                          <button
+                            key={tabId}
+                            id={`nav-tab-${tabId}`}
+                            onClick={() => {
+                              setActiveTab(tabId);
+                              // Smooth scroll to work area on mobile
+                              if (window.innerWidth < 1024) {
+                                document.getElementById('active-work-area')?.scrollIntoView({ behavior: 'smooth' });
+                              }
+                            }}
+                            className={`w-full text-left px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-2.5 transition-all cursor-pointer ${
+                              isActive
+                                ? 'bg-emerald-600 text-white shadow-sm font-extrabold'
+                                : 'bg-transparent hover:bg-slate-50 text-slate-650 hover:text-slate-900'
+                            }`}
+                          >
+                            <Icon className={`h-4 w-4 shrink-0 ${isActive ? 'text-white' : 'text-slate-400'}`} />
+                            <span>{tab.label}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))}
+              </nav>
+            </div>
 
             {/* Premium Status Widget / Promo Inside Sidebar */}
             {isPremium ? (

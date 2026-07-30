@@ -55,6 +55,12 @@ const PRESET_TOPICS: Record<ExamType, { topic: string; keywords: string }[]> = {
     { topic: 'Mathematics: Time, Speed & Distance', keywords: 'Train Relative Speed, Bridge & Platform Crossing Time, Average Speed, Upstream/Downstream Boats' },
     { topic: 'General Intelligence: Series & Coding', keywords: 'Number & Alphabet Series patterns, Coding-Decoding by opposite alphabet values, Syllogisms, Mathematical Operations' },
     { topic: 'Railway Systems and History of India', keywords: 'Father of Indian Railways Lord Dalhousie, Railway Zones and Headquarters, Wheel & Axle Plants, Dedicated Freight Corridors (DFCs)' }
+  ],
+  IIT_JEE: [
+    { topic: 'Rotational Dynamics & Torque', keywords: 'Moment of Inertia, Angular Momentum Conservation, Pure Rolling without slipping, Torque = I alpha' },
+    { topic: 'Organic Reaction Mechanisms', keywords: 'SN1 vs SN2, Carbocation stability, Electrophilic Aromatic Substitution, Markovnikov rule' },
+    { topic: 'Calculus Integration & Area', keywords: 'Definite Integral properties, Substitution method, Integration by parts, Area under curve' },
+    { topic: 'Electrostatics & Gauss Law', keywords: 'Coulomb Law, Electric Field Flux, Capacitance with dielectric, Electric Potential' }
   ]
 };
 

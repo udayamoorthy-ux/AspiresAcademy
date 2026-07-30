@@ -126,6 +126,20 @@ const DAILY_SPRINTS: Record<ExamType, SprintPrompt[]> = {
       context: 'Mathematics - Time, Speed & Distance (CBT-1 / CBT-2)'
     }
   ],
+  IIT_JEE: [
+    {
+      id: 'jee-sprint-1',
+      question: 'A uniform rod of mass M and length L is hinged at one end. A bullet of mass m moving horizontally at speed v strikes the rod at distance 2L/3 from hinge and gets embedded. Derive the expression for the angular velocity of the rod-bullet system immediately after collision.',
+      timeLimit: 300,
+      idealKeywords: ['Conservation of Angular Momentum', 'Moment of Inertia', 'Hinge torque', 'Rotational Dynamics', 'Embedded collision'],
+      evaluationRubric: [
+        { title: 'Principle Selection', desc: 'Used Angular Momentum Conservation about the hinge because net external torque about hinge during collision is zero.' },
+        { title: 'Initial Angular Momentum', desc: 'Correctly calculated L_initial = m * v * (2L/3).' },
+        { title: 'Final Moment of Inertia', desc: 'Correctly summed I_total = (1/3 M L²) + m (2L/3)² and set L_initial = I_total * ω.' }
+      ],
+      context: 'Physics - Rotational Dynamics & Impulse'
+    }
+  ],
 };
 
 export default function MainsSprintsView({ selectedExam }: { selectedExam: ExamType }) {

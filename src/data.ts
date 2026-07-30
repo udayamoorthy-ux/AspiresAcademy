@@ -93,6 +93,20 @@ export const EXAM_DETAILS = {
       { subject: 'General Awareness', description: 'Current Events of National and International Importance, Games and Sports, Art and Culture of India, Indian Literature, Monuments and Places of India, General Science and Life Science (up to 10th CBSE), History of India and Freedom Struggle, Physical, Social and Economic Geography of India and World, Indian Polity and Constitution, General Scientific and Technological Developments, Environmental Issues, Basics of Computers.' }
     ],
   },
+  IIT_JEE: {
+    title: 'IIT JEE (Joint Entrance Examination Main & Advanced)',
+    shortName: 'IIT JEE (Main/Adv)',
+    stages: [
+      { name: 'JEE Main (NTA)', details: 'Paper 1 for B.E./B.Tech (Physics, Chemistry, Mathematics; 90 questions, 300 Marks; Computer Based Test)' },
+      { name: 'JEE Advanced (IITs)', details: 'Paper 1 & Paper 2 (Physics, Chemistry, Mathematics with single choice, multiple choice, numerical, matching type questions)' },
+      { name: 'JoSAA Counseling', details: 'Joint Seat Allocation Authority counseling for IITs, NITs, IIITs, and GFTIs' }
+    ],
+    syllabus: [
+      { subject: 'Physics', description: 'Kinematics, Laws of Motion, Work Energy Power, Rotational Dynamics, Gravitation, Electrodynamics, Optics, Thermodynamics, Modern Physics.' },
+      { subject: 'Chemistry', description: 'Physical Chemistry (Mole concept, Chemical Kinetics, Thermodynamics), Organic Chemistry (Reaction Mechanisms, Functional Groups), Inorganic Chemistry (Coordination Compounds, Periodic Table).' },
+      { subject: 'Mathematics', description: 'Calculus (Limits, Derivatives, Integrals), Coordinate Geometry (Vectors & 3D, Conics), Algebra (Matrices, Probability, Complex Numbers), Trigonometry.' }
+    ],
+  },
 };
 
 export const DEFAULT_ESSAY_PROMPTS: EssayPrompt[] = [
@@ -397,6 +411,47 @@ export const STATIC_QUIZ_QUESTIONS: Record<ExamType, Question[]> = {
       correctAnswerIndex: 1,
       explanation: 'Ghum railway station of the Darjeeling Himalayan Railway is the highest railway station in India. It is situated at an altitude of 2,258 meters (7,407 ft) and is operated by the Northeast Frontier Railway (NFR) zone.',
       subject: 'General Awareness',
+    }
+  ],
+  IIT_JEE: [
+    {
+      id: 'jee-q1',
+      text: 'A particle moves along a straight line such that its velocity v varies with position x as v = α√x, where α is a positive constant. What is the acceleration of the particle?',
+      options: [
+        'α / 2',
+        'α² / 2',
+        'α²',
+        '2α²'
+      ],
+      correctAnswerIndex: 1,
+      explanation: 'Acceleration a = v * (dv/dx). Given v = α * x^(1/2), taking derivative dv/dx = α * (1/2) * x^(-1/2). Therefore, a = (α * x^(1/2)) * (α / (2 * x^(1/2))) = α² / 2. Acceleration is a constant equal to α² / 2.',
+      subject: 'Physics',
+    },
+    {
+      id: 'jee-q2',
+      text: 'Which of the following organic compounds will undergo SN1 reaction at the fastest rate?',
+      options: [
+        'CH₃-CH₂-Cl',
+        'CH₂=CH-CH₂-Cl (Allyl chloride)',
+        '(CH₃)₃C-Cl (tert-Butyl chloride)',
+        'C₆H₅-CH₂-Cl (Benzyl chloride)'
+      ],
+      correctAnswerIndex: 3,
+      explanation: 'SN1 reaction rate depends on carbocation stability. Benzyl carbocation (C₆H₅-CH₂⁺) is stabilized by resonance with the entire aromatic ring (5 resonance structures) and has greater resonance energy than allyl carbocation and 3° carbocation.',
+      subject: 'Chemistry',
+    },
+    {
+      id: 'jee-q3',
+      text: 'Evaluate the limit: lim_{x -> 0} (tan x - sin x) / x³',
+      options: [
+        '0',
+        '1 / 2',
+        '1',
+        '2'
+      ],
+      correctAnswerIndex: 1,
+      explanation: 'tan x - sin x = sin x (1/cos x - 1) = sin x (1 - cos x) / cos x. As x -> 0, cos x -> 1. We know lim_{x->0} (sin x / x) = 1 and lim_{x->0} (1 - cos x)/x² = 1/2. Therefore, lim_{x->0} (sin x / x) * ((1 - cos x) / x²) * (1 / cos x) = 1 * (1/2) * 1 = 1/2.',
+      subject: 'Mathematics',
     }
   ]
 };

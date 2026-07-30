@@ -31,7 +31,7 @@ interface SubjectQuizViewProps {
   onPremiumClick?: () => void;
 }
 
-const SUBJECTS = [
+const CIVIL_SUBJECTS = [
   {
     id: 'polity',
     name: 'Indian Polity (அரசியலமைப்பு)',
@@ -114,12 +114,82 @@ const SUBJECTS = [
   }
 ];
 
+const JEE_SUBJECTS = [
+  {
+    id: 'physics',
+    name: 'Physics (இயற்பியல்)',
+    description: 'Mechanics, Electrodynamics, Optics, Thermodynamics, and Modern Physics.',
+    icon: Compass,
+    color: 'emerald',
+    topics: [
+      'Kinematics & Newton\'s Laws of Motion',
+      'Work, Energy, Power & Collisions',
+      'Rotational Dynamics & Moment of Inertia',
+      'Gravitation & Fluid Mechanics',
+      'Thermodynamics & Kinetic Theory of Gases',
+      'Electrostatics, Current Electricity & Magnetism',
+      'Electromagnetic Induction & AC Circuits',
+      'Ray & Wave Optics',
+      'Modern Physics, Photoelectric Effect & Atomic Physics'
+    ]
+  },
+  {
+    id: 'chemistry',
+    name: 'Chemistry (வேதியியல்)',
+    description: 'Physical Chemistry, Organic Mechanisms, and Inorganic Compounds.',
+    icon: Layers,
+    color: 'amber',
+    topics: [
+      'Mole Concept & Stoichiometry',
+      'Atomic Structure & Periodic Classification',
+      'Chemical Bonding & Molecular Structure',
+      'Chemical Kinetics & Equilibrium',
+      'Thermodynamics & Electrochemistry',
+      'General Organic Chemistry (GOC) & Reaction Mechanisms',
+      'Hydrocarbons, Haloalkanes & Organic Compounds',
+      'Coordination Compounds & p/d/f-Block Elements'
+    ]
+  },
+  {
+    id: 'maths',
+    name: 'Mathematics (கணிதம்)',
+    description: 'Calculus, Algebra, Coordinate Geometry, Vectors, and 3D Geometry.',
+    icon: BookCheck,
+    color: 'blue',
+    topics: [
+      'Limits, Continuity & Differentiability',
+      'Application of Derivatives & Maxima/Minima',
+      'Definite & Indefinite Integrals',
+      'Differential Equations & Area under Curves',
+      'Matrices, Determinants & System of Linear Equations',
+      'Complex Numbers & Quadratic Equations',
+      'Permutations, Combinations & Probability',
+      'Vectors & 3D Geometry',
+      'Straight Lines, Circles & Conic Sections'
+    ]
+  },
+  {
+    id: 'aptitude',
+    name: 'Logical Aptitude & Problem Solving',
+    description: 'Analytical reasoning, numerical estimation, and speed calculation.',
+    icon: Award,
+    color: 'indigo',
+    topics: [
+      'Speed Calculation & Numerical Estimates',
+      'Graph Interpretation & Calculus Applications',
+      'Logical Deduction & Spatial Reasoning',
+      'Dimensional Analysis & Unit Conversions'
+    ]
+  }
+];
+
 export default function SubjectQuizView({
   selectedExam,
   onVoicePlay,
   isPremium = false,
   onPremiumClick
 }: SubjectQuizViewProps) {
+  const SUBJECTS = selectedExam === 'IIT_JEE' ? JEE_SUBJECTS : CIVIL_SUBJECTS;
   const [selectedSubject, setSelectedSubject] = useState<string>('');
   const [selectedTopic, setSelectedTopic] = useState<string>('');
   const [customTopic, setCustomTopic] = useState<string>('');
@@ -127,6 +197,8 @@ export default function SubjectQuizView({
   const [session, setSession] = useState<QuizSession | null>(null);
   const [selectedAnswerIndex, setSelectedAnswerIndex] = useState<number | null>(null);
   const [hasAnswered, setHasAnswered] = useState<boolean>(false);
+
+  const [questionCount, setQuestionCount] = useState<number>(10);
 
   // Free Tier Quiz Counts
   const [quizCount, setQuizCount] = useState<number>(() => {
@@ -177,7 +249,8 @@ export default function SubjectQuizView({
         body: JSON.stringify({
           subject: activeSubjectData?.name || selectedSubject,
           topic: finalTopic,
-          exam: selectedExam
+          exam: selectedExam,
+          count: questionCount
         })
       });
 
@@ -377,6 +450,7 @@ export default function SubjectQuizView({
                       className="w-full bg-slate-50 hover:bg-slate-100/70 border border-slate-200 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all cursor-pointer"
                     >
                       <option value="">-- Choose pre-seeded topic --</option>
+                      <option value="ALL_SYLLABUS_MARATHON">🔥 All Topics / Full Syllabus Marathon (Sampled across entire subject)</option>
                       {activeSubjectData?.topics.map((t, idx) => (
                         <option key={idx} value={t}>{t}</option>
                       ))}
@@ -406,6 +480,36 @@ export default function SubjectQuizView({
                       className="w-full bg-slate-50 border border-slate-200 px-3.5 py-2.5 rounded-xl text-xs font-medium text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all"
                     />
                   </div>
+
+                  {/* Step 3: Question Count Selector */}
+                  <div className="space-y-1.5 pt-2">
+                    <label className="text-xs font-black text-slate-600 uppercase tracking-wider font-mono flex items-center gap-1.5">
+                      <BookOpen className="h-3.5 w-3.5 text-emerald-600" /> Question Count (Not Limited To Standard)
+                    </label>
+                    <div className="grid grid-cols-3 gap-2">
+                      {[
+                        { count: 5, label: '5 Questions' },
+                        { count: 10, label: '10 Questions' },
+                        { count: 15, label: '15 Questions' },
+                        { count: 25, label: '25 Sectional' },
+                        { count: 50, label: '50 Half Mock' },
+                        { count: 100, label: '100 Marathon' }
+                      ].map((item) => (
+                        <button
+                          key={item.count}
+                          type="button"
+                          onClick={() => setQuestionCount(item.count)}
+                          className={`py-2 px-2.5 text-[11px] font-bold rounded-xl border transition-all cursor-pointer ${
+                            questionCount === item.count
+                              ? 'bg-emerald-600 text-white border-emerald-600 shadow-sm'
+                              : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200'
+                          }`}
+                        >
+                          {item.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
@@ -420,17 +524,17 @@ export default function SubjectQuizView({
                 {loading ? (
                   <>
                     <Loader2 className="h-4 w-4 animate-spin" />
-                    <span>Analyzing Syllabus & Compiling...</span>
+                    <span>Analyzing Syllabus & Compiling {questionCount} Questions...</span>
                   </>
                 ) : (
                   <>
                     <Play className="h-4 w-4" />
-                    <span>Launch 5-Question Quiz</span>
+                    <span>Launch {questionCount}-Question Assessment</span>
                   </>
                 )}
               </button>
               <p className="text-[10px] text-slate-400 text-center font-medium">
-                Quizzes are designed according to strict standard civil services formats.
+                Quizzes are compiled dynamically across all books and official syllabus guidelines.
               </p>
             </div>
 
