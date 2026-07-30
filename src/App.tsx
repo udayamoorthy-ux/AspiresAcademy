@@ -56,7 +56,8 @@ import {
   FileText,
   Share2,
   Copy,
-  Check
+  Check,
+  Send
 } from 'lucide-react';
 
 const TICKER_HEADLINES: Record<ExamType, string[]> = {
@@ -233,6 +234,8 @@ export default function App() {
   const [userEmail, setUserEmail] = useState<string>(() => {
     return localStorage.getItem('aspires_logged_in_email') || '';
   });
+
+  const isUserAdmin = userEmail.trim().toLowerCase() === 'udayamoorthy@gmail.com';
 
   // Premium Subscription State loaded securely from Cache standard
   const [isPremium, setIsPremium] = useState<boolean>(() => {
@@ -658,14 +661,24 @@ export default function App() {
               <div className="space-y-0.5">
                 <span className="text-[9px] uppercase tracking-widest text-emerald-700 font-bold font-mono">Growth & Outreach 📢</span>
                 <h4 className="font-extrabold text-xs text-slate-900 flex items-center gap-1.5 font-display">
-                  Daily 5 MCQs & Share
+                  Daily 5 MCQs & WhatsApp Group
                 </h4>
               </div>
               <p className="text-[11px] text-slate-500 leading-relaxed font-sans">
-                Post daily 5 high-yield MCQs in your study groups on WhatsApp & Facebook!
+                Join or invite study buddies to our official <strong>aspiresacademy.in</strong> WhatsApp group for daily 5 high-yield MCQs!
               </p>
 
               <div className="grid grid-cols-1 gap-2 pt-0.5">
+                <a
+                  href={`https://api.whatsapp.com/send?text=${encodeURIComponent('Join official ASPIRES ACADEMY WhatsApp Study Group (aspiresacademy.in) for Daily 5 MCQs, AI Voice Lessons, Essay Grading & Mock Tests!\n\n📲 Join Group: https://aspiresacademy.in')}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full bg-[#25D366] hover:bg-[#20ba5a] text-slate-950 font-extrabold text-xs py-2 rounded-xl flex items-center justify-center gap-1.5 transition-all shadow-2xs active:scale-95 cursor-pointer"
+                >
+                  <Send className="h-3.5 w-3.5" />
+                  <span>WhatsApp Group (aspiresacademy.in)</span>
+                </a>
+
                 <button
                   onClick={() => {
                     const el = document.getElementById('share-card');
@@ -683,7 +696,7 @@ export default function App() {
 
                 <button
                   onClick={() => {
-                    const shareText = `Hey! Try ASPIRES ACADEMY (https://aspiresacademy.in) — an elite AI-Powered Civil Services Exam Prep Portal for UPSC, TNPSC, SSC & RRB! It features interactive syllabus trackers, AI voice lessons, automated essay evaluations & mock tests. Try it here: https://aspiresacademy.in`;
+                    const shareText = `Hey! Join the official ASPIRES ACADEMY WhatsApp Study Group & Portal (https://aspiresacademy.in) for Daily 5 High-Yield MCQs (UPSC, TNPSC, SSC, RRB & IIT JEE), AI Voice Lessons, Essay Evaluation & Mock Tests!\n\n📲 Join WhatsApp Group & Portal: https://aspiresacademy.in`;
                     navigator.clipboard.writeText(shareText);
                     setCopiedLink(true);
                     setTimeout(() => setCopiedLink(false), 2000);
@@ -693,12 +706,12 @@ export default function App() {
                   {copiedLink ? (
                     <>
                       <Check className="h-3.5 w-3.5 text-emerald-600" />
-                      <span className="text-emerald-700">Copied Invite Link!</span>
+                      <span className="text-emerald-700">Copied WhatsApp Invite Link!</span>
                     </>
                   ) : (
                     <>
                       <Copy className="h-3.5 w-3.5 text-slate-500" />
-                      <span>Copy Invite Link</span>
+                      <span>Copy WhatsApp Invite Link</span>
                     </>
                   )}
                 </button>
@@ -710,15 +723,39 @@ export default function App() {
           {/* Active Work Area Panel */}
           <div className="lg:col-span-9 space-y-6" id="active-work-area">
 
-            {/* Automated WhatsApp Multi-Exam Broadcast Hub */}
-            <MultiExamWhatsAppBroadcaster 
-              getQuestionsForExam={getDailyQuestionsForOutreach}
-              currentSeedOffset={dailySeedOffset}
-              onRefreshAll={() => {
-                setDailySeedOffset(prev => prev + 1);
-                setOutreachSource('daily');
-              }}
-            />
+            {/* Automated WhatsApp Multi-Exam Broadcast Hub - RESTRICTED TO OWNER ONLY */}
+            {isUserAdmin ? (
+              <MultiExamWhatsAppBroadcaster 
+                getQuestionsForExam={getDailyQuestionsForOutreach}
+                currentSeedOffset={dailySeedOffset}
+                onRefreshAll={() => {
+                  setDailySeedOffset(prev => prev + 1);
+                  setOutreachSource('daily');
+                }}
+              />
+            ) : (
+              <div className="bg-slate-900 border border-slate-800 text-slate-300 p-4 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3 shadow-xs">
+                <div className="flex items-center gap-3">
+                  <div className="h-9 w-9 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shrink-0">
+                    <Send className="h-4 w-4 text-emerald-400" />
+                  </div>
+                  <div>
+                    <h4 className="text-xs font-black text-white font-display flex items-center gap-1.5">
+                      👑 Owner Multi-Exam WhatsApp Broadcaster Control Hub
+                    </h4>
+                    <p className="text-[11px] text-slate-400 font-sans">
+                      Automated 7-exam WhatsApp group dispatcher is reserved for the site owner (<code className="text-amber-300 font-mono">udayamoorthy@gmail.com</code>).
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setIsAuthModalOpen(true)}
+                  className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-3.5 py-2 rounded-xl transition-all cursor-pointer shrink-0 shadow-xs active:scale-95"
+                >
+                  Sign In as Owner
+                </button>
+              </div>
+            )}
 
             {/* Prominent Daily 5 Questions to Post on FB, WhatsApp, Telegram */}
             <div 
@@ -800,7 +837,7 @@ export default function App() {
                         const optionsText = q.options.map((opt, oIdx) => `${String.fromCharCode(65 + oIdx)}) ${opt}`).join('\n');
                         questionsText += `${index + 1}️⃣ ${q.subject || (selectedExam === 'IIT_JEE' ? 'IIT JEE' : 'GENERAL STUDIES')}: ${q.text}\n${optionsText}\n👉 Answer: ${String.fromCharCode(65 + q.correctAnswerIndex)} (${q.options[q.correctAnswerIndex]})\n\n`;
                       });
-                      const postText = `${heading}\n\n${questionsText}🚀 Practice on ASPIRES ACADEMY: https://aspiresacademy.in`;
+                      const postText = `${heading}\n\n${questionsText}👥 Join Official WhatsApp Group: https://aspiresacademy.in\n🚀 Practice on ASPIRES ACADEMY: https://aspiresacademy.in`;
                       window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(postText)}`, '_blank');
                     }}
                     className="bg-[#25D366] hover:bg-[#20ba5a] text-white font-extrabold text-xs px-3.5 py-2 rounded-xl flex items-center gap-1.5 transition-all shadow-sm active:scale-95 cursor-pointer"
@@ -854,7 +891,7 @@ export default function App() {
                         questionsText += `${index + 1}️⃣ ${q.subject || (selectedExam === 'IIT_JEE' ? 'IIT JEE' : 'GENERAL STUDIES')}: ${q.text}\n${optionsText}\n👉 Answer: ${String.fromCharCode(65 + q.correctAnswerIndex)} (${q.options[q.correctAnswerIndex]}) - ${q.explanation}\n\n`;
                       });
 
-                      const postText = `${heading}\n\n${questionsText}---\n🚀 ASPIRES ACADEMY (https://aspiresacademy.in) is an elite AI-powered prep portal for UPSC, TNPSC, SSC, RRB & IIT JEE. Practice interactive syllabus trackers, AI voice lessons, automated essay evaluation, flashcards & mock tests!\n🎟️ SPECIAL ASPIRANT DISCOUNT: Use Coupon Code "ANNUAL87" to get the ASPIRES Elite Annual Pass for just ₹299/year (87% OFF)!\n🔗 Start Your Prep: https://aspiresacademy.in`;
+                      const postText = `${heading}\n\n${questionsText}---\n🚀 ASPIRES ACADEMY (https://aspiresacademy.in) is an elite AI-powered prep portal for UPSC, TNPSC, SSC, RRB & IIT JEE. Practice interactive syllabus trackers, AI voice lessons, automated essay evaluation, flashcards & mock tests!\n👥 Join Official WhatsApp Group: https://aspiresacademy.in\n🎟️ SPECIAL ASPIRANT DISCOUNT: Use Coupon Code "ANNUAL87" to get the ASPIRES Elite Annual Pass for just ₹299/year (87% OFF)!\n🔗 Start Your Prep: https://aspiresacademy.in`;
 
                       navigator.clipboard.writeText(postText);
                       setCopiedPost(true);

@@ -131,11 +131,12 @@ export const MultiExamWhatsAppBroadcaster: React.FC<MultiExamWhatsAppBroadcaster
 
     return `🎯 *ASPIRES ACADEMY (${examInfo.badge}) DAILY 5 MCQ DRILL*
 📅 *Date:* ${dateStr}
-📍 *Group:* ${examInfo.groupName}
+📍 *Group:* ${examInfo.groupName} (aspiresacademy.in)
 
 ${qText}---
 🚀 *ASPIRES ACADEMY* (https://aspiresacademy.in)
 Practice syllabus trackers, AI voice lessons, essay grading, flashcards & mock tests!
+👥 *Join Official WhatsApp Group:* https://aspiresacademy.in
 🎟️ *SPECIAL DISCOUNT:* Coupon *ANNUAL87* for Annual Pass @ ₹299/year (87% OFF)
 🔗 *Start Practice:* https://aspiresacademy.in`;
   };
