@@ -961,7 +961,7 @@ export default function App() {
 
                       const groupLine = getGroupInviteLineForPost(examGroupName);
 
-                      const postText = `${heading}\n\n${questionsText}---\n🌐 PRACTICE ON ASPIRES ACADEMY WEB PORTAL: https://aspiresacademy.in\n⚡ Web Portal Features:\n• ✍️ Full-Length Mock Tests\n• 📚 Reference Materials & Study Notes\n• 📅 AI Study Planner & Syllabus Tracker\n• 📊 Performance Analytics & Score Predictor\n\n${groupLine}\n🎟️ SPECIAL ASPIRANT DISCOUNT: Use Coupon Code "ANNUAL87" to get the ASPIRES Elite Annual Pass for just ₹299/year (87% OFF)!\n🔗 Start Practice on Web Portal: https://aspiresacademy.in`;
+                      const postText = `${heading}\n\n${questionsText}---\n🌐 PRACTICE ON ASPIRES ACADEMY WEB PORTAL: https://aspiresacademy.in\n📚 All 7 Exams Covered on Portal:\n1️⃣ UPSC Civil Services (IAS / IPS / IFS)\n2️⃣ TNPSC Group 1 (CCSE I Officers)\n3️⃣ TNPSC Group 2 & 2A (CCSE II)\n4️⃣ TNPSC Group 4 & VAO (CCSE IV)\n5️⃣ SSC CGL (Tier 1 & Tier 2)\n6️⃣ RRB NTPC & Group D (Railways)\n7️⃣ IIT JEE (Main & Advanced)\n\n⚡ Web Portal Features:\n• ✍️ Full-Length Mock Tests & Daily 5 MCQ Drills\n• 📚 Reference Materials & Study Notes\n• 📅 AI Study Planner & Syllabus Tracker\n• 📊 Performance Analytics & Score Predictor\n\n${groupLine}\n🎟️ SPECIAL ASPIRANT DISCOUNT: Use Coupon Code "ANNUAL87" to get the ASPIRES Elite Annual Pass for just ₹299/year (87% OFF)!\n🔗 Start Practice on Web Portal: https://aspiresacademy.in`;
 
                       navigator.clipboard.writeText(postText);
                       setCopiedPost(true);

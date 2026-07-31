@@ -173,8 +173,17 @@ ${qText}`;
 
     return `${headerAndQuestions}---
 🚀 *PRACTICE ON ASPIRES ACADEMY WEB PORTAL:* https://aspiresacademy.in
+📚 *Exams Available on Portal:*
+• 🏛️ UPSC Civil Services (IAS / IPS / IFS)
+• 🏆 TNPSC Group 1 (CCSE I Officers)
+• 🎯 TNPSC Group 2 & 2A (CCSE II)
+• 📜 TNPSC Group 4 & VAO (CCSE IV)
+• 📊 SSC CGL (Tier 1 & Tier 2)
+• 🚆 RRB NTPC & Group D (Railway Recruitment)
+• ⚛️ IIT JEE (Main & Advanced)
+
 🌟 *Web Portal Features:*
-• ✍️ Full-Length Mock Tests
+• ✍️ Full-Length Mock Tests & Daily 5 MCQ Drills
 • 📚 Reference Materials & Study Notes
 • 📅 AI Study Planner & Syllabus Tracker
 • 📊 Performance Analytics & Score Predictor
@@ -203,9 +212,18 @@ ${groupLine}
     const groupLine = getValidGroupUrlLine(whatsappGroupLink, 'ASPIRES All 7 Exams');
 
     combinedText += `=========================================
-🚀 *PRACTICE ALL 7 EXAMS ON ASPIRES ACADEMY PORTAL:* https://aspiresacademy.in
+🚀 *PRACTICE ALL EXAMS ON ASPIRES ACADEMY PORTAL:* https://aspiresacademy.in
+📚 *All 7 Exams Covered on Portal:*
+1️⃣ 🏛️ UPSC Civil Services (IAS / IPS / IFS)
+2️⃣ 🏆 TNPSC Group 1 (CCSE I Officers)
+3️⃣ 🎯 TNPSC Group 2 & 2A (CCSE II)
+4️⃣ 📜 TNPSC Group 4 & VAO (CCSE IV)
+5️⃣ 📊 SSC CGL (Tier 1 & Tier 2)
+6️⃣ 🚆 RRB NTPC & Group D (Railway Recruitment)
+7️⃣ ⚛️ IIT JEE (Main & Advanced)
+
 🌟 *Web Portal Features:*
-• ✍️ Full-Length Mock Tests for All 7 Exam Categories
+• ✍️ Full-Length Mock Tests for All Exam Categories
 • 📚 Reference Materials & Study Notes
 • 📅 AI Study Planner & Tracker
 • 📊 Performance Analytics & Rank Predictor
