@@ -407,38 +407,38 @@ broadcastDaily5ToWhatsApp();`;
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2 shrink-0">
-            <button
-              onClick={onRefreshAll}
-              className="bg-emerald-900/60 hover:bg-emerald-900 text-emerald-100 hover:text-white border border-emerald-400/30 font-bold text-xs px-3 py-2 rounded-xl flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer"
-              title="Refresh questions seed for today"
-            >
-              <RefreshCw className="h-3.5 w-3.5" />
-              <span>Next Daily Seed</span>
-            </button>
-            <button
-              onClick={handleCopyAllExams}
-              className="bg-emerald-950/80 hover:bg-emerald-950 text-amber-300 border border-amber-400/40 font-bold text-xs px-3 py-2 rounded-xl flex items-center gap-1.5 transition-all shadow-xs active:scale-95 cursor-pointer"
-              title="Copy formatted post text for all 7 exam groups with single ending broadcast notice"
-            >
-              {copiedAll ? <Check className="h-3.5 w-3.5 text-amber-300" /> : <Copy className="h-3.5 w-3.5 text-amber-300" />}
-              <span>{copiedAll ? 'Copied All 7!' : 'Copy All 7 Posts'}</span>
-            </button>
+          <div className="flex flex-wrap items-center gap-2 w-full xl:w-auto justify-start xl:justify-end shrink-0 pt-2 xl:pt-0">
             <button
               onClick={handleSendAll7ExamsInOneClick}
-              className="bg-gradient-to-r from-[#25D366] to-emerald-400 hover:from-[#20ba5a] hover:to-emerald-500 text-slate-950 font-black text-xs px-4 py-2 rounded-xl flex items-center gap-2 transition-all shadow-md active:scale-95 cursor-pointer"
+              className="bg-gradient-to-r from-[#25D366] via-emerald-400 to-[#20ba5a] hover:opacity-95 text-slate-950 font-black text-xs sm:text-sm px-4 sm:px-5 py-2.5 rounded-xl flex items-center gap-2 transition-all shadow-md active:scale-95 cursor-pointer ring-2 ring-emerald-300/60"
               title="Send all 7 exam MCQs in ONE single WhatsApp broadcast message with a single ending promotional notice!"
             >
-              <Zap className="h-4 w-4 fill-slate-950" />
+              <Zap className="h-4 w-4 fill-slate-950 shrink-0 animate-bounce" />
               <span>Send All 7 Exams (1 Click)</span>
             </button>
             <button
+              onClick={handleCopyAllExams}
+              className="bg-emerald-950/80 hover:bg-emerald-950 text-amber-300 border border-amber-400/40 font-bold text-xs px-3.5 py-2.5 rounded-xl flex items-center gap-1.5 transition-all shadow-xs active:scale-95 cursor-pointer"
+              title="Copy formatted post text for all 7 exam groups with single ending broadcast notice"
+            >
+              {copiedAll ? <Check className="h-3.5 w-3.5 text-amber-300" /> : <Copy className="h-3.5 w-3.5 text-amber-300" />}
+              <span>{copiedAll ? 'Copied All 7!' : 'Copy All 7'}</span>
+            </button>
+            <button
               onClick={handleStartSequence}
-              className="bg-emerald-800 hover:bg-emerald-700 text-white font-extrabold text-xs px-3 py-2 rounded-xl flex items-center gap-1.5 transition-all cursor-pointer border border-emerald-600"
+              className="bg-emerald-800 hover:bg-emerald-700 text-white font-extrabold text-xs px-3 py-2.5 rounded-xl flex items-center gap-1.5 transition-all cursor-pointer border border-emerald-600"
               title="Open batch modal and send exams one by one or staggered"
             >
               <Layers className="h-3.5 w-3.5" />
               <span>Batch Launcher</span>
+            </button>
+            <button
+              onClick={onRefreshAll}
+              className="bg-emerald-900/60 hover:bg-emerald-900 text-emerald-100 hover:text-white border border-emerald-400/30 font-bold text-xs px-3 py-2.5 rounded-xl flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer"
+              title="Refresh questions seed for today"
+            >
+              <RefreshCw className="h-3.5 w-3.5" />
+              <span>Next Seed</span>
             </button>
           </div>
         </div>
@@ -759,14 +759,52 @@ broadcastDaily5ToWhatsApp();`;
       {/* Main Content Area */}
       <div className="p-5 md:p-6">
         {activeTab === 'DISPATCHER' && (
-          <div className="space-y-4">
+          <div className="space-y-5">
+            {/* High-Visibility Hero Action Banner for Send All 7 Exams */}
+            <div className="bg-gradient-to-r from-emerald-950 via-emerald-900 to-teal-950 border border-emerald-500/50 rounded-2xl p-4.5 sm:p-5 text-white shadow-md flex flex-col md:flex-row items-center justify-between gap-4">
+              <div className="space-y-1 text-center md:text-left">
+                <div className="flex items-center justify-center md:justify-start gap-2">
+                  <span className="bg-[#25D366] text-slate-950 font-black text-[10px] uppercase px-2.5 py-0.5 rounded-full font-mono flex items-center gap-1 shadow-xs">
+                    <Zap className="h-3 w-3 fill-slate-950" /> 1-CLICK ALL 7 EXAMS
+                  </span>
+                  <span className="text-[11px] font-mono text-emerald-300 font-bold">
+                    UPSC • TNPSC G1/G2/G4 • SSC • RRB • IIT JEE
+                  </span>
+                </div>
+                <h4 className="text-base sm:text-lg font-black text-white font-display">
+                  Post All 7 Exam MCQs in One Single Message
+                </h4>
+                <p className="text-xs text-emerald-100/90 max-w-xl font-sans">
+                  Instantly launches WhatsApp with a pre-filled, cleanly structured broadcast message containing 35 MCQs across all 7 exam categories!
+                </p>
+              </div>
+
+              <div className="flex flex-col sm:flex-row items-center gap-2.5 w-full md:w-auto shrink-0">
+                <button
+                  onClick={handleSendAll7ExamsInOneClick}
+                  className="w-full sm:w-auto bg-gradient-to-r from-[#25D366] to-emerald-400 hover:from-[#20ba5a] hover:to-emerald-500 text-slate-950 font-black text-sm px-5 py-3 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg active:scale-95 cursor-pointer ring-2 ring-emerald-300/60"
+                >
+                  <Zap className="h-4.5 w-4.5 fill-slate-950 shrink-0" />
+                  <span>Send All 7 Exams (1 Click)</span>
+                </button>
+
+                <button
+                  onClick={handleCopyAllExams}
+                  className="w-full sm:w-auto bg-emerald-950 hover:bg-emerald-900 text-amber-300 border border-amber-400/40 font-extrabold text-xs px-4 py-3 rounded-xl flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+                >
+                  {copiedAll ? <Check className="h-4 w-4 text-amber-300" /> : <Copy className="h-4 w-4 text-amber-300" />}
+                  <span>{copiedAll ? 'Copied All 7!' : 'Copy All 7 Posts'}</span>
+                </button>
+              </div>
+            </div>
+
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="text-sm font-black text-slate-900 font-display">
-                  Daily 5 MCQs Channels for All Exam Types
+                  Or Post Individual Exam Channels (7 Specific Groups)
                 </h3>
                 <p className="text-xs text-slate-500 font-sans">
-                  Click 'Post on WhatsApp' for each exam group or use 'Copy Post' to paste in your WhatsApp Web / Mobile app.
+                  Click 'Post on WhatsApp' for each exam group or use 'Copy' to paste in specific channels.
                 </p>
               </div>
               <span className="text-xs font-bold text-slate-400 font-mono">
