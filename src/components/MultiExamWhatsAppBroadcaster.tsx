@@ -410,50 +410,6 @@ broadcastDaily5ToWhatsApp();`;
               </div>
             </div>
           </div>
-
-          <div className="flex flex-wrap items-center gap-2 w-full xl:w-auto justify-start xl:justify-end shrink-0 pt-2 xl:pt-0">
-            <button
-              onClick={handleSendAll7ExamsInOneClick}
-              className="bg-gradient-to-r from-[#25D366] via-emerald-400 to-[#20ba5a] hover:opacity-95 text-slate-950 font-black text-xs sm:text-sm px-4 sm:px-5 py-2.5 rounded-xl flex items-center gap-2 transition-all shadow-md active:scale-95 cursor-pointer ring-2 ring-emerald-300/60"
-              title="Send all 7 exam MCQs in ONE single WhatsApp broadcast message with a single ending promotional notice!"
-            >
-              <Zap className="h-4 w-4 fill-slate-950 shrink-0 animate-bounce" />
-              <span>Send All 7 Exams (1 Click)</span>
-            </button>
-            <button
-              onClick={handleCopyAllExams}
-              className="bg-emerald-950/80 hover:bg-emerald-950 text-amber-300 border border-amber-400/40 font-bold text-xs px-3.5 py-2.5 rounded-xl flex items-center gap-1.5 transition-all shadow-xs active:scale-95 cursor-pointer"
-              title="Copy formatted post text for all 7 exam groups with single ending broadcast notice"
-            >
-              {copiedAll ? <Check className="h-3.5 w-3.5 text-amber-300" /> : <Copy className="h-3.5 w-3.5 text-amber-300" />}
-              <span>{copiedAll ? 'Copied All 7!' : 'Copy All 7'}</span>
-            </button>
-            <button
-              onClick={onRefreshAll}
-              className="bg-emerald-900/80 hover:bg-emerald-900 text-emerald-100 hover:text-white border border-emerald-400/30 font-bold text-xs px-3.5 py-2.5 rounded-xl flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer"
-              title="Refresh and load next daily question set"
-            >
-              <RefreshCw className="h-3.5 w-3.5 text-emerald-300" />
-              <span>Next Daily Set</span>
-            </button>
-            <button
-              onClick={onAiGenerateSet || onRefreshAll}
-              disabled={isGeneratingAi}
-              className="bg-gradient-to-r from-purple-700 to-indigo-700 hover:from-purple-600 hover:to-indigo-600 text-white font-extrabold text-xs px-3.5 py-2.5 rounded-xl flex items-center gap-1.5 transition-all shadow-sm active:scale-95 cursor-pointer border border-purple-400/30"
-              title="Generate fresh AI MCQs for all exams"
-            >
-              <Sparkles className={`h-3.5 w-3.5 text-amber-300 ${isGeneratingAi ? 'animate-spin' : ''}`} />
-              <span>{isGeneratingAi ? 'Generating...' : 'AI Gen Set ✨'}</span>
-            </button>
-            <button
-              onClick={handleStartSequence}
-              className="bg-emerald-800 hover:bg-emerald-700 text-white font-extrabold text-xs px-3 py-2.5 rounded-xl flex items-center gap-1.5 transition-all cursor-pointer border border-emerald-600"
-              title="Open batch modal and send exams one by one or staggered"
-            >
-              <Layers className="h-3.5 w-3.5" />
-              <span>Batch Launcher</span>
-            </button>
-          </div>
         </div>
 
         {/* Navigation Tabs */}
