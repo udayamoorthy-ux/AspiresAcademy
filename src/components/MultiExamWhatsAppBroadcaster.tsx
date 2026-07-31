@@ -367,12 +367,23 @@ broadcastDaily5ToWhatsApp();`;
                     Save URL
                   </button>
                 ) : (
-                  <button
-                    onClick={() => setIsEditingLink(true)}
-                    className="bg-emerald-800 hover:bg-emerald-700 text-emerald-100 text-[11px] font-bold px-2 py-1 rounded cursor-pointer border border-emerald-600 transition-all"
-                  >
-                    Edit Group URL
-                  </button>
+                  <>
+                    <button
+                      onClick={() => setIsEditingLink(true)}
+                      className="bg-emerald-800 hover:bg-emerald-700 text-emerald-100 text-[11px] font-bold px-2 py-1 rounded cursor-pointer border border-emerald-600 transition-all"
+                    >
+                      Edit URL
+                    </button>
+                    <a
+                      href={`https://chat.whatsapp.com/${extractValidGroupCode(whatsappGroupLink)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="bg-[#25D366] hover:bg-[#20ba5a] text-slate-950 font-black text-[11px] px-2.5 py-1 rounded cursor-pointer transition-all inline-flex items-center gap-1"
+                    >
+                      <span>1-Click Join</span>
+                      <ExternalLink className="h-3 w-3" />
+                    </a>
+                  </>
                 )}
               </div>
             </div>

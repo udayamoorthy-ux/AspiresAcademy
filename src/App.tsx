@@ -657,92 +657,78 @@ export default function App() {
 
             {/* Compact Invite & Outreach Link */}
             <div 
-              className="bg-white border border-slate-200 p-4.5 rounded-2xl space-y-3 shadow-xs" 
+              className="bg-white border border-slate-200 p-4.5 rounded-2xl space-y-3.5 shadow-xs" 
               id="share-card-sidebar"
             >
-              <div className="space-y-0.5">
-                <span className="text-[9px] uppercase tracking-widest text-emerald-700 font-bold font-mono">Growth & Outreach 📢</span>
-                <h4 className="font-extrabold text-xs text-slate-900 flex items-center gap-1.5 font-display">
-                  Daily 5 MCQs & WhatsApp Group
+              <div className="space-y-1">
+                <div className="flex items-center justify-between">
+                  <span className="text-[9px] uppercase tracking-widest text-emerald-700 font-bold font-mono">Official Study Group 👥</span>
+                  <span className="inline-flex items-center gap-1 text-[9px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                    10,000+ Aspirants
+                  </span>
+                </div>
+                <h4 className="font-extrabold text-sm text-slate-900 flex items-center gap-1.5 font-display">
+                  ASPIRES ACADEMY WhatsApp Group
                 </h4>
               </div>
-              <p className="text-[11px] text-slate-500 leading-relaxed font-sans">
-                Join or invite study buddies to our official <strong>aspiresacademy.in</strong> WhatsApp group for daily 5 high-yield MCQs!
-              </p>
+
+              {/* Comprehensive WhatsApp Group Description */}
+              <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-3 space-y-1.5 text-xs text-slate-600">
+                <p className="font-semibold text-slate-800 text-[11.5px] leading-snug">
+                  📚 What you get inside the Official Group:
+                </p>
+                <ul className="text-[11px] space-y-1 text-slate-600 list-disc list-inside font-sans">
+                  <li><strong>Daily 5 High-Yield MCQs</strong> for UPSC, TNPSC, SSC, RRB &amp; IIT JEE</li>
+                  <li><strong>AI Voice Lessons &amp; Audio Explanations</strong> every morning</li>
+                  <li><strong>Instant Answer Keys &amp; Discussion Threads</strong> with mentors</li>
+                  <li><strong>Mock Test Alerts &amp; Free Study Notes PDFs</strong></li>
+                </ul>
+              </div>
 
               <div className="grid grid-cols-1 gap-2 pt-0.5">
-                {hasValidWhatsAppGroupUrl() ? (
-                  <>
-                    {/* Direct Join WhatsApp Group Link Anchor */}
+                {/* Direct 1-Click Join WhatsApp Group Link Anchor */}
+                <a
+                  href={getActiveWhatsAppGroupUrl()}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full bg-[#25D366] hover:bg-[#20ba5a] text-slate-950 font-black text-xs py-3 rounded-xl flex items-center justify-center gap-2 transition-all shadow-sm active:scale-95 cursor-pointer text-center"
+                >
+                  <Send className="h-4 w-4" />
+                  <span>Join Official WhatsApp Group (Single Click)</span>
+                </a>
+
+                {/* Visible Clickable Single-Click Hyperlink */}
+                <div className="bg-emerald-50/70 border border-emerald-200/90 rounded-xl p-2.5 text-center space-y-1">
+                  <span className="text-[10px] text-emerald-800 font-bold block">1-Click Direct WhatsApp Group Hyperlink:</span>
+                  <div className="flex items-center justify-center gap-2">
                     <a
                       href={getActiveWhatsAppGroupUrl()}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-full bg-[#25D366] hover:bg-[#20ba5a] text-slate-950 font-extrabold text-xs py-2.5 rounded-xl flex items-center justify-center gap-1.5 transition-all shadow-2xs active:scale-95 cursor-pointer"
+                      className="text-[11.5px] font-mono font-bold text-emerald-700 hover:text-emerald-900 underline decoration-emerald-400 break-all inline-flex items-center gap-1"
                     >
-                      <Send className="h-3.5 w-3.5" />
-                      <span>Join ASPIRES ACADEMY WhatsApp Group</span>
+                      <span>{getActiveWhatsAppGroupUrl()}</span>
+                      <ExternalLink className="h-3.5 w-3.5 shrink-0 inline" />
                     </a>
-
-                    {/* Visible Clickable Text Hyperlink */}
-                    <div className="bg-emerald-50/60 border border-emerald-200/80 rounded-xl p-2 text-center space-y-0.5">
-                      <span className="text-[10px] text-emerald-800 font-medium block">Direct WhatsApp Group Join Link:</span>
-                      <a
-                        href={getActiveWhatsAppGroupUrl()}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-[11px] font-mono font-bold text-emerald-700 hover:text-emerald-900 underline decoration-emerald-400 break-all inline-flex items-center gap-1"
-                      >
-                        <span>{getActiveWhatsAppGroupUrl()}</span>
-                        <ExternalLink className="h-3 w-3 shrink-0 inline" />
-                      </a>
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    {/* Interactive Setup / Join Request Options when no real 22-char invite link is set yet */}
-                    <button
-                      onClick={handleJoinWhatsAppGroup}
-                      className="w-full bg-[#25D366] hover:bg-[#20ba5a] text-slate-950 font-extrabold text-xs py-2.5 rounded-xl flex items-center justify-center gap-1.5 transition-all shadow-2xs active:scale-95 cursor-pointer"
-                    >
-                      <Send className="h-3.5 w-3.5" />
-                      <span>Join WhatsApp Group / Set Invite Link</span>
-                    </button>
-
-                    <a
-                      href={`https://api.whatsapp.com/send?text=${encodeURIComponent(
-                        'Hi ASPIRES ACADEMY Admin! Please send me the official WhatsApp Group invite link to join the Daily 5 MCQs Study Group.'
-                      )}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-full bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-800 font-bold text-xs py-2 rounded-xl flex items-center justify-center gap-1.5 transition-all cursor-pointer text-center"
-                    >
-                      <Send className="h-3.5 w-3.5 text-emerald-600" />
-                      <span>Instant Join via WhatsApp Chat</span>
-                    </a>
-
-                    <div className="bg-amber-50/80 border border-amber-200 rounded-xl p-2 text-center">
-                      <span className="text-[10px] text-amber-800 font-medium leading-tight block">
-                        💡 Admin Note: Click ⚙️ below to paste your official 22-char WhatsApp Group invite link.
-                      </span>
-                    </div>
-                  </>
-                )}
+                  </div>
+                </div>
 
                 {/* Share WhatsApp Group & Site Link */}
                 <a
                   href={`https://api.whatsapp.com/send?text=${encodeURIComponent(
-                    `Join official ASPIRES ACADEMY WhatsApp Study Group & Portal for Daily 5 MCQs, AI Voice Lessons, Essay Grading & Mock Tests!\n\n👥 Join Official WhatsApp Group: ${getActiveWhatsAppGroupUrl() || 'https://aspiresacademy.in'}\n🌐 Practice Web Portal: https://aspiresacademy.in`
+                    `Join official ASPIRES ACADEMY WhatsApp Study Group for Daily 5 High-Yield MCQs, AI Voice Lessons & Mock Tests!\n\n👥 Join Official WhatsApp Group: ${getActiveWhatsAppGroupUrl()}\n🌐 Practice Web Portal: https://aspiresacademy.in`
                   )}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-full bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 font-bold text-xs py-2 rounded-xl flex items-center justify-center gap-1.5 transition-all active:scale-95 cursor-pointer"
                 >
                   <Share2 className="h-3.5 w-3.5 text-slate-600" />
-                  <span>Share Group on WhatsApp</span>
+                  <span>Share Group Link on WhatsApp</span>
                 </a>
 
-                <div className="flex items-center gap-2">
+                {/* Copy Link & Settings Controls */}
+                <div className="flex items-center gap-2 pt-1">
                   <button
                     onClick={() => {
                       const groupLine = getGroupInviteLineForPost('ASPIRES ACADEMY Study Group');
@@ -761,7 +747,7 @@ export default function App() {
                     ) : (
                       <>
                         <Copy className="h-3.5 w-3.5 text-slate-500" />
-                        <span>Copy Link</span>
+                        <span>Copy Share Text</span>
                       </>
                     )}
                   </button>
