@@ -116,10 +116,28 @@ export const MultiExamWhatsAppBroadcaster: React.FC<MultiExamWhatsAppBroadcaster
   const [sentExams, setSentExams] = useState<Record<string, boolean>>({});
   const [copiedScript, setCopiedScript] = useState<boolean>(false);
   const [copiedEndpoint, setCopiedEndpoint] = useState<boolean>(false);
+  const DEFAULT_WHATSAPP_GROUP_URL = 'https://chat.whatsapp.com/KNkh3LnmULH7PHI1KfetnT';
+
   const [whatsappGroupLink, setWhatsappGroupLink] = useState<string>(() => {
-    return localStorage.getItem('aspires_whatsapp_group_url') || 'https://chat.whatsapp.com/aspiresacademy.in';
+    return localStorage.getItem('aspires_whatsapp_group_url') || DEFAULT_WHATSAPP_GROUP_URL;
   });
   const [isEditingLink, setIsEditingLink] = useState<boolean>(false);
+
+  const extractValidGroupCode = (urlStr: string): string => {
+    if (!urlStr) return 'KNkh3LnmULH7PHI1KfetnT';
+    const trimmed = urlStr.trim();
+    if (trimmed.toLowerCase().includes('aspiresacademy')) return 'KNkh3LnmULH7PHI1KfetnT';
+    const match = trimmed.match(/chat\.whatsapp\.com\/([A-Za-z0-9_-]{10,})/);
+    if (match && match[1] && !match[1].toLowerCase().includes('aspires')) {
+      return match[1];
+    }
+    return 'KNkh3LnmULH7PHI1KfetnT';
+  };
+
+  const getValidGroupUrlLine = (urlStr: string, groupLabel: string = 'ASPIRES ACADEMY Study Group'): string => {
+    const code = extractValidGroupCode(urlStr);
+    return `👥 *Join Official WhatsApp Group (${groupLabel}):* https://chat.whatsapp.com/${code}`;
+  };
 
   const handleSaveGroupLink = (newUrl: string) => {
     setWhatsappGroupLink(newUrl);
@@ -151,7 +169,7 @@ ${qText}`;
       return headerAndQuestions;
     }
 
-    const groupUrl = whatsappGroupLink.trim() || 'https://chat.whatsapp.com/aspiresacademy.in';
+    const groupLine = getValidGroupUrlLine(whatsappGroupLink, examInfo.groupName);
 
     return `${headerAndQuestions}---
 🚀 *PRACTICE ON ASPIRES ACADEMY WEB PORTAL:* https://aspiresacademy.in
@@ -161,7 +179,7 @@ ${qText}`;
 • 📅 AI Study Planner & Syllabus Tracker
 • 📊 Performance Analytics & Score Predictor
 
-👥 *Join Official WhatsApp Group (${examInfo.groupName}):* ${groupUrl}
+${groupLine}
 🔗 *Start Free Practice:* https://aspiresacademy.in
 🎟️ *SPECIAL DISCOUNT:* Coupon *ANNUAL87* for Annual Pass @ ₹299/year (87% OFF)`;
   };
@@ -182,7 +200,7 @@ ${qText}`;
       combinedText += `\n\n`;
     });
 
-    const groupUrl = whatsappGroupLink.trim() || 'https://chat.whatsapp.com/aspiresacademy.in';
+    const groupLine = getValidGroupUrlLine(whatsappGroupLink, 'ASPIRES All 7 Exams');
 
     combinedText += `=========================================
 🚀 *PRACTICE ALL 7 EXAMS ON ASPIRES ACADEMY PORTAL:* https://aspiresacademy.in
@@ -192,7 +210,7 @@ ${qText}`;
 • 📅 AI Study Planner & Tracker
 • 📊 Performance Analytics & Rank Predictor
 
-👥 *Join Official WhatsApp Group:* ${groupUrl}
+${groupLine}
 🔗 *Start Free Practice:* https://aspiresacademy.in
 🎟️ *SPECIAL DISCOUNT:* Coupon *ANNUAL87* for Annual Pass @ ₹299/year (87% OFF)
 =========================================`;

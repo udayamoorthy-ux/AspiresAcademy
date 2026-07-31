@@ -239,16 +239,18 @@ export default function App() {
   };
 
   // WhatsApp Group Link State & Handlers
+  const DEFAULT_WHATSAPP_GROUP_URL = 'https://chat.whatsapp.com/KNkh3LnmULH7PHI1KfetnT';
+
   const [whatsappGroupUrl, setWhatsappGroupUrl] = useState<string>(() => {
-    return localStorage.getItem('aspires_whatsapp_group_url') || '';
+    return localStorage.getItem('aspires_whatsapp_group_url') || DEFAULT_WHATSAPP_GROUP_URL;
   });
   const [showWhatsAppGroupModal, setShowWhatsAppGroupModal] = useState<boolean>(false);
   const [tempWhatsAppUrlInput, setTempWhatsAppUrlInput] = useState<string>('');
 
   const extractWhatsAppGroupCode = (url: string): string => {
-    if (!url) return '';
+    if (!url) return 'KNkh3LnmULH7PHI1KfetnT';
     const trimmed = url.trim();
-    if (trimmed.toLowerCase().includes('aspiresacademy')) return '';
+    if (trimmed.toLowerCase().includes('aspiresacademy')) return 'KNkh3LnmULH7PHI1KfetnT';
     const match = trimmed.match(/chat\.whatsapp\.com\/([A-Za-z0-9_-]+)/);
     if (match && match[1]) {
       const code = match[1];
@@ -256,20 +258,22 @@ export default function App() {
         return code;
       }
     }
-    return '';
+    return 'KNkh3LnmULH7PHI1KfetnT';
   };
 
   const getActiveWhatsAppGroupUrl = () => {
-    const rawUrl = localStorage.getItem('aspires_whatsapp_group_url') || whatsappGroupUrl || '';
+    const rawUrl = localStorage.getItem('aspires_whatsapp_group_url') || whatsappGroupUrl || DEFAULT_WHATSAPP_GROUP_URL;
     const code = extractWhatsAppGroupCode(rawUrl);
-    if (code) {
-      return `https://chat.whatsapp.com/${code}`;
-    }
-    return '';
+    return `https://chat.whatsapp.com/${code}`;
+  };
+
+  const getGroupInviteLineForPost = (groupName: string = 'ASPIRES ACADEMY Study Group'): string => {
+    const validUrl = getActiveWhatsAppGroupUrl();
+    return `👥 Join Official WhatsApp Group (${groupName}): ${validUrl}`;
   };
 
   const hasValidWhatsAppGroupUrl = () => {
-    return !!getActiveWhatsAppGroupUrl();
+    return true;
   };
 
   const handleJoinWhatsAppGroup = () => {
@@ -283,16 +287,11 @@ export default function App() {
   };
 
   const handleSaveWhatsAppGroupUrl = (urlToSave: string) => {
-    const trimmed = urlToSave.trim();
+    const trimmed = urlToSave.trim() || DEFAULT_WHATSAPP_GROUP_URL;
     setWhatsappGroupUrl(trimmed);
     localStorage.setItem('aspires_whatsapp_group_url', trimmed);
     const code = extractWhatsAppGroupCode(trimmed);
-    if (code) {
-      window.open(`https://chat.whatsapp.com/${code}`, '_blank');
-    } else {
-      // Fallback to direct WhatsApp chat if code isn't valid base62 code
-      window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent('Hi ASPIRES ACADEMY Admin! Please send me the WhatsApp Group invite link / add me to the study group.')}`, '_blank');
-    }
+    window.open(`https://chat.whatsapp.com/${code}`, '_blank');
     setShowWhatsAppGroupModal(false);
   };
 
@@ -746,8 +745,8 @@ export default function App() {
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => {
-                      const groupUrl = localStorage.getItem('aspires_whatsapp_group_url') || 'https://chat.whatsapp.com/aspiresacademy.in';
-                      const shareText = `Hey! Join official ASPIRES ACADEMY WhatsApp Study Group & Portal for Daily 5 High-Yield MCQs (UPSC, TNPSC, SSC, RRB & IIT JEE), AI Voice Lessons, Essay Evaluation & Mock Tests!\n\n👥 Join Official WhatsApp Group: ${groupUrl}\n🌐 Practice Web Portal: https://aspiresacademy.in`;
+                      const groupLine = getGroupInviteLineForPost('ASPIRES ACADEMY Study Group');
+                      const shareText = `Hey! Join official ASPIRES ACADEMY WhatsApp Study Group & Portal for Daily 5 High-Yield MCQs (UPSC, TNPSC, SSC, RRB & IIT JEE), AI Voice Lessons, Essay Evaluation & Mock Tests!\n\n${groupLine}\n🌐 Practice Web Portal: https://aspiresacademy.in`;
                       navigator.clipboard.writeText(shareText);
                       setCopiedLink(true);
                       setTimeout(() => setCopiedLink(false), 2000);
@@ -900,7 +899,6 @@ export default function App() {
                         const optionsText = q.options.map((opt, oIdx) => `${String.fromCharCode(65 + oIdx)}) ${opt}`).join('\n');
                         questionsText += `${index + 1}️⃣ ${q.subject || (selectedExam === 'IIT_JEE' ? 'IIT JEE' : 'GENERAL STUDIES')}: ${q.text}\n${optionsText}\n👉 Answer: ${String.fromCharCode(65 + q.correctAnswerIndex)} (${q.options[q.correctAnswerIndex]})\n\n`;
                       });
-                      const groupUrl = localStorage.getItem('aspires_whatsapp_group_url') || 'https://chat.whatsapp.com/aspiresacademy.in';
                       const examGroupName = selectedExam === 'UPSC' ? 'ASPIRES UPSC Prelims Drill Group' :
                         selectedExam === 'TNPSC_G1' ? 'ASPIRES TNPSC Group 1 Officers Club' :
                         selectedExam === 'TNPSC_G2' ? 'ASPIRES TNPSC Group 2 Study Circle' :
@@ -910,7 +908,9 @@ export default function App() {
                         selectedExam === 'IIT_JEE' ? 'ASPIRES IIT JEE Physics, Chem & Math Elite' :
                         'ASPIRES ACADEMY Study Group';
 
-                      const postText = `${heading}\n\n${questionsText}👥 Join Official WhatsApp Group (${examGroupName}): ${groupUrl}\n\n🚀 Practice on ASPIRES ACADEMY Web Portal: https://aspiresacademy.in\n⚡ Web Portal Features:\n• ✍️ Full-Length Mock Tests\n• 📚 Reference Materials & Study Notes\n• 📅 AI Study Planner & Syllabus Tracker\n• 📊 Performance Analytics & Score Predictor`;
+                      const groupLine = getGroupInviteLineForPost(examGroupName);
+
+                      const postText = `${heading}\n\n${questionsText}${groupLine}\n\n🚀 Practice on ASPIRES ACADEMY Web Portal: https://aspiresacademy.in\n⚡ Web Portal Features:\n• ✍️ Full-Length Mock Tests\n• 📚 Reference Materials & Study Notes\n• 📅 AI Study Planner & Syllabus Tracker\n• 📊 Performance Analytics & Score Predictor`;
                       window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(postText)}`, '_blank');
                     }}
                     className="bg-[#25D366] hover:bg-[#20ba5a] text-white font-extrabold text-xs px-3.5 py-2 rounded-xl flex items-center gap-1.5 transition-all shadow-sm active:scale-95 cursor-pointer"
@@ -964,7 +964,6 @@ export default function App() {
                         questionsText += `${index + 1}️⃣ ${q.subject || (selectedExam === 'IIT_JEE' ? 'IIT JEE' : 'GENERAL STUDIES')}: ${q.text}\n${optionsText}\n👉 Answer: ${String.fromCharCode(65 + q.correctAnswerIndex)} (${q.options[q.correctAnswerIndex]}) - ${q.explanation}\n\n`;
                       });
 
-                      const groupUrl = localStorage.getItem('aspires_whatsapp_group_url') || 'https://chat.whatsapp.com/aspiresacademy.in';
                       const examGroupName = selectedExam === 'UPSC' ? 'ASPIRES UPSC Prelims Drill Group' :
                         selectedExam === 'TNPSC_G1' ? 'ASPIRES TNPSC Group 1 Officers Club' :
                         selectedExam === 'TNPSC_G2' ? 'ASPIRES TNPSC Group 2 Study Circle' :
@@ -974,7 +973,9 @@ export default function App() {
                         selectedExam === 'IIT_JEE' ? 'ASPIRES IIT JEE Physics, Chem & Math Elite' :
                         'ASPIRES ACADEMY Study Group';
 
-                      const postText = `${heading}\n\n${questionsText}---\n🌐 PRACTICE ON ASPIRES ACADEMY WEB PORTAL: https://aspiresacademy.in\n⚡ Web Portal Features:\n• ✍️ Full-Length Mock Tests\n• 📚 Reference Materials & Study Notes\n• 📅 AI Study Planner & Syllabus Tracker\n• 📊 Performance Analytics & Score Predictor\n\n👥 Join Official WhatsApp Group (${examGroupName}): ${groupUrl}\n🎟️ SPECIAL ASPIRANT DISCOUNT: Use Coupon Code "ANNUAL87" to get the ASPIRES Elite Annual Pass for just ₹299/year (87% OFF)!\n🔗 Start Practice on Web Portal: https://aspiresacademy.in`;
+                      const groupLine = getGroupInviteLineForPost(examGroupName);
+
+                      const postText = `${heading}\n\n${questionsText}---\n🌐 PRACTICE ON ASPIRES ACADEMY WEB PORTAL: https://aspiresacademy.in\n⚡ Web Portal Features:\n• ✍️ Full-Length Mock Tests\n• 📚 Reference Materials & Study Notes\n• 📅 AI Study Planner & Syllabus Tracker\n• 📊 Performance Analytics & Score Predictor\n\n${groupLine}\n🎟️ SPECIAL ASPIRANT DISCOUNT: Use Coupon Code "ANNUAL87" to get the ASPIRES Elite Annual Pass for just ₹299/year (87% OFF)!\n🔗 Start Practice on Web Portal: https://aspiresacademy.in`;
 
                       navigator.clipboard.writeText(postText);
                       setCopiedPost(true);

@@ -661,7 +661,14 @@ app.get('/api/daily-broadcast-payload', (req, res) => {
   const dateSeed = now.getFullYear() * 1000 + now.getMonth() * 100 + now.getDate();
   const globalUsedIds = new Set<string>();
 
-  const groupUrl = process.env.WHATSAPP_GROUP_URL || 'https://chat.whatsapp.com/aspiresacademy.in';
+  let groupUrl = '';
+  const rawEnvGroup = (process.env.WHATSAPP_GROUP_URL || '').trim();
+  const groupMatch = rawEnvGroup.match(/chat\.whatsapp\.com\/([A-Za-z0-9_-]{10,})/);
+  if (groupMatch && groupMatch[1] && !groupMatch[1].toLowerCase().includes('aspires')) {
+    groupUrl = `https://chat.whatsapp.com/${groupMatch[1]}`;
+  } else {
+    groupUrl = 'https://chat.whatsapp.com/KNkh3LnmULH7PHI1KfetnT';
+  }
 
   let combinedFormattedText = `=========================================\n🎯 *ASPIRES ACADEMY - ALL 7 EXAM GROUPS DAILY MCQs*\n📅 *Date:* ${todayStr}\n=========================================\n\n`;
 
