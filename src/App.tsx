@@ -780,6 +780,8 @@ export default function App() {
                   setDailySeedOffset(prev => prev + 1);
                   setOutreachSource('daily');
                 }}
+                onAiGenerateSet={handleGenerateAIOutreach}
+                isGeneratingAi={isGeneratingOutreach}
               />
             ) : (
               <div className="bg-slate-900 border border-slate-800 text-slate-300 p-4 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3 shadow-xs">

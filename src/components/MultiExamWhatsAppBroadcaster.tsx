@@ -25,6 +25,8 @@ interface MultiExamWhatsAppBroadcasterProps {
   getQuestionsForExam: (exam: ExamType, seedOffset?: number) => Question[];
   currentSeedOffset: number;
   onRefreshAll: () => void;
+  onAiGenerateSet?: () => void;
+  isGeneratingAi?: boolean;
 }
 
 interface ExamInfo {
@@ -106,7 +108,9 @@ const EXAM_CHANNELS: ExamInfo[] = [
 export const MultiExamWhatsAppBroadcaster: React.FC<MultiExamWhatsAppBroadcasterProps> = ({
   getQuestionsForExam,
   currentSeedOffset,
-  onRefreshAll
+  onRefreshAll,
+  onAiGenerateSet,
+  isGeneratingAi = false
 }) => {
   const [activeTab, setActiveTab] = useState<'DISPATCHER' | 'PREVIEW' | 'AUTOMATION_BOT'>('DISPATCHER');
   const [copiedExamId, setCopiedExamId] = useState<string | null>(null);
@@ -425,20 +429,29 @@ broadcastDaily5ToWhatsApp();`;
               <span>{copiedAll ? 'Copied All 7!' : 'Copy All 7'}</span>
             </button>
             <button
+              onClick={onRefreshAll}
+              className="bg-emerald-900/80 hover:bg-emerald-900 text-emerald-100 hover:text-white border border-emerald-400/30 font-bold text-xs px-3.5 py-2.5 rounded-xl flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer"
+              title="Refresh and load next daily question set"
+            >
+              <RefreshCw className="h-3.5 w-3.5 text-emerald-300" />
+              <span>Next Daily Set</span>
+            </button>
+            <button
+              onClick={onAiGenerateSet || onRefreshAll}
+              disabled={isGeneratingAi}
+              className="bg-gradient-to-r from-purple-700 to-indigo-700 hover:from-purple-600 hover:to-indigo-600 text-white font-extrabold text-xs px-3.5 py-2.5 rounded-xl flex items-center gap-1.5 transition-all shadow-sm active:scale-95 cursor-pointer border border-purple-400/30"
+              title="Generate fresh AI MCQs for all exams"
+            >
+              <Sparkles className={`h-3.5 w-3.5 text-amber-300 ${isGeneratingAi ? 'animate-spin' : ''}`} />
+              <span>{isGeneratingAi ? 'Generating...' : 'AI Gen Set ✨'}</span>
+            </button>
+            <button
               onClick={handleStartSequence}
               className="bg-emerald-800 hover:bg-emerald-700 text-white font-extrabold text-xs px-3 py-2.5 rounded-xl flex items-center gap-1.5 transition-all cursor-pointer border border-emerald-600"
               title="Open batch modal and send exams one by one or staggered"
             >
               <Layers className="h-3.5 w-3.5" />
               <span>Batch Launcher</span>
-            </button>
-            <button
-              onClick={onRefreshAll}
-              className="bg-emerald-900/60 hover:bg-emerald-900 text-emerald-100 hover:text-white border border-emerald-400/30 font-bold text-xs px-3 py-2.5 rounded-xl flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer"
-              title="Refresh questions seed for today"
-            >
-              <RefreshCw className="h-3.5 w-3.5" />
-              <span>Next Seed</span>
             </button>
           </div>
         </div>
@@ -761,28 +774,32 @@ broadcastDaily5ToWhatsApp();`;
         {activeTab === 'DISPATCHER' && (
           <div className="space-y-5">
             {/* High-Visibility Hero Action Banner for Send All 7 Exams */}
-            <div className="bg-gradient-to-r from-emerald-950 via-emerald-900 to-teal-950 border border-emerald-500/50 rounded-2xl p-4.5 sm:p-5 text-white shadow-md flex flex-col md:flex-row items-center justify-between gap-4">
-              <div className="space-y-1 text-center md:text-left">
-                <div className="flex items-center justify-center md:justify-start gap-2">
-                  <span className="bg-[#25D366] text-slate-950 font-black text-[10px] uppercase px-2.5 py-0.5 rounded-full font-mono flex items-center gap-1 shadow-xs">
-                    <Zap className="h-3 w-3 fill-slate-950" /> 1-CLICK ALL 7 EXAMS
-                  </span>
-                  <span className="text-[11px] font-mono text-emerald-300 font-bold">
-                    UPSC • TNPSC G1/G2/G4 • SSC • RRB • IIT JEE
-                  </span>
+            <div className="bg-gradient-to-r from-emerald-950 via-emerald-900 to-teal-950 border border-emerald-500/50 rounded-2xl p-5 text-white shadow-md space-y-4">
+              <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-emerald-800/60 pb-4">
+                <div className="space-y-1">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="bg-[#25D366] text-slate-950 font-black text-[10px] uppercase px-2.5 py-0.5 rounded-full font-mono flex items-center gap-1 shadow-xs">
+                      <Zap className="h-3 w-3 fill-slate-950" /> 1-CLICK ALL 7 EXAMS BROADCASTER
+                    </span>
+                    <span className="text-[11px] font-mono text-emerald-300 font-bold">
+                      Seed #{currentSeedOffset} • Updated Daily
+                    </span>
+                  </div>
+                  <h4 className="text-lg sm:text-xl font-black text-white font-display">
+                    Post All 7 Exam MCQs in One Single Message
+                  </h4>
+                  <p className="text-xs text-emerald-100/90 max-w-2xl font-sans">
+                    Instantly launches WhatsApp with a pre-filled, cleanly structured broadcast message containing 35 MCQs across all 7 exam categories (UPSC, TNPSC G1/G2/G4, SSC, RRB, IIT JEE) with a single ending promotional footer!
+                  </p>
                 </div>
-                <h4 className="text-base sm:text-lg font-black text-white font-display">
-                  Post All 7 Exam MCQs in One Single Message
-                </h4>
-                <p className="text-xs text-emerald-100/90 max-w-xl font-sans">
-                  Instantly launches WhatsApp with a pre-filled, cleanly structured broadcast message containing 35 MCQs across all 7 exam categories!
-                </p>
               </div>
 
-              <div className="flex flex-col sm:flex-row items-center gap-2.5 w-full md:w-auto shrink-0">
+              {/* Action Buttons Row: Send All 7, Copy All 7, Next Daily Set, AI Gen Set */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-1">
                 <button
                   onClick={handleSendAll7ExamsInOneClick}
-                  className="w-full sm:w-auto bg-gradient-to-r from-[#25D366] to-emerald-400 hover:from-[#20ba5a] hover:to-emerald-500 text-slate-950 font-black text-sm px-5 py-3 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg active:scale-95 cursor-pointer ring-2 ring-emerald-300/60"
+                  className="bg-gradient-to-r from-[#25D366] to-emerald-400 hover:from-[#20ba5a] hover:to-emerald-500 text-slate-950 font-black text-sm py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg active:scale-95 cursor-pointer ring-2 ring-emerald-300/60"
+                  title="Post all 7 exam MCQs in 1 click"
                 >
                   <Zap className="h-4.5 w-4.5 fill-slate-950 shrink-0" />
                   <span>Send All 7 Exams (1 Click)</span>
@@ -790,123 +807,46 @@ broadcastDaily5ToWhatsApp();`;
 
                 <button
                   onClick={handleCopyAllExams}
-                  className="w-full sm:w-auto bg-emerald-950 hover:bg-emerald-900 text-amber-300 border border-amber-400/40 font-extrabold text-xs px-4 py-3 rounded-xl flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+                  className="bg-emerald-900/90 hover:bg-emerald-900 text-amber-300 border border-amber-400/40 font-extrabold text-xs py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer shadow-xs active:scale-95"
+                  title="Copy complete broadcast message text"
                 >
                   {copiedAll ? <Check className="h-4 w-4 text-amber-300" /> : <Copy className="h-4 w-4 text-amber-300" />}
                   <span>{copiedAll ? 'Copied All 7!' : 'Copy All 7 Posts'}</span>
                 </button>
+
+                <button
+                  onClick={onRefreshAll}
+                  className="bg-emerald-950/80 hover:bg-emerald-900 text-emerald-100 hover:text-white border border-emerald-500/50 font-extrabold text-xs py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer shadow-xs active:scale-95"
+                  title="Cycle to next daily set of questions"
+                >
+                  <RefreshCw className="h-4 w-4 text-emerald-300" />
+                  <span>Next Daily Set</span>
+                </button>
+
+                <button
+                  onClick={onAiGenerateSet || onRefreshAll}
+                  disabled={isGeneratingAi}
+                  className="bg-gradient-to-r from-purple-700 to-indigo-700 hover:from-purple-600 hover:to-indigo-600 text-white font-black text-xs py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition-all shadow-md active:scale-95 cursor-pointer border border-purple-400/40 disabled:opacity-75"
+                  title="Generate fresh AI high-yield questions set"
+                >
+                  <Sparkles className={`h-4 w-4 text-amber-300 ${isGeneratingAi ? 'animate-spin' : ''}`} />
+                  <span>{isGeneratingAi ? 'Generating AI...' : 'AI Gen Set ✨'}</span>
+                </button>
               </div>
-            </div>
 
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="text-sm font-black text-slate-900 font-display">
-                  Or Post Individual Exam Channels (7 Specific Groups)
-                </h3>
-                <p className="text-xs text-slate-500 font-sans">
-                  Click 'Post on WhatsApp' for each exam group or use 'Copy' to paste in specific channels.
-                </p>
+              {/* 7 Exam Badges Summary Bar */}
+              <div className="bg-emerald-950/70 border border-emerald-800/80 rounded-xl p-3 flex flex-wrap items-center justify-between gap-2 text-xs font-mono text-emerald-200">
+                <span className="font-bold text-amber-300">📚 7 Covered Exam Categories:</span>
+                <div className="flex flex-wrap items-center gap-1.5 text-[11px]">
+                  <span className="bg-amber-900/40 border border-amber-700/50 px-2 py-0.5 rounded text-amber-200">🏛️ UPSC CSE</span>
+                  <span className="bg-emerald-900/40 border border-emerald-700/50 px-2 py-0.5 rounded text-emerald-200">👑 TNPSC G1</span>
+                  <span className="bg-teal-900/40 border border-teal-700/50 px-2 py-0.5 rounded text-teal-200">📜 TNPSC G2</span>
+                  <span className="bg-green-900/40 border border-green-700/50 px-2 py-0.5 rounded text-green-200">🌾 TNPSC G4</span>
+                  <span className="bg-blue-900/40 border border-blue-700/50 px-2 py-0.5 rounded text-blue-200">🏢 SSC CGL</span>
+                  <span className="bg-indigo-900/40 border border-indigo-700/50 px-2 py-0.5 rounded text-indigo-200">🚆 RRB NTPC</span>
+                  <span className="bg-purple-900/40 border border-purple-700/50 px-2 py-0.5 rounded text-purple-200">⚛️ IIT JEE</span>
+                </div>
               </div>
-              <span className="text-xs font-bold text-slate-400 font-mono">
-                Updated Daily • Seed #{currentSeedOffset}
-              </span>
-            </div>
-
-            {/* Exam Cards Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
-              {EXAM_CHANNELS.map((channel) => {
-                const questions = getQuestionsForExam(channel.id, currentSeedOffset);
-                const isExpanded = expandedExam === channel.id;
-
-                return (
-                  <div 
-                    key={channel.id} 
-                    className="bg-slate-50 hover:bg-white border border-slate-200 hover:border-emerald-300 rounded-xl p-4 transition-all duration-200 space-y-3 shadow-2xs flex flex-col justify-between"
-                  >
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between gap-2">
-                        <span className={`text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded border ${channel.color} font-mono`}>
-                          {channel.icon} {channel.badge}
-                        </span>
-                        <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded">
-                          5 MCQs Ready
-                        </span>
-                      </div>
-
-                      <div>
-                        <h4 className="text-sm font-extrabold text-slate-900 font-display leading-tight">
-                          {channel.name}
-                        </h4>
-                        <p className="text-[11px] text-slate-500 font-sans line-clamp-1 mt-0.5">
-                          {channel.description}
-                        </p>
-                      </div>
-
-                      {/* Mini Question Titles list */}
-                      <div className="bg-white border border-slate-150 rounded-lg p-2 space-y-1">
-                        <div className="text-[10px] font-bold text-slate-400 uppercase font-mono flex items-center justify-between">
-                          <span>Today's 5 Questions:</span>
-                          <button
-                            onClick={() => setExpandedExam(isExpanded ? null : channel.id)}
-                            className="text-emerald-700 hover:underline flex items-center gap-0.5 cursor-pointer font-sans text-[10px]"
-                          >
-                            {isExpanded ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
-                            {isExpanded ? 'Hide' : 'Inspect'}
-                          </button>
-                        </div>
-
-                        {questions.slice(0, 2).map((q, qIdx) => (
-                          <div key={qIdx} className="text-[11px] text-slate-700 font-medium truncate flex items-center gap-1">
-                            <span className="font-bold text-slate-400 font-mono">Q{qIdx + 1}.</span>
-                            <span className="truncate">{q.text}</span>
-                          </div>
-                        ))}
-                        {questions.length > 2 && !isExpanded && (
-                          <div className="text-[10px] text-slate-400 font-semibold italic">
-                            + 3 more questions ({questions[2].subject || channel.badge}...)
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Accordion view if expanded */}
-                      {isExpanded && (
-                        <div className="bg-emerald-50/70 border border-emerald-200 rounded-lg p-2.5 space-y-2 text-xs text-slate-800">
-                          {questions.map((q, idx) => (
-                            <div key={idx} className="border-b border-emerald-200/60 pb-1.5 last:border-none last:pb-0 space-y-0.5">
-                              <span className="font-mono font-bold text-[10px] text-emerald-800">Q{idx + 1} ({q.subject || channel.badge}):</span>
-                              <p className="font-semibold text-[11px] text-slate-900">{q.text}</p>
-                              <p className="text-[10px] text-emerald-900 font-medium">👉 Ans: {String.fromCharCode(65 + q.correctAnswerIndex)} ({q.options[q.correctAnswerIndex]})</p>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Channel Buttons */}
-                    <div className="pt-2 border-t border-slate-200/80 flex items-center gap-2">
-                      <button
-                        onClick={() => handleSendToWhatsApp(channel)}
-                        className="flex-1 bg-[#25D366] hover:bg-[#20ba5a] text-slate-950 font-black text-xs py-2 px-3 rounded-lg flex items-center justify-center gap-1.5 transition-all shadow-2xs active:scale-95 cursor-pointer"
-                      >
-                        <Send className="h-3.5 w-3.5" />
-                        <span>WhatsApp</span>
-                      </button>
-                      <button
-                        onClick={() => handleCopyPost(channel)}
-                        className="bg-white hover:bg-slate-100 text-slate-800 font-bold text-xs py-2 px-3 rounded-lg border border-slate-300 flex items-center justify-center gap-1 transition-colors active:scale-95 cursor-pointer"
-                        title="Copy formatted post text for WhatsApp"
-                      >
-                        {copiedExamId === channel.id ? (
-                          <Check className="h-3.5 w-3.5 text-emerald-600" />
-                        ) : (
-                          <Copy className="h-3.5 w-3.5 text-slate-600" />
-                        )}
-                        <span>{copiedExamId === channel.id ? 'Copied' : 'Copy'}</span>
-                      </button>
-                    </div>
-                  </div>
-                );
-              })}
             </div>
           </div>
         )}
