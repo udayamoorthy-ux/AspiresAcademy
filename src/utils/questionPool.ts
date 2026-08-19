@@ -840,6 +840,116 @@ export const IIT_JEE_QUESTION_POOL: Question[] = [
   }
 ];
 
+// NEET UG Medical Entrance Question Pool (Botany, Zoology, Physics, Chemistry)
+export const NEET_QUESTION_POOL: Question[] = [
+  {
+    id: 'neet-001',
+    text: 'During the cardiac cycle, the "Pacemaker" of the human heart that initiates the electrical impulse is:',
+    options: ['Atrioventricular Node (AV Node)', 'Sinoatrial Node (SA Node)', 'Bundle of His', 'Purkinje Fibres'],
+    correctAnswerIndex: 1,
+    explanation: 'The Sinoatrial Node (SA Node) located in the upper right wall of the right atrium generates action potentials at the highest rate (70-75 per minute) and acts as the normal pacemaker of the heart.',
+    subject: 'Zoology'
+  },
+  {
+    id: 'neet-002',
+    text: 'In flowering plants (Angiosperms), "Double Fertilization" involves which two events?',
+    options: [
+      'Syngamy (egg + sperm) and Triple Fusion (polar nuclei + sperm)',
+      'Fertilization of synergid and antipodal cell',
+      'Fusion of two sperm cells with one egg cell',
+      'Parthenogenesis and apomixis'
+    ],
+    correctAnswerIndex: 0,
+    explanation: 'In Angiosperms, one male gamete fuses with the egg cell (Syngamy forming diploid zygote) and the second male gamete fuses with the two polar nuclei in the central cell (Triple Fusion forming triploid Primary Endosperm Nucleus - PEN).',
+    subject: 'Botany'
+  },
+  {
+    id: 'neet-003',
+    text: 'The restriction endonuclease enzyme "EcoRI" cuts double-stranded DNA at which specific palindromic recognition sequence?',
+    options: [
+      '5\'-G A A T T C-3\'',
+      '5\'-A A G C T T-3\'',
+      '5\'-C C C G G G-3\'',
+      '5\'-G G A T C C-3\''
+    ],
+    correctAnswerIndex: 0,
+    explanation: 'EcoRI isolated from Escherichia coli RY13 recognizes the 6-base pair palindromic sequence 5\'-GAATTC-3\' and cuts between G and A, leaving sticky single-stranded overhangs.',
+    subject: 'Zoology'
+  },
+  {
+    id: 'neet-004',
+    text: 'In C4 plants (like Maize and Sugarcane), the primary CO2 acceptor molecule in mesophyll cells is:',
+    options: ['Ribulose 1,5-bisphosphate (RuBP)', 'Phosphoenolpyruvate (PEP)', 'Oxaloacetate (OAA)', 'Phosphoglyceric acid (PGA)'],
+    correctAnswerIndex: 1,
+    explanation: 'In C4 plants, the primary CO2 acceptor is Phosphoenolpyruvate (PEP), a 3-carbon compound present in mesophyll cells, catalyzed by PEP carboxylase (PEPcase) to form 4-carbon Oxaloacetic acid (OAA).',
+    subject: 'Botany'
+  },
+  {
+    id: 'neet-005',
+    text: 'What is the phenotypic ratio of a classic Mendelian Dihybrid Cross in the F2 generation?',
+    options: ['3:1', '9:3:3:1', '1:2:1', '9:7'],
+    correctAnswerIndex: 1,
+    explanation: 'Mendel\'s dihybrid cross between round-yellow (RRYY) and wrinkled-green (rryy) seeds yields an F2 phenotypic ratio of 9 (Round Yellow) : 3 (Round Green) : 3 (Wrinkled Yellow) : 1 (Wrinkled Green).',
+    subject: 'Botany'
+  },
+  {
+    id: 'neet-006',
+    text: 'Ovulation in human females is triggered around the 14th day of a 28-day menstrual cycle primarily by a surge in which hormone?',
+    options: ['Progesterone', 'Luteinizing Hormone (LH)', 'Oxytocin', 'Prolactin'],
+    correctAnswerIndex: 1,
+    explanation: 'A rapid mid-cycle increase in Luteinizing Hormone (LH surge) induces the rupture of the mature Graafian follicle and release of the secondary oocyte (ovulation).',
+    subject: 'Zoology'
+  },
+  {
+    id: 'neet-007',
+    text: 'According to Raoult\'s Law for ideal solutions, the relative lowering of vapour pressure of a dilute solution is equal to:',
+    options: ['Mole fraction of solvent', 'Mole fraction of solute', 'Molality of solution', 'Molarity of solution'],
+    correctAnswerIndex: 1,
+    explanation: 'Relative lowering of vapour pressure (P° - P) / P° = X_solute (mole fraction of the non-volatile solute).',
+    subject: 'Chemistry'
+  },
+  {
+    id: 'neet-008',
+    text: 'What is the hybridization and geometry of the central Sulfur atom in Sulfur Hexafluoride (SF6)?',
+    options: ['sp3d, Trigonal bipyramidal', 'sp3d2, Octahedral', 'dsp2, Square planar', 'sp3, Tetrahedral'],
+    correctAnswerIndex: 1,
+    explanation: 'In SF6, Sulfur has 6 valence electrons forming 6 bond pairs with zero lone pairs (Steric Number = 6), which corresponds to sp3d2 hybridization and regular octahedral geometry with 90° bond angles.',
+    subject: 'Chemistry'
+  },
+  {
+    id: 'neet-009',
+    text: 'The de Broglie wavelength (λ) of an electron accelerated through a potential difference of V volts is approximately:',
+    options: ['12.27 / √V Å', '1.227 * √V Å', '0.286 / √V Å', '6.63 * V Å'],
+    correctAnswerIndex: 0,
+    explanation: 'λ = h / √(2 m q V). For an electron, substituting mass m = 9.1 * 10^-31 kg and charge e = 1.6 * 10^-19 C gives λ = 12.27 / √V Angstroms (Å).',
+    subject: 'Physics'
+  },
+  {
+    id: 'neet-010',
+    text: 'In a forward-biased p-n junction diode, the width of the depletion layer and barrier potential:',
+    options: ['Increases', 'Decreases', 'Remains unchanged', 'Becomes infinite'],
+    correctAnswerIndex: 1,
+    explanation: 'When forward bias is applied (p-side to positive, n-side to negative terminal), the external field opposes the built-in barrier field, causing the width of the depletion layer and barrier potential height to decrease.',
+    subject: 'Physics'
+  },
+  {
+    id: 'neet-011',
+    text: 'Which hormone is secreted by the Juxtaglomerular (JG) cells of the kidney in response to a fall in glomerular blood flow/blood pressure?',
+    options: ['Renin', 'Aldosterone', 'Atrial Natriuretic Factor (ANF)', 'Epinephrine'],
+    correctAnswerIndex: 0,
+    explanation: 'A fall in GFR activates JG cells to release Renin, which converts angiotensinogen to angiotensin I and subsequently to angiotensin II (RAAS pathway) to restore glomerular pressure.',
+    subject: 'Zoology'
+  },
+  {
+    id: 'neet-012',
+    text: 'Which plant growth regulator is commonly known as the "stress hormone" because it stimulates stomatal closure during water deficiency?',
+    options: ['Abscisic Acid (ABA)', 'Gibberellic Acid (GA3)', 'Zeatin (Cytokinin)', 'Indole-3-Acetic Acid (IAA)'],
+    correctAnswerIndex: 0,
+    explanation: 'Abscisic acid (ABA) promotes stomatal closure to prevent transpirational water loss during drought and induces seed dormancy, earning the name stress hormone.',
+    subject: 'Botany'
+  }
+];
+
 // Master Dictionary Mapping Exam Types to Pools
 export const EXAM_QUESTION_POOLS: Record<ExamType, Question[]> = {
   UPSC: UPSC_QUESTION_POOL,
@@ -849,6 +959,7 @@ export const EXAM_QUESTION_POOLS: Record<ExamType, Question[]> = {
   SSC_CGL: SSC_CGL_QUESTION_POOL,
   RRB_NTPC: RRB_NTPC_QUESTION_POOL,
   IIT_JEE: IIT_JEE_QUESTION_POOL,
+  NEET: NEET_QUESTION_POOL,
 };
 
 // Backwards-compatible aliases
@@ -876,7 +987,7 @@ export function generateAptitudeQuestion(seed: number): Question {
 /**
  * Master Question Selection Function
  * Guarantees NO duplicate questions within the selected array,
- * category-specific question pools for each of the 7 exam types,
+ * category-specific question pools for each of the 8 exam types,
  * and optional cross-category deduplication when batch generating!
  */
 export function getQuestionsForExam(
@@ -904,7 +1015,8 @@ export function getQuestionsForExam(
     TNPSC_G4: 6,
     SSC_CGL: 8,
     RRB_NTPC: 10,
-    IIT_JEE: 12
+    IIT_JEE: 12,
+    NEET: 14
   };
   const eOffset = examOffsets[exam] || 0;
 

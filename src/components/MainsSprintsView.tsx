@@ -140,6 +140,20 @@ const DAILY_SPRINTS: Record<ExamType, SprintPrompt[]> = {
       context: 'Physics - Rotational Dynamics & Impulse'
     }
   ],
+  NEET: [
+    {
+      id: 'neet-sprint-1',
+      question: 'Explain the mechanism of the lac operon in Escherichia coli under presence and absence of lactose (inducer). Write the role of regulatory gene i, promoter p, operator o, and structural genes z, y, and a.',
+      timeLimit: 300,
+      idealKeywords: ['Lac Operon', 'Repressor protein', 'Allolactose / Lactose', 'Beta-galactosidase', 'Permease', 'Transacetylase', 'Negative regulation', 'Polycistronic mRNA'],
+      evaluationRubric: [
+        { title: 'Absence of Lactose', desc: 'Explained that repressor synthesized by i gene binds to operator region, preventing RNA polymerase from transcribing structural genes (switched OFF).' },
+        { title: 'Presence of Lactose', desc: 'Lactose/allolactose acts as inducer, binds to repressor rendering it inactive, allowing RNA polymerase access to transcribe z, y, and a genes (switched ON).' },
+        { title: 'Gene Products', desc: 'Correctly mapped z -> β-galactosidase, y -> permease, and a -> transacetylase.' }
+      ],
+      context: 'NEET Biology - Molecular Basis of Inheritance'
+    }
+  ],
 };
 
 export default function MainsSprintsView({ selectedExam }: { selectedExam: ExamType }) {

@@ -97,6 +97,11 @@ const TICKER_HEADLINES: Record<ExamType, string[]> = {
     'JEE Main 2027 Session 1 & Session 2 Information Bulletin & Registration dates published by NTA at jeemain.nta.nic.in.',
     'JEE Advanced 2027 organizing IIT syllabus press release: Focus on Physics Mechanics, Organic Mechanisms, and Calculus Integration.',
     'JoSAA Counseling 2026: Seat allocation round results and opening/closing ranks updated for IITs, NITs, and IIITs.'
+  ],
+  NEET: [
+    'NEET UG 2027 Official Notification & Application Window to open at exams.nta.ac.in/NEET in early 2027.',
+    'High-Yield Advisory: 360/720 marks allocated to Biology (Botany & Zoology). Revise NCERT line-by-line along with Diagrams & Exemplar.',
+    'MCC All-India Quota (AIQ 15%) & State Quota (85%) Medical Counselling schedules and seat matrix updated.'
   ]
 };
 
@@ -154,7 +159,9 @@ export default function App() {
       if (data.questions && Array.isArray(data.questions) && data.questions.length > 0) {
         // Map the generated questions to ensure they have subjects mapped for the Outreach visualizer
         const mappedQuestions = data.questions.map((q: any, idx: number) => {
-          const defaultSubjects = selectedExam === 'IIT_JEE'
+          const defaultSubjects = selectedExam === 'NEET'
+            ? ['BIOLOGY (BOTANY)', 'BIOLOGY (ZOOLOGY)', 'PHYSICS', 'CHEMISTRY', 'BIOLOGY']
+            : selectedExam === 'IIT_JEE'
             ? ['PHYSICS', 'CHEMISTRY', 'MATHEMATICS', 'PHYSICS', 'CHEMISTRY']
             : selectedExam === 'SSC_CGL' || selectedExam === 'RRB_NTPC'
             ? ['QUANTITATIVE APTITUDE', 'REASONING', 'GENERAL AWARENESS', 'ENGLISH', 'MATHEMATICS']
@@ -524,7 +531,7 @@ export default function App() {
           </div>
 
           {/* Selector Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-7 gap-2 w-full lg:w-auto relative z-10" id="exam-selector-buttons">
+          <div className="grid grid-cols-2 sm:grid-cols-4 xl:grid-cols-8 gap-2 w-full lg:w-auto relative z-10" id="exam-selector-buttons">
             {[
               { id: 'UPSC', label: 'UPSC IAS/IPS' },
               { id: 'TNPSC_G1', label: 'TNPSC Group 1' },
@@ -532,7 +539,8 @@ export default function App() {
               { id: 'TNPSC_G4', label: 'TNPSC Group 4' },
               { id: 'SSC_CGL', label: 'SSC CGL' },
               { id: 'RRB_NTPC', label: 'RRB NTPC' },
-              { id: 'IIT_JEE', label: 'IIT JEE (Main/Adv)' }
+              { id: 'IIT_JEE', label: 'IIT JEE' },
+              { id: 'NEET', label: 'NEET UG' }
             ].map((examItem) => {
               const isActive = selectedExam === examItem.id;
               return (
@@ -874,18 +882,18 @@ export default function App() {
                   {/* WhatsApp Direct Post Button */}
                   <button
                     onClick={() => {
-                      const examName = selectedExam === 'IIT_JEE' ? 'IIT JEE' : selectedExam === 'SSC_CGL' ? 'SSC CGL' : selectedExam === 'RRB_NTPC' ? 'RRB NTPC' : selectedExam.startsWith('TNPSC') ? 'TNPSC' : 'UPSC CSE';
+                      const examName = selectedExam === 'NEET' ? 'NEET UG' : selectedExam === 'IIT_JEE' ? 'IIT JEE' : selectedExam === 'SSC_CGL' ? 'SSC CGL' : selectedExam === 'RRB_NTPC' ? 'RRB NTPC' : selectedExam.startsWith('TNPSC') ? 'TNPSC' : 'UPSC CSE';
                       const headings = [
                         `🎯 ${examName} DAILY MCQ DRILL – Test Your Limits!`,
                         `🧠 Can You Crack These 5 Elite ${examName} Questions?`,
-                        `🔥 ${selectedExam === 'IIT_JEE' ? 'IIT JEE Main & Adv Challenge' : examName + ' Prelims Challenge'}: 5 High-Yield Questions from ASPIRES!`,
+                        `🔥 ${selectedExam === 'NEET' ? 'NEET UG Medical Challenge' : selectedExam === 'IIT_JEE' ? 'IIT JEE Main & Adv Challenge' : examName + ' Prelims Challenge'}: 5 High-Yield Questions from ASPIRES!`,
                         `💡 5 High-Yield ${examName} Prep MCQs to Boost Your Score Today!`
                       ];
                       const heading = headings[selectedHeadingIndex] || `🎯 ${examName} Daily Challenge`;
                       let questionsText = '';
                       outreachQuestions.forEach((q, index) => {
                         const optionsText = q.options.map((opt, oIdx) => `${String.fromCharCode(65 + oIdx)}) ${opt}`).join('\n');
-                        questionsText += `${index + 1}️⃣ ${q.subject || (selectedExam === 'IIT_JEE' ? 'IIT JEE' : 'GENERAL STUDIES')}: ${q.text}\n${optionsText}\n👉 Answer: ${String.fromCharCode(65 + q.correctAnswerIndex)} (${q.options[q.correctAnswerIndex]})\n\n`;
+                        questionsText += `${index + 1}️⃣ ${q.subject || (selectedExam === 'NEET' ? 'NEET UG' : selectedExam === 'IIT_JEE' ? 'IIT JEE' : 'GENERAL STUDIES')}: ${q.text}\n${optionsText}\n👉 Answer: ${String.fromCharCode(65 + q.correctAnswerIndex)} (${q.options[q.correctAnswerIndex]})\n\n`;
                       });
                       const examGroupName = selectedExam === 'UPSC' ? 'ASPIRES UPSC Prelims Drill Group' :
                         selectedExam === 'TNPSC_G1' ? 'ASPIRES TNPSC Group 1 Officers Club' :
@@ -894,6 +902,7 @@ export default function App() {
                         selectedExam === 'SSC_CGL' ? 'ASPIRES SSC CGL Tier 1 & 2 Warriors' :
                         selectedExam === 'RRB_NTPC' ? 'ASPIRES RRB Railway Exams Prep' :
                         selectedExam === 'IIT_JEE' ? 'ASPIRES IIT JEE Physics, Chem & Math Elite' :
+                        selectedExam === 'NEET' ? 'ASPIRES NEET Medical Aspirants Club' :
                         'ASPIRES ACADEMY Study Group';
 
                       const groupLine = getGroupInviteLineForPost(examGroupName);
@@ -911,18 +920,18 @@ export default function App() {
                   {/* Facebook Direct Post Button */}
                   <button
                     onClick={() => {
-                      const examName = selectedExam === 'IIT_JEE' ? 'IIT JEE' : selectedExam === 'SSC_CGL' ? 'SSC CGL' : selectedExam === 'RRB_NTPC' ? 'RRB NTPC' : selectedExam.startsWith('TNPSC') ? 'TNPSC' : 'UPSC CSE';
+                      const examName = selectedExam === 'NEET' ? 'NEET UG' : selectedExam === 'IIT_JEE' ? 'IIT JEE' : selectedExam === 'SSC_CGL' ? 'SSC CGL' : selectedExam === 'RRB_NTPC' ? 'RRB NTPC' : selectedExam.startsWith('TNPSC') ? 'TNPSC' : 'UPSC CSE';
                       const headings = [
                         `🎯 ${examName} DAILY MCQ DRILL`,
                         `🧠 Can You Crack These 5 Elite ${examName} Questions?`,
-                        `🔥 ${selectedExam === 'IIT_JEE' ? 'IIT JEE Main & Adv Challenge' : examName + ' Prelims Challenge'}`,
+                        `🔥 ${selectedExam === 'NEET' ? 'NEET UG Medical Challenge' : selectedExam === 'IIT_JEE' ? 'IIT JEE Main & Adv Challenge' : examName + ' Prelims Challenge'}`,
                         `💡 5 High-Yield ${examName} Prep MCQs`
                       ];
                       const heading = headings[selectedHeadingIndex] || `🎯 ${examName} Daily Challenge`;
                       let questionsText = '';
                       outreachQuestions.forEach((q, index) => {
                         const optionsText = q.options.map((opt, oIdx) => `${String.fromCharCode(65 + oIdx)}) ${opt}`).join('\n');
-                        questionsText += `${index + 1}️⃣ ${q.subject || (selectedExam === 'IIT_JEE' ? 'IIT JEE' : 'GENERAL STUDIES')}: ${q.text}\n${optionsText}\n👉 Answer: ${String.fromCharCode(65 + q.correctAnswerIndex)}\n\n`;
+                        questionsText += `${index + 1}️⃣ ${q.subject || (selectedExam === 'NEET' ? 'NEET UG' : selectedExam === 'IIT_JEE' ? 'IIT JEE' : 'GENERAL STUDIES')}: ${q.text}\n${optionsText}\n👉 Answer: ${String.fromCharCode(65 + q.correctAnswerIndex)}\n\n`;
                       });
                       const postText = `${heading}\n\n${questionsText}🔗 Practice on ASPIRES ACADEMY: https://aspiresacademy.in`;
                       window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent('https://aspiresacademy.in')}&quote=${encodeURIComponent(postText)}`, '_blank');
@@ -937,11 +946,11 @@ export default function App() {
                   {/* Copy Complete Post Text */}
                   <button
                     onClick={() => {
-                      const examName = selectedExam === 'IIT_JEE' ? 'IIT JEE' : selectedExam === 'SSC_CGL' ? 'SSC CGL' : selectedExam === 'RRB_NTPC' ? 'RRB NTPC' : selectedExam.startsWith('TNPSC') ? 'TNPSC' : 'UPSC CSE';
+                      const examName = selectedExam === 'NEET' ? 'NEET UG' : selectedExam === 'IIT_JEE' ? 'IIT JEE' : selectedExam === 'SSC_CGL' ? 'SSC CGL' : selectedExam === 'RRB_NTPC' ? 'RRB NTPC' : selectedExam.startsWith('TNPSC') ? 'TNPSC' : 'UPSC CSE';
                       const headings = [
                         `🎯 ${examName} DAILY MCQ DRILL – Test Your Limits!`,
                         `🧠 Can You Crack These 5 Elite ${examName} Questions?`,
-                        `🔥 ${selectedExam === 'IIT_JEE' ? 'IIT JEE Main & Adv Challenge' : examName + ' Prelims Challenge'}: 5 High-Yield Questions from ASPIRES!`,
+                        `🔥 ${selectedExam === 'NEET' ? 'NEET UG Medical Challenge' : selectedExam === 'IIT_JEE' ? 'IIT JEE Main & Adv Challenge' : examName + ' Prelims Challenge'}: 5 High-Yield Questions from ASPIRES!`,
                         `💡 5 High-Yield ${examName} Prep MCQs to Boost Your Score Today!`
                       ];
                       const heading = headings[selectedHeadingIndex] || `🎯 ${examName} Daily Challenge`;
@@ -949,7 +958,7 @@ export default function App() {
                       let questionsText = '';
                       outreachQuestions.forEach((q, index) => {
                         const optionsText = q.options.map((opt, oIdx) => `${String.fromCharCode(65 + oIdx)}) ${opt}`).join('\n');
-                        questionsText += `${index + 1}️⃣ ${q.subject || (selectedExam === 'IIT_JEE' ? 'IIT JEE' : 'GENERAL STUDIES')}: ${q.text}\n${optionsText}\n👉 Answer: ${String.fromCharCode(65 + q.correctAnswerIndex)} (${q.options[q.correctAnswerIndex]}) - ${q.explanation}\n\n`;
+                        questionsText += `${index + 1}️⃣ ${q.subject || (selectedExam === 'NEET' ? 'NEET UG' : selectedExam === 'IIT_JEE' ? 'IIT JEE' : 'GENERAL STUDIES')}: ${q.text}\n${optionsText}\n👉 Answer: ${String.fromCharCode(65 + q.correctAnswerIndex)} (${q.options[q.correctAnswerIndex]}) - ${q.explanation}\n\n`;
                       });
 
                       const examGroupName = selectedExam === 'UPSC' ? 'ASPIRES UPSC Prelims Drill Group' :
@@ -959,11 +968,12 @@ export default function App() {
                         selectedExam === 'SSC_CGL' ? 'ASPIRES SSC CGL Tier 1 & 2 Warriors' :
                         selectedExam === 'RRB_NTPC' ? 'ASPIRES RRB Railway Exams Prep' :
                         selectedExam === 'IIT_JEE' ? 'ASPIRES IIT JEE Physics, Chem & Math Elite' :
+                        selectedExam === 'NEET' ? 'ASPIRES NEET Medical Aspirants Club' :
                         'ASPIRES ACADEMY Study Group';
 
                       const groupLine = getGroupInviteLineForPost(examGroupName);
 
-                      const postText = `${heading}\n\n${questionsText}---\n🌐 PRACTICE ON ASPIRES ACADEMY WEB PORTAL: https://aspiresacademy.in\n📚 All 7 Exams Covered on Portal:\n1️⃣ UPSC Civil Services (IAS / IPS / IFS)\n2️⃣ TNPSC Group 1 (CCSE I Officers)\n3️⃣ TNPSC Group 2 & 2A (CCSE II)\n4️⃣ TNPSC Group 4 & VAO (CCSE IV)\n5️⃣ SSC CGL (Tier 1 & Tier 2)\n6️⃣ RRB NTPC & Group D (Railways)\n7️⃣ IIT JEE (Main & Advanced)\n\n⚡ Web Portal Features:\n• ✍️ Full-Length Mock Tests & Daily 5 MCQ Drills\n• 📚 Reference Materials & Study Notes\n• 📅 AI Study Planner & Syllabus Tracker\n• 📊 Performance Analytics & Score Predictor\n\n${groupLine}\n🎟️ SPECIAL ASPIRANT DISCOUNT: Use Coupon Code "ANNUAL87" to get the ASPIRES Elite Annual Pass for just ₹299/year (87% OFF)!\n🔗 Start Practice on Web Portal: https://aspiresacademy.in`;
+                      const postText = `${heading}\n\n${questionsText}---\n🌐 PRACTICE ON ASPIRES ACADEMY WEB PORTAL: https://aspiresacademy.in\n📚 All 8 Exams Covered on Portal:\n1️⃣ UPSC Civil Services (IAS / IPS / IFS)\n2️⃣ TNPSC Group 1 (CCSE I Officers)\n3️⃣ TNPSC Group 2 & 2A (CCSE II)\n4️⃣ TNPSC Group 4 & VAO (CCSE IV)\n5️⃣ SSC CGL (Tier 1 & Tier 2)\n6️⃣ RRB NTPC & Group D (Railways)\n7️⃣ IIT JEE (Main & Advanced)\n8️⃣ NEET UG (Medical Entrance)\n\n⚡ Web Portal Features:\n• ✍️ Full-Length Mock Tests & Daily 5 MCQ Drills\n• 📚 Reference Materials & Study Notes\n• 📅 AI Study Planner & Syllabus Tracker\n• 📊 Performance Analytics & Score Predictor\n\n${groupLine}\n🎟️ SPECIAL ASPIRANT DISCOUNT: Use Coupon Code "ANNUAL87" to get the ASPIRES Elite Annual Pass for just ₹299/year (87% OFF)!\n🔗 Start Practice on Web Portal: https://aspiresacademy.in`;
 
                       navigator.clipboard.writeText(postText);
                       setCopiedPost(true);
@@ -990,10 +1000,10 @@ export default function App() {
               <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 max-h-80 overflow-y-auto space-y-3 text-xs text-slate-800 font-sans shadow-inner">
                 <div className="font-extrabold text-slate-900 font-display border-b border-slate-200 pb-1.5 mb-2 sticky top-0 bg-slate-50 pt-0.5">
                   {(() => {
-                    const examName = selectedExam === 'IIT_JEE' ? 'IIT JEE' : selectedExam === 'SSC_CGL' ? 'SSC CGL' : selectedExam === 'RRB_NTPC' ? 'RRB NTPC' : selectedExam.startsWith('TNPSC') ? 'TNPSC' : 'UPSC CSE';
+                    const examName = selectedExam === 'NEET' ? 'NEET UG' : selectedExam === 'IIT_JEE' ? 'IIT JEE' : selectedExam === 'SSC_CGL' ? 'SSC CGL' : selectedExam === 'RRB_NTPC' ? 'RRB NTPC' : selectedExam.startsWith('TNPSC') ? 'TNPSC' : 'UPSC CSE';
                     if (selectedHeadingIndex === 0) return `🎯 ${examName} DAILY MCQ DRILL – Test Your Limits!`;
                     if (selectedHeadingIndex === 1) return `🧠 Can You Crack These 5 Elite ${examName} Questions?`;
-                    if (selectedHeadingIndex === 2) return `🔥 ${selectedExam === 'IIT_JEE' ? 'IIT JEE Main & Adv Challenge' : examName + ' Prelims Challenge'}: 5 High-Yield Questions from ASPIRES!`;
+                    if (selectedHeadingIndex === 2) return `🔥 ${selectedExam === 'NEET' ? 'NEET UG Medical Challenge' : selectedExam === 'IIT_JEE' ? 'IIT JEE Main & Adv Challenge' : examName + ' Prelims Challenge'}: 5 High-Yield Questions from ASPIRES!`;
                     return `💡 5 High-Yield ${examName} Prep MCQs to Boost Your Score Today!`;
                   })()}
                 </div>

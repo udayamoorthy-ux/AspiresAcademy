@@ -108,6 +108,20 @@ export const EXAM_DETAILS = {
       { subject: 'Mathematics', description: 'Calculus (Limits, Derivatives, Integrals), Coordinate Geometry (Vectors & 3D, Conics), Algebra (Matrices, Probability, Complex Numbers), Trigonometry.' }
     ],
   },
+  NEET: {
+    title: 'NEET UG (National Eligibility cum Entrance Test - Medical)',
+    shortName: 'NEET UG (Medical)',
+    stages: [
+      { name: 'NTA Written Exam', details: 'Single Paper: Physics (45 Qs, 180 Marks), Chemistry (45 Qs, 180 Marks), Biology [Botany (45 Qs) + Zoology (45 Qs)] (90 Qs, 360 Marks). Total 180 Questions, 720 Marks (200 Mins). Marking: +4 / -1.' },
+      { name: 'MCC All-India & State Quota Counseling', details: 'Medical Counseling Committee (15% All India Quota) & State Quota (85% Seats) for MBBS, BDS, BAMS, BHMS, BVSc & AH programs.' }
+    ],
+    syllabus: [
+      { subject: 'Biology - Botany', description: 'Diversity in Living World, Structural Organisation in Plants, Cell Structure & Function, Plant Physiology (Photosynthesis, Respiration, Plant Growth), Genetics & Plant Reproduction, Ecology & Environment.' },
+      { subject: 'Biology - Zoology', description: 'Animal Kingdom, Human Physiology (Digestion, Breathing, Body Fluids & Circulation, Excretory Products, Locomotion, Neural & Chemical Coordination), Human Reproduction & Reproductive Health, Evolution, Human Health & Disease, Biotechnology.' },
+      { subject: 'Physics', description: 'Physical World & Measurement, Kinematics, Laws of Motion, Work, Energy & Power, Rotational Motion, Gravitation, Thermodynamics, Oscillations & Waves, Electrostatics, Current Electricity, Magnetic Effects, Optics, Modern Physics & Semiconductors.' },
+      { subject: 'Chemistry', description: 'Some Basic Concepts of Chemistry, Structure of Atom, Chemical Bonding, Thermodynamics, Equilibrium, Organic Chemistry Basic Principles, Hydrocarbons, Solutions, Electrochemistry, Kinetics, Coordination Compounds, Biomolecules.' }
+    ],
+  },
 };
 
 export const DEFAULT_ESSAY_PROMPTS: EssayPrompt[] = [

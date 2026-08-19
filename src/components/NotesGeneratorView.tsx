@@ -61,6 +61,12 @@ const PRESET_TOPICS: Record<ExamType, { topic: string; keywords: string }[]> = {
     { topic: 'Organic Reaction Mechanisms', keywords: 'SN1 vs SN2, Carbocation stability, Electrophilic Aromatic Substitution, Markovnikov rule' },
     { topic: 'Calculus Integration & Area', keywords: 'Definite Integral properties, Substitution method, Integration by parts, Area under curve' },
     { topic: 'Electrostatics & Gauss Law', keywords: 'Coulomb Law, Electric Field Flux, Capacitance with dielectric, Electric Potential' }
+  ],
+  NEET: [
+    { topic: 'Human Physiology: Endocrine & Neural Control', keywords: 'Hypothalamus, Pituitary hormones, Thyroid, Adrenal medulla, Action potential propagation, Synapse' },
+    { topic: 'Genetics: Principles of Inheritance & Molecular Basis', keywords: 'Mendelian ratios, Incomplete dominance, DNA Replication, Lac Operon, Transcription, Translation' },
+    { topic: 'Photosynthesis & Cellular Respiration', keywords: 'Light reactions Z-scheme, Calvin C3 cycle, Hatch-Slack C4 pathway, Glycolysis, Krebs cycle, ETS' },
+    { topic: 'Biotechnology: Principles & Processes', keywords: 'Restriction endonucleases, EcoRI, pBR322 plasmid, PCR Taq polymerase, Gel electrophoresis, Bt Cotton' }
   ]
 };
 

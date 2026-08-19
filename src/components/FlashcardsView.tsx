@@ -217,6 +217,41 @@ const FLASHCARD_DECKS: Record<ExamType, Flashcard[]> = {
         'Can be applied iteratively if the result remains in 0/0 or ∞/∞ form.'
       ]
     }
+  ],
+  NEET: [
+    {
+      id: 'neet-fc-1',
+      category: 'Biology (Genetics)',
+      question: 'What is the chromosomal basis of inheritance according to Sutton and Boveri?',
+      answer: 'Sutton and Boveri (1902) proposed that chromosomes are the vehicles of hereditary information and their segregation during meiosis parallels Mendel\'s laws of segregation and independent assortment.',
+      points: [
+        'Chromosomes as well as Mendelian factors occur in pairs in diploid cells.',
+        'Homologous chromosomes pair and separate during Anaphase I of meiosis.',
+        'Experimental verification was given by Thomas Hunt Morgan using Drosophila melanogaster.'
+      ]
+    },
+    {
+      id: 'neet-fc-2',
+      category: 'Chemistry (Coordination Compounds)',
+      question: 'What is the Crystal Field Splitting Energy (CFSE) in Octahedral vs Tetrahedral complexes?',
+      answer: 'In octahedral fields, d-orbitals split into lower t2g (dxy, dyz, dxz) and higher eg (dx2-y2, dz2) with separation Δo. In tetrahedral fields, Δt = (4/9) Δo and eg orbitals are lower than t2g.',
+      points: [
+        'Strong field ligands (CN-, CO) produce large Δo causing low-spin pairings.',
+        'Weak field ligands (I-, Br-, Cl-) produce small Δo favoring high-spin states.',
+        'Tetrahedral complexes are almost always high-spin due to smaller Δt.'
+      ]
+    },
+    {
+      id: 'neet-fc-3',
+      category: 'Physics (Optics & Wave)',
+      question: 'What is Total Internal Reflection (TIR) and the condition for its occurrence?',
+      answer: 'When a light ray travels from an optically denser medium to a rarer medium at an angle of incidence greater than the critical angle (i > θc), the ray is entirely reflected back into the denser medium.',
+      points: [
+        'Formula: sin(θc) = n2 / n1 (where n1 > n2).',
+        'Crucial biological & medical application in Endoscopy and optical fibers.',
+        'Explains the brilliance of diamonds and the formation of mirages in deserts.'
+      ]
+    }
   ]
 };
 

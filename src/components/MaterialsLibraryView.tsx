@@ -44,9 +44,9 @@ interface ResourceItem {
 
 interface PYQItem {
   id: string;
-  exam: 'UPSC' | 'TNPSC' | 'SSC' | 'IIT_JEE';
+  exam: 'UPSC' | 'TNPSC' | 'SSC' | 'IIT_JEE' | 'NEET';
   year: number;
-  paperType: 'Prelims' | 'Mains' | 'JEE Main' | 'JEE Advanced';
+  paperType: 'Prelims' | 'Mains' | 'JEE Main' | 'JEE Advanced' | 'NEET UG';
   subjectName: string;
   title: string;
   officialPaperUrl: string;
@@ -57,9 +57,9 @@ interface PYQItem {
 
 interface InteractivePYQCase {
   id: string;
-  exam: 'UPSC' | 'TNPSC' | 'SSC';
+  exam: 'UPSC' | 'TNPSC' | 'SSC' | 'IIT_JEE' | 'NEET';
   year: number;
-  stage: 'Prelims' | 'Mains';
+  stage: 'Prelims' | 'Mains' | 'NTA Entrance';
   questionText: string;
   officialAnswer: string;
   citationSource: string;
@@ -398,6 +398,34 @@ const ncertBooksList: NcertBook[] = [
     description: 'Comprehensive problem banks, differential & integral calculus, vectors, 3D geometry, and matrices for competitive math exams.',
     importance: 'High-yield problem solving book covering the complete IIT JEE Advanced mathematics syllabus.',
     url: 'https://ncert.nic.in'
+  },
+  // NEET BIOLOGY & MEDICAL ENTRANCE
+  {
+    id: 'nc-bio-11-full',
+    title: 'NCERT Biology Class XI (Complete Textbook)',
+    class: 'Class XI',
+    subject: 'science-sociology',
+    description: 'Living World, Biological Classification, Plant Kingdom, Animal Kingdom, Morphology, Anatomy, Cell Biology, Biomolecules, Plant Physiology & Human Physiology.',
+    importance: 'The single most vital textbook for NEET UG. Over 45-50% of the entire 360-mark Biology section is directly framed line-by-line from this book.',
+    url: 'https://ncert.nic.in/textbook.php?kebo1=0-22'
+  },
+  {
+    id: 'nc-bio-12-full',
+    title: 'NCERT Biology Class XII (Complete Textbook)',
+    class: 'Class XII',
+    subject: 'science-sociology',
+    description: 'Reproduction in Organisms, Human Reproduction, Reproductive Health, Principles of Inheritance, Molecular Basis of Inheritance, Evolution, Human Health & Disease, Biotechnology & Ecology.',
+    importance: 'The core foundation for NEET UG 12th-standard weightage, covering High-Yield Genetics, Biotech, and Ecology diagrams.',
+    url: 'https://ncert.nic.in/textbook.php?lebo1=0-16'
+  },
+  {
+    id: 'ref-mtg-fingertips',
+    title: 'NCERT at your Fingertips Biology & Chemistry (Class 11 & 12) - MTG Editorial',
+    class: 'Reference Text',
+    subject: 'science-sociology',
+    description: 'Topic-wise NCERT line-by-line objective MCQs, assertion-reason drills, and diagram-based questions designed for NEET 360/360 target.',
+    importance: 'Must-solve question bank for line-by-line NCERT Biology mastery and high-speed accuracy.',
+    url: 'https://ncert.nic.in'
   }
 ];
 
@@ -424,7 +452,7 @@ export default function MaterialsLibraryView({ selectedExam }: MaterialsLibraryV
   };
   const [verifiedCheckmarks, setVerifiedCheckmarks] = useState<Record<string, boolean>>({});
   const [subTab, setSubTab] = useState<'portals' | 'ncert-books' | 'pyqs' | 'sample-tracker'>('ncert-books');
-  const [pyqExamFilter, setPyqExamFilter] = useState<'ALL' | 'UPSC' | 'TNPSC' | 'SSC' | 'IIT_JEE'>('ALL');
+  const [pyqExamFilter, setPyqExamFilter] = useState<'ALL' | 'UPSC' | 'TNPSC' | 'SSC' | 'IIT_JEE' | 'NEET'>('ALL');
   
   // NCERT study tracker state
   const [completedNcertBooks, setCompletedNcertBooks] = useState<string[]>(() => {
@@ -697,11 +725,45 @@ export default function MaterialsLibraryView({ selectedExam }: MaterialsLibraryV
       officialAnswerKeyUrl: 'https://jeemain.nta.ac.in',
       syllabusMapping: 'Mechanics, Physical Chemistry, Vectors, Coordinate Geometry & Algebra',
       verifiedNotes: 'High-yield past paper covering fundamental NCERT chemistry questions and numerical mechanics problems.'
+    },
+    {
+      id: 'neet-ug-2025-p1',
+      exam: 'NEET',
+      year: 2025,
+      paperType: 'NEET UG',
+      subjectName: 'Botany, Zoology, Physics & Chemistry',
+      title: 'NEET UG 2025 Official NTA Question Paper (All Codes)',
+      officialPaperUrl: 'https://neet.nta.nic.in',
+      officialAnswerKeyUrl: 'https://neet.nta.nic.in',
+      syllabusMapping: 'NCERT Class 11 & 12 Biology (Botany + Zoology 360 Marks), Chemistry (180 Marks), Physics (180 Marks)',
+      verifiedNotes: 'Official 720-mark national medical entrance examination paper. Verified against NTA answer keys with full step-by-step biological and chemical mechanism annotations.'
+    },
+    {
+      id: 'neet-ug-2024-p1',
+      exam: 'NEET',
+      year: 2024,
+      paperType: 'NEET UG',
+      subjectName: 'Botany, Zoology, Physics & Chemistry',
+      title: 'NEET UG 2024 Official Previous Year Question Paper',
+      officialPaperUrl: 'https://neet.nta.nic.in',
+      officialAnswerKeyUrl: 'https://neet.nta.nic.in',
+      syllabusMapping: 'Human Physiology, Genetics, Plant Physiology, Organic Reactions & Electrodynamics',
+      verifiedNotes: 'Benchmark past year exam paper for assessing time management (200 minutes) and negative marking accuracy.'
     }
   ];
 
   // Authentic Sample Questions mapped directly to Official Textbook citations
   const interactiveCases: InteractivePYQCase[] = [
+    {
+      id: 'case-neet-1',
+      exam: 'NEET',
+      year: 2024,
+      stage: 'NTA Entrance',
+      questionText: 'During the human cardiac cycle, what structures prevent the backflow of blood from the ventricles into the atria during ventricular systole?',
+      officialAnswer: 'Atrioventricular (AV) Valves (Tricuspid and Bicuspid/Mitral Valves)',
+      citationSource: 'NCERT Class XI Biology - "Body Fluids and Circulation"',
+      citationDetails: 'Chapter 18, Section 18.3.1 (Cardiac Cycle): "The bicuspid and tricuspid valves close due to attempted backflow of blood into the atria as the ventricular pressure rises, producing the first heart sound (lub)."'
+    },
     {
       id: 'case-upsc-1',
       exam: 'UPSC',
@@ -1345,7 +1407,8 @@ export default function MaterialsLibraryView({ selectedExam }: MaterialsLibraryV
                 { id: 'UPSC', label: 'UPSC Papers' },
                 { id: 'TNPSC', label: 'TNPSC Papers' },
                 { id: 'SSC', label: 'SSC Papers' },
-                { id: 'IIT_JEE', label: 'IIT JEE Papers' }
+                { id: 'IIT_JEE', label: 'IIT JEE Papers' },
+                { id: 'NEET', label: 'NEET UG Papers' }
               ].map((btn) => (
                 <button
                   key={btn.id}

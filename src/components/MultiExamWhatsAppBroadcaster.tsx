@@ -102,6 +102,15 @@ const EXAM_CHANNELS: ExamInfo[] = [
     icon: '⚛️',
     groupName: 'ASPIRES IIT JEE Physics, Chem & Math Elite',
     description: 'Physics, Chemistry & Higher Mathematics'
+  },
+  {
+    id: 'NEET',
+    name: 'NEET UG (Medical Entrance)',
+    badge: 'NEET UG',
+    color: 'bg-rose-600 text-rose-50 border-rose-700',
+    icon: '🩺',
+    groupName: 'ASPIRES NEET Medical Aspirants Club',
+    description: 'Botany, Zoology, Physics & Chemistry'
   }
 ];
 
@@ -185,6 +194,7 @@ ${qText}`;
 • 📊 SSC CGL (Tier 1 & Tier 2)
 • 🚆 RRB NTPC & Group D (Railway Recruitment)
 • ⚛️ IIT JEE (Main & Advanced)
+• 🩺 NEET UG (Medical Entrance)
 
 🌟 *Web Portal Features:*
 • ✍️ Full-Length Mock Tests & Daily 5 MCQ Drills
@@ -197,7 +207,7 @@ ${groupLine}
 🎟️ *SPECIAL DISCOUNT:* Coupon *ANNUAL87* for Annual Pass @ ₹299/year (87% OFF)`;
   };
 
-  // Helper to format ONE combined post for ALL 7 EXAMS with a SINGLE promotional broadcast footer at the very end
+  // Helper to format ONE combined post for ALL 8 EXAMS with a SINGLE promotional broadcast footer at the very end
   const buildCombinedAll7ExamsPostText = (): string => {
     const dateStr = new Date().toLocaleDateString('en-IN', {
       day: 'numeric',
@@ -205,19 +215,19 @@ ${groupLine}
       year: 'numeric'
     });
 
-    let combinedText = `=========================================\n🎯 *ASPIRES ACADEMY - ALL 7 EXAM GROUPS DAILY MCQs*\n📅 *Date:* ${dateStr}\n=========================================\n\n`;
+    let combinedText = `=========================================\n🎯 *ASPIRES ACADEMY - ALL 8 EXAM GROUPS DAILY MCQs*\n📅 *Date:* ${dateStr}\n=========================================\n\n`;
 
     EXAM_CHANNELS.forEach((channel, idx) => {
-      combinedText += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n📌 *EXAM [${idx + 1}/7]: ${channel.name} (${channel.badge})*\n📍 *Target Group:* ${channel.groupName}\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+      combinedText += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n📌 *EXAM [${idx + 1}/${EXAM_CHANNELS.length}]: ${channel.name} (${channel.badge})*\n📍 *Target Group:* ${channel.groupName}\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
       combinedText += buildExamPostText(channel, false); // NO repetitive footer per exam!
       combinedText += `\n\n`;
     });
 
-    const groupLine = getValidGroupUrlLine(whatsappGroupLink, 'ASPIRES All 7 Exams');
+    const groupLine = getValidGroupUrlLine(whatsappGroupLink, 'ASPIRES All 8 Exams');
 
     combinedText += `=========================================
 🚀 *PRACTICE ALL EXAMS ON ASPIRES ACADEMY PORTAL:* https://aspiresacademy.in
-📚 *All 7 Exams Covered on Portal:*
+📚 *All 8 Exams Covered on Portal:*
 1️⃣ 🏛️ UPSC Civil Services (IAS / IPS / IFS)
 2️⃣ 🏆 TNPSC Group 1 (CCSE I Officers)
 3️⃣ 🎯 TNPSC Group 2 & 2A (CCSE II)
@@ -225,6 +235,7 @@ ${groupLine}
 5️⃣ 📊 SSC CGL (Tier 1 & Tier 2)
 6️⃣ 🚆 RRB NTPC & Group D (Railway Recruitment)
 7️⃣ ⚛️ IIT JEE (Main & Advanced)
+8️⃣ 🩺 NEET UG (Medical Entrance)
 
 🌟 *Web Portal Features:*
 • ✍️ Full-Length Mock Tests for All Exam Categories
@@ -493,7 +504,7 @@ broadcastDaily5ToWhatsApp();`;
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
                   <span className="bg-[#25D366] text-slate-950 font-black text-[10px] uppercase px-2.5 py-0.5 rounded-full font-mono flex items-center gap-1">
-                    <Zap className="h-3 w-3 fill-slate-950" /> 7 EXAMS BATCH DISPATCHER
+                    <Zap className="h-3 w-3 fill-slate-950" /> 8 EXAMS BATCH DISPATCHER
                   </span>
                   <span className="text-xs font-mono text-emerald-200">
                     Seed #{currentSeedOffset}
@@ -503,7 +514,7 @@ broadcastDaily5ToWhatsApp();`;
                   📱 Multi-Exam WhatsApp Batch Dispatcher
                 </h3>
                 <p className="text-xs text-emerald-100 font-sans">
-                  Dispatch daily 5 MCQs to all 7 distinct exam WhatsApp groups below.
+                  Dispatch daily 5 MCQs to all 8 distinct exam WhatsApp groups below.
                 </p>
               </div>
 
@@ -524,10 +535,10 @@ broadcastDaily5ToWhatsApp();`;
                 <div className="flex items-center justify-between text-xs font-bold text-slate-700">
                   <span className="flex items-center gap-1.5 font-display text-slate-900 font-black">
                     <CheckCircle2 className="h-4 w-4 text-emerald-600" />
-                    Overall Dispatch Status: {Object.keys(sentExams).length} of 7 Exam Groups Sent
+                    Overall Dispatch Status: {Object.keys(sentExams).length} of {EXAM_CHANNELS.length} Exam Groups Sent
                   </span>
                   <span className="font-mono text-slate-500">
-                    {Math.round((Object.keys(sentExams).length / 7) * 100)}% Complete
+                    {Math.round((Object.keys(sentExams).length / EXAM_CHANNELS.length) * 100)}% Complete
                   </span>
                 </div>
 
@@ -535,7 +546,7 @@ broadcastDaily5ToWhatsApp();`;
                 <div className="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
                   <div 
                     className="bg-emerald-500 h-2.5 rounded-full transition-all duration-300"
-                    style={{ width: `${(Object.keys(sentExams).length / 7) * 100}%` }}
+                    style={{ width: `${(Object.keys(sentExams).length / EXAM_CHANNELS.length) * 100}%` }}
                   ></div>
                 </div>
 
@@ -544,7 +555,7 @@ broadcastDaily5ToWhatsApp();`;
                   <div className="bg-amber-50 border border-amber-300/80 rounded-xl p-3.5 flex flex-col sm:flex-row items-center justify-between gap-3">
                     <div className="flex items-center gap-3">
                       <span className="flex h-9 w-9 items-center justify-center rounded-full bg-amber-500 text-slate-950 font-black text-sm font-mono shadow-xs shrink-0">
-                        {sequenceStep + 1}/7
+                        {sequenceStep + 1}/{EXAM_CHANNELS.length}
                       </span>
                       <div>
                         <h4 className="text-xs font-black text-amber-950 font-display">
@@ -566,7 +577,7 @@ broadcastDaily5ToWhatsApp();`;
                         onClick={handleNextSequenceStep}
                         className="bg-amber-600 hover:bg-amber-700 text-white font-extrabold text-xs px-3.5 py-1.5 rounded-lg flex items-center gap-1 shadow-xs cursor-pointer active:scale-95"
                       >
-                        <span>{sequenceStep < 6 ? `Next (${EXAM_CHANNELS[sequenceStep + 1].badge}) ➡️` : 'Done ✅'}</span>
+                        <span>{sequenceStep < EXAM_CHANNELS.length - 1 ? `Next (${EXAM_CHANNELS[sequenceStep + 1].badge}) ➡️` : 'Done ✅'}</span>
                       </button>
                     </div>
                   </div>
@@ -577,38 +588,38 @@ broadcastDaily5ToWhatsApp();`;
               <div className="flex flex-wrap items-center justify-between gap-2 bg-emerald-50 border border-emerald-200/80 rounded-xl p-3">
                 <div className="text-xs font-bold text-emerald-900 font-display flex items-center gap-1.5">
                   <Share2 className="h-4 w-4 text-emerald-700" />
-                  <span>Bulk Actions for All 7 Exam Categories:</span>
+                  <span>Bulk Actions for All {EXAM_CHANNELS.length} Exam Categories:</span>
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
                   <button
                     onClick={handleSendAll7ExamsInOneClick}
                     className="bg-[#25D366] hover:bg-[#20ba5a] text-slate-950 font-black text-xs px-3.5 py-1.5 rounded-lg flex items-center gap-1.5 cursor-pointer shadow-xs active:scale-95 transition-all"
-                    title="Send all 7 exams in ONE single combined WhatsApp broadcast message"
+                    title="Send all 8 exams in ONE single combined WhatsApp broadcast message"
                   >
                     <Zap className="h-3.5 w-3.5 fill-slate-950" />
-                    <span>Send All 7 Exams (1 Click)</span>
+                    <span>Send All {EXAM_CHANNELS.length} Exams (1 Click)</span>
                   </button>
                   <button
                     onClick={handleOpenAllTabs}
                     className="bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold text-xs px-3 py-1.5 rounded-lg flex items-center gap-1.5 cursor-pointer shadow-2xs active:scale-95 transition-all"
-                    title="Opens 7 WhatsApp tabs staggered by 450ms"
+                    title="Opens WhatsApp tabs staggered by 450ms"
                   >
-                    <ExternalLink className="h-3.5 w-3.5" /> Stagger 7 Tabs
+                    <ExternalLink className="h-3.5 w-3.5" /> Stagger {EXAM_CHANNELS.length} Tabs
                   </button>
                   <button
                     onClick={handleCopyAllExams}
                     className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-xs px-3 py-1.5 rounded-lg flex items-center gap-1.5 cursor-pointer shadow-2xs active:scale-95 transition-all"
                   >
                     {copiedAll ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
-                    <span>{copiedAll ? 'Copied All 7 Posts!' : 'Copy All 7 Posts'}</span>
+                    <span>{copiedAll ? `Copied All ${EXAM_CHANNELS.length} Posts!` : `Copy All ${EXAM_CHANNELS.length} Posts`}</span>
                   </button>
                 </div>
               </div>
 
-              {/* All 7 Exam Channel Rows */}
+              {/* All Exam Channel Rows */}
               <div className="space-y-2.5">
                 <h4 className="text-xs font-black text-slate-700 uppercase tracking-wider font-mono">
-                  All 7 Individual Exam WhatsApp Group Outlets
+                  All {EXAM_CHANNELS.length} Individual Exam WhatsApp Group Outlets
                 </h4>
 
                 {EXAM_CHANNELS.map((channel, idx) => {
@@ -729,36 +740,36 @@ broadcastDaily5ToWhatsApp();`;
       <div className="p-5 md:p-6">
         {activeTab === 'DISPATCHER' && (
           <div className="space-y-5">
-            {/* High-Visibility Hero Action Banner for Send All 7 Exams */}
+            {/* High-Visibility Hero Action Banner for Send All Exams */}
             <div className="bg-gradient-to-r from-emerald-950 via-emerald-900 to-teal-950 border border-emerald-500/50 rounded-2xl p-5 text-white shadow-md space-y-4">
               <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-emerald-800/60 pb-4">
                 <div className="space-y-1">
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="bg-[#25D366] text-slate-950 font-black text-[10px] uppercase px-2.5 py-0.5 rounded-full font-mono flex items-center gap-1 shadow-xs">
-                      <Zap className="h-3 w-3 fill-slate-950" /> 1-CLICK ALL 7 EXAMS BROADCASTER
+                      <Zap className="h-3 w-3 fill-slate-950" /> 1-CLICK ALL {EXAM_CHANNELS.length} EXAMS BROADCASTER
                     </span>
                     <span className="text-[11px] font-mono text-emerald-300 font-bold">
                       Seed #{currentSeedOffset} • Updated Daily
                     </span>
                   </div>
                   <h4 className="text-lg sm:text-xl font-black text-white font-display">
-                    Post All 7 Exam MCQs in One Single Message
+                    Post All {EXAM_CHANNELS.length} Exam MCQs in One Single Message
                   </h4>
                   <p className="text-xs text-emerald-100/90 max-w-2xl font-sans">
-                    Instantly launches WhatsApp with a pre-filled, cleanly structured broadcast message containing 35 MCQs across all 7 exam categories (UPSC, TNPSC G1/G2/G4, SSC, RRB, IIT JEE) with a single ending promotional footer!
+                    Instantly launches WhatsApp with a pre-filled, cleanly structured broadcast message containing 40 MCQs across all {EXAM_CHANNELS.length} exam categories (UPSC, TNPSC G1/G2/G4, SSC, RRB, IIT JEE, NEET UG) with a single ending promotional footer!
                   </p>
                 </div>
               </div>
 
-              {/* Action Buttons Row: Send All 7, Copy All 7, Next Daily Set, AI Gen Set */}
+              {/* Action Buttons Row: Send All, Copy All, Next Daily Set, AI Gen Set */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-1">
                 <button
                   onClick={handleSendAll7ExamsInOneClick}
                   className="bg-gradient-to-r from-[#25D366] to-emerald-400 hover:from-[#20ba5a] hover:to-emerald-500 text-slate-950 font-black text-sm py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg active:scale-95 cursor-pointer ring-2 ring-emerald-300/60"
-                  title="Post all 7 exam MCQs in 1 click"
+                  title="Post all exam MCQs in 1 click"
                 >
                   <Zap className="h-4.5 w-4.5 fill-slate-950 shrink-0" />
-                  <span>Send All 7 Exams (1 Click)</span>
+                  <span>Send All {EXAM_CHANNELS.length} Exams (1 Click)</span>
                 </button>
 
                 <button
@@ -767,7 +778,7 @@ broadcastDaily5ToWhatsApp();`;
                   title="Copy complete broadcast message text"
                 >
                   {copiedAll ? <Check className="h-4 w-4 text-amber-300" /> : <Copy className="h-4 w-4 text-amber-300" />}
-                  <span>{copiedAll ? 'Copied All 7!' : 'Copy All 7 Posts'}</span>
+                  <span>{copiedAll ? `Copied All ${EXAM_CHANNELS.length}!` : `Copy All ${EXAM_CHANNELS.length} Posts`}</span>
                 </button>
 
                 <button
@@ -790,9 +801,9 @@ broadcastDaily5ToWhatsApp();`;
                 </button>
               </div>
 
-              {/* 7 Exam Badges Summary Bar */}
+              {/* Exam Badges Summary Bar */}
               <div className="bg-emerald-950/70 border border-emerald-800/80 rounded-xl p-3 flex flex-wrap items-center justify-between gap-2 text-xs font-mono text-emerald-200">
-                <span className="font-bold text-amber-300">📚 7 Covered Exam Categories:</span>
+                <span className="font-bold text-amber-300">📚 {EXAM_CHANNELS.length} Covered Exam Categories:</span>
                 <div className="flex flex-wrap items-center gap-1.5 text-[11px]">
                   <span className="bg-amber-900/40 border border-amber-700/50 px-2 py-0.5 rounded text-amber-200">🏛️ UPSC CSE</span>
                   <span className="bg-emerald-900/40 border border-emerald-700/50 px-2 py-0.5 rounded text-emerald-200">👑 TNPSC G1</span>
@@ -801,6 +812,7 @@ broadcastDaily5ToWhatsApp();`;
                   <span className="bg-blue-900/40 border border-blue-700/50 px-2 py-0.5 rounded text-blue-200">🏢 SSC CGL</span>
                   <span className="bg-indigo-900/40 border border-indigo-700/50 px-2 py-0.5 rounded text-indigo-200">🚆 RRB NTPC</span>
                   <span className="bg-purple-900/40 border border-purple-700/50 px-2 py-0.5 rounded text-purple-200">⚛️ IIT JEE</span>
+                  <span className="bg-rose-900/40 border border-rose-700/50 px-2 py-0.5 rounded text-rose-200">🩺 NEET UG</span>
                 </div>
               </div>
             </div>

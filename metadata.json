@@ -1,6 +1,6 @@
 {
   "name": "ASPIRES ACADEMY",
-  "description": "AI-Powered Civil Services Exam Preparation Portal for UPSC & TNPSC. Interactive syllabus trackers, AI voice lessons, automated essay evaluation, flashcards, and mock tests.",
+  "description": "AI-Powered Competitive Examination Preparation Portal for UPSC, TNPSC, SSC, RRB, IIT JEE & NEET UG. Interactive syllabus trackers, AI voice lessons, automated essay evaluation, flashcards, and mock tests.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }
