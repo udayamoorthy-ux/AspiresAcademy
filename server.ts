@@ -121,38 +121,54 @@ app.post('/api/study-planner', async (req, res) => {
   }
 
   const examLabels: Record<string, string> = {
-    UPSC: 'UPSC Civil Services Examination (CSE) Prelims & Mains',
-    TNPSC_G1: 'TNPSC Group I (Deputy Collector/DSP) Prelims & Mains',
-    TNPSC_G2: 'TNPSC Group II/IIA Executive and Non-Executive Exams',
-    TNPSC_G4: 'TNPSC Group IV & VAO Written Exam',
-    SSC_CGL: 'SSC CGL (Combined Graduate Level) Tiers I & II Exams',
-    RRB_NTPC: 'RRB NTPC (Non-Technical Popular Categories) Stage 1 & 2 CBT Exams',
-    IIT_JEE: 'IIT JEE (Joint Entrance Examination Main & Advanced - Physics, Chemistry, Mathematics)'
+    UPSC: 'UPSC Civil Services Examination (CSE) Prelims & Mains (Polity, History, Geography, Economy, Environment, CSAT)',
+    TNPSC_G1: 'TNPSC Group I (CCSE-I Officers) Prelims & Mains (Tamil Heritage, Dev Admin, Aptitude, General Studies)',
+    TNPSC_G2: 'TNPSC Group II & IIA (CCSE-II) (General Tamil/English, General Studies, Aptitude, Governance)',
+    TNPSC_G4: 'TNPSC Group IV & VAO (CCSE-IV) (Samacheer Kalvi General Tamil & General Studies, Mental Ability)',
+    SSC_CGL: 'SSC CGL (Combined Graduate Level) Tier 1 & 2 (Quantitative Aptitude, Reasoning, English Comprehension, General Awareness)',
+    RRB_NTPC: 'RRB NTPC & Group D (Railways Recruitment) (Mathematics, General Intelligence & Reasoning, General Science, Railway GK)',
+    IIT_JEE: 'IIT JEE Main & Advanced (Physics: Mechanics/Electrodynamics/Optics, Chemistry: Organic/Inorganic/Physical, Mathematics: Calculus/Algebra/Coordinate Geometry)',
+    NEET: 'NEET UG Medical Entrance (Biology: NCERT Botany & Zoology/Genetics/Physiology, Physics: Mechanics/Optics/Modern Physics, Chemistry: Organic/Inorganic/Physical)'
   };
 
   const examLabel = examLabels[exam] || exam;
 
   if (aiClient) {
     try {
-      const prompt = `Generate an extremely comprehensive, high-yield, and detailed study task list for the ${examLabel} starting from ${startDate || 'today'} to ${targetDate || 'target date'} (spanning exactly ${totalDays} days), studying ${dailyHours} hours per day.
-      Provide exactly 10 to 14 milestone tasks representing key progression points spaced evenly across the days (e.g. Day 1, Day 3, Day 6, Day 9, Day 12, etc.).
-      Each milestone task MUST be highly realistic and include:
-      - subject: Broad subject (e.g. Physics, Chemistry, Mathematics, Polity, History, Economy, General Tamil, Aptitude)
-      - topic: Highly specific syllabus topic (e.g., 'Rotational Dynamics & Torque', 'Organic Reaction Mechanisms SN1/SN2', 'Calculus Integrals & Maxima', 'Fundamental Rights')
+      let examSubjectGuidance = "";
+      if (exam === 'NEET') {
+        examSubjectGuidance = "CRITICAL: The subjects MUST strictly be 'Biology (Botany)', 'Biology (Zoology)', 'Chemistry', and 'Physics'. References MUST be NCERT Class 11/12 Biology, HC Verma, Trueman Biology, OP Tandon, MS Chouhan. Do NOT include History, Polity, or Civics.";
+      } else if (exam === 'IIT_JEE') {
+        examSubjectGuidance = "CRITICAL: The subjects MUST strictly be 'Physics', 'Chemistry', and 'Mathematics'. References MUST be HC Verma, Irodov, Cengage Mathematics, MS Chouhan, JD Lee. Do NOT include History, Polity, or Biology.";
+      } else if (exam.startsWith('TNPSC')) {
+        examSubjectGuidance = "CRITICAL: The subjects MUST include 'Tamil Heritage (Unit 8)', 'Development Administration (Unit 9)', 'General Tamil / Thirukkural', 'Aptitude & Mental Ability', and 'General Studies'. References MUST cite Samacheer Kalvi, Unit 8/9 Guides, Thirukkural.";
+      } else if (exam === 'SSC_CGL' || exam === 'RRB_NTPC') {
+        examSubjectGuidance = "CRITICAL: The subjects MUST be 'Quantitative Aptitude', 'Reasoning & Intelligence', 'General Science', 'General Awareness', and 'English Comprehension'. References MUST cite RS Aggarwal, Lucent GK, Kiran Publications.";
+      } else {
+        examSubjectGuidance = "CRITICAL: The subjects MUST be 'Polity', 'Modern History', 'Economy', 'Geography', 'Environment & Ecology', and 'CSAT'. References MUST cite Laxmikanth, Spectrum, Ramesh Singh, Shankar IAS, NCERTs.";
+      }
+
+      const prompt = `Generate an extremely comprehensive, high-yield, exam-aligned study plan for the ${examLabel} starting from ${startDate || 'today'} to ${targetDate || 'target date'} (spanning exactly ${totalDays} days), studying ${dailyHours} hours per day.
+      ${examSubjectGuidance}
+      Provide exactly 10 to 14 milestone tasks representing key syllabus progression points spaced evenly across the days (e.g. Day 1, Day 3, Day 6, Day 9, Day 12, etc.).
+      Each milestone task MUST be authentic to ${examLabel} and include:
+      - day: The day number in the schedule
+      - subject: Broad subject aligned to ${exam}
+      - topic: Highly specific syllabus chapter or topic (e.g. for NEET: 'Genetics & Mendelian Inheritance', 'Human Respiratory & Circulatory Physiology'; for IIT: 'Rotational Motion & Torque', 'Integral Calculus & Area'; for TNPSC: 'Thirukkural Ethics & Governance', 'Self Respect Movement & Dravidian Politics'; for UPSC: 'Fundamental Rights & Judicial Review', 'Monetary Policy & Inflation')
       - hours: Recommended study hours
       - subtasks: 3-5 precise, highly actionable checklist subtasks referring to standard books
-      - phase: Broad preparation phase, e.g., 'Phase 1: Foundation Building', 'Phase 2: Core Syllabus Mastery', 'Phase 3: Integration & Problem Solving', 'Phase 4: High-Yield Revision'
+      - phase: Broad preparation phase, e.g., 'Phase 1: Foundation Building', 'Phase 2: Core Syllabus Mastery', 'Phase 3: High-Yield Problem Solving', 'Phase 4: Full Revision & Mock Tests'
       - priority: Priority level: 'High', 'Medium', or 'Low'
-      - references: Real textbook references, e.g., ['HC Verma Concepts of Physics Vol 1', 'NCERT Class XI/XII Chemistry', 'RD Sharma / Cengage Mathematics', 'M. Laxmikanth']
+      - references: Real textbook and chapter references
       - learningObjectives: 3 key conceptual learning objectives the student should be able to recall
       - selfCheckQuestion: A highly challenging, conceptual Active Recall self-check question based on the topic
       - selfCheckAnswer: The exact, detailed factual answer to the self-check question.`;
 
       const response = await callGeminiWithRetry(() => aiClient!.models.generateContent({
-        model: 'gemini-3.5-flash',
+        model: 'gemini-2.5-flash',
         contents: prompt,
         config: {
-          systemInstruction: 'You are an elite Competitive Exam & Engineering Entrance Mentor who creates precise, customized, realistic schedules for UPSC, TNPSC, SSC CGL, and IIT JEE (Physics, Chemistry, Mathematics) aspirants. All topics, chapters, and textbook citations (e.g., HC Verma, NCERT, MS Chouhan, Cengage, M. Laxmikanth, Spectrum, Samacheer Kalvi) must be 100% authentic, real, and factually accurate.',
+          systemInstruction: 'You are an elite Competitive Exam & Medical/Engineering Entrance Mentor who creates precise, customized, realistic schedules for NEET UG (Biology, Physics, Chemistry), IIT JEE (Physics, Chemistry, Mathematics), UPSC CSE, TNPSC (Units 8 & 9, Tamil, GS), SSC CGL, and RRB NTPC. All topics, chapters, and textbook citations (e.g., NCERT Class 11/12, HC Verma, MS Chouhan, M. Laxmikanth, Spectrum, Samacheer Kalvi) must be 100% authentic, real, and strictly aligned with the target examination.',
           responseMimeType: 'application/json',
           responseSchema: {
             type: Type.OBJECT,
@@ -164,14 +180,14 @@ app.post('/api/study-planner', async (req, res) => {
                   properties: {
                     day: { type: Type.INTEGER, description: "The day number in the schedule" },
                     topic: { type: Type.STRING, description: "Specific topic name to study" },
-                    subject: { type: Type.STRING, description: "Broad subject (e.g. History, Polity, Geography, General Tamil, Aptitude)" },
+                    subject: { type: Type.STRING, description: "Broad subject" },
                     hours: { type: Type.NUMBER, description: "Recommended hours to allocate" },
                     subtasks: {
                       type: Type.ARRAY,
                       items: { type: Type.STRING },
                       description: "List of actionable subtasks or study references"
                     },
-                    phase: { type: Type.STRING, description: "The study phase name, e.g. 'Phase 1: Foundation Building', 'Phase 2: Core Syllabus Mastery'" },
+                    phase: { type: Type.STRING, description: "The study phase name" },
                     priority: { type: Type.STRING, description: "The priority level: 'High', 'Medium', or 'Low'" },
                     references: {
                       type: Type.ARRAY,
@@ -181,7 +197,7 @@ app.post('/api/study-planner', async (req, res) => {
                     learningObjectives: {
                       type: Type.ARRAY,
                       items: { type: Type.STRING },
-                      description: "3 key conceptual learning objectives the student should recall"
+                      description: "3 key conceptual learning objectives"
                     },
                     selfCheckQuestion: { type: Type.STRING, description: "Active recall self-check question" },
                     selfCheckAnswer: { type: Type.STRING, description: "Factual answer to the self-check question" }
@@ -205,13 +221,301 @@ app.post('/api/study-planner', async (req, res) => {
     }
   }
 
-  // Fallback Schedule Generator (Realistic, Mock/Offline Mode)
-  console.log("Generating offline smart schedule with high details...");
+  // Fallback Schedule Generator (Rich, Exam-Specific Offline Mode)
+  console.log(`Generating offline smart schedule for exam: ${exam}...`);
   
   const generatedTasks = [];
-  const taskCount = 10; // Spatially dense, high info
+  const taskCount = 10;
 
-  // Rich database of offline high-yield items
+  // 1. NEET UG Plan Pool
+  const neetPlanPool = [
+    {
+      topic: "Genetics: Principles of Inheritance & Variation",
+      subject: "Biology (Botany)",
+      phase: "Phase 1: Foundation Building",
+      priority: "High",
+      references: ["NCERT Class 12 Biology Chapter 5", "Trueman Elementary Biology Vol 2"],
+      learningObjectives: [
+        "Master Mendel's Law of Segregation and Law of Independent Assortment",
+        "Differentiate Incomplete Dominance vs Codominance with AB blood group examples",
+        "Solve pedigree analysis charts and calculate genotypic/phenotypic ratios"
+      ],
+      selfCheckQuestion: "In a dihybrid cross of heterozygous tall yellow peas (TtYy x TtYy), what fraction of offspring will be phenotypically tall with green seeds?",
+      selfCheckAnswer: "In standard Mendelian dihybrid phenotypic ratio 9:3:3:1 (Tall Yellow : Tall Green : Dwarf Yellow : Dwarf Green), the fraction of tall with green seeds is 3/16 (18.75%)."
+    },
+    {
+      topic: "Human Physiology: Neural Control & Chemical Coordination",
+      subject: "Biology (Zoology)",
+      phase: "Phase 1: Foundation Building",
+      priority: "High",
+      references: ["NCERT Class 11 Biology Chapters 21 & 22", "Allen Medical Zoology Handouts"],
+      learningObjectives: [
+        "Explain generation and conduction of action potential across unmyelinated vs myelinated axon",
+        "Trace reflex arc components and synaptic neurotransmitter transmission (Acetylcholine)",
+        "Map endocrine feedback loops: Hypothalamus-Pituitary-Thyroid-Adrenal axis"
+      ],
+      selfCheckQuestion: "What ion channels open during depolarization phase of an axonal membrane, and what causes repolarization?",
+      selfCheckAnswer: "During depolarization, voltage-gated Na+ channels open rapidly causing influx of Na+ into the axoplasm (+30mV). Repolarization occurs as Na+ channels close and voltage-gated K+ channels open, allowing efflux of K+ out of the neuron."
+    },
+    {
+      topic: "Chemical Bonding & Molecular Orbital Theory (MOT)",
+      subject: "Chemistry",
+      phase: "Phase 2: Core Syllabus Mastery",
+      priority: "High",
+      references: ["NCERT Class 11 Chemistry Chapter 4", "OP Tandon Physical & Inorganic Chemistry"],
+      learningObjectives: [
+        "Calculate bond order using MOT for homonuclear diatomic molecules (O2, N2, C2, B2)",
+        "Predict paramagnetic vs diamagnetic properties from unpaired electrons in MOT diagrams",
+        "Master VSEPR geometries and Hybridization states (sp, sp2, sp3, sp3d, sp3d2)"
+      ],
+      selfCheckQuestion: "Why is the oxygen molecule (O2) paramagnetic despite having an even number of 16 electrons?",
+      selfCheckAnswer: "According to Molecular Orbital Theory (MOT), the electronic configuration of O2 fills the anti-bonding degenerate π*2px and π*2py orbitals with one unpaired electron each (Hund's rule), imparting paramagnetism with 2 unpaired electrons."
+    },
+    {
+      topic: "General Organic Chemistry (GOC) & Reaction Intermediates",
+      subject: "Chemistry",
+      phase: "Phase 2: Core Syllabus Mastery",
+      priority: "High",
+      references: ["NCERT Class 11 Chemistry Chapter 12", "MS Chouhan Organic Chemistry for NEET"],
+      learningObjectives: [
+        "Compare carbocation stability based on inductive (+I), hyperconjugation (alpha-H), and resonance effects",
+        "Distinguish between SN1 and SN2 nucleophilic substitution mechanisms and stereochemical inversion (Walden inversion)",
+        "Identify electrophiles vs nucleophiles in Markovnikov vs Anti-Markovnikov addition"
+      ],
+      selfCheckQuestion: "Which is more stable: Benzyl carbocation (C6H5-CH2+) or Tertiary butyl carbocation (CH3)3C+? Explain why.",
+      selfCheckAnswer: "Benzyl carbocation is highly stabilized by resonance delocalization of positive charge across 4 canonical structures of the aromatic phenyl ring, whereas tert-butyl carbocation is stabilized primarily by 9 hyperconjugative alpha-hydrogens. Both are exceptionally stable, but benzylic resonance typically dominates in polar protic solvents."
+    },
+    {
+      topic: "Laws of Motion, Friction & Circular Motion",
+      subject: "Physics",
+      phase: "Phase 1: Foundation Building",
+      priority: "High",
+      references: ["NCERT Class 11 Physics Chapter 5", "HC Verma Concepts of Physics Vol 1 Chapter 5 & 7"],
+      learningObjectives: [
+        "Draw accurate Free Body Diagrams (FBD) with normal reaction, tension, and friction components",
+        "Apply static (fs <= mu_s * N) and kinetic friction (fk = mu_k * N) to inclined planes",
+        "Calculate maximum safe speed on banked vs unbanked curved roads: v_max = sqrt(r * g * tan(theta))"
+      ],
+      selfCheckQuestion: "A block of mass 5 kg rests on a horizontal table (mu_s = 0.4). A horizontal force of 15 N is applied. What is the frictional force acting on the block? (g = 10 m/s^2)",
+      selfCheckAnswer: "Maximum static friction f_s(max) = mu_s * N = 0.4 * (5 * 10) = 20 N. Since the applied force (15 N) is less than f_s(max), the block does not move. Therefore, static friction self-adjusts to exactly equal the applied force = 15 N."
+    },
+    {
+      topic: "Current Electricity, Kirchhoff's Laws & Potentiometer",
+      subject: "Physics",
+      phase: "Phase 2: Core Syllabus Mastery",
+      priority: "High",
+      references: ["NCERT Class 12 Physics Chapter 3", "HC Verma Concepts of Physics Vol 2 Chapter 32"],
+      learningObjectives: [
+        "Apply Kirchhoff's Junction Law (Conservation of Charge) and Loop Law (Conservation of Energy)",
+        "Solve Wheatstone bridge balance conditions: R1/R2 = R3/R4 and Meter Bridge formulas",
+        "Derive drift velocity: v_d = e * E * tau / m and current density j = n * e * v_d"
+      ],
+      selfCheckQuestion: "When a wire of resistance R is stretched uniformly such that its length doubles, what happens to its resistance?",
+      selfCheckAnswer: "Volume remains constant (V = A * L). If length doubles (L' = 2L), cross-sectional area halves (A' = A/2). Since R = rho * (L/A), new resistance R' = rho * (2L / (A/2)) = 4 * rho * (L/A) = 4R. Resistance increases 4 times."
+    },
+    {
+      topic: "Plant Physiology: Photosynthesis & Cellular Respiration",
+      subject: "Biology (Botany)",
+      phase: "Phase 2: Core Syllabus Mastery",
+      priority: "High",
+      references: ["NCERT Class 11 Biology Chapters 13 & 14", "Trueman Botany"],
+      learningObjectives: [
+        "Trace Z-scheme of light reactions (PS II -> Cyt b6f -> PS I -> Ferredoxin -> NADPH)",
+        "Differentiate C3 (Calvin cycle / RuBisCO) vs C4 pathway (Kranz anatomy / PEP carboxylase)",
+        "Calculate net ATP yield per glucose molecule in aerobic respiration (36-38 ATP via Chemiosmotic ETS)"
+      ],
+      selfCheckQuestion: "Why is Photorespiration (C2 cycle) considered a wasteful process in C3 plants, and how do C4 plants prevent it?",
+      selfCheckAnswer: "In C3 plants under high O2/low CO2, RuBisCO acts as oxygenase, binding O2 to RuBP producing 1 phosphoglycerate + 1 phosphoglycolate, consuming ATP and releasing CO2 without producing sugar or ATP. C4 plants prevent this via Kranz anatomy by concentrating CO2 around bundle sheath cells using PEP carboxylase."
+    },
+    {
+      topic: "Ray Optics & Optical Instruments",
+      subject: "Physics",
+      phase: "Phase 3: High-Yield Problem Solving",
+      priority: "High",
+      references: ["NCERT Class 12 Physics Chapter 9", "HC Verma Vol 2 Chapter 18"],
+      learningObjectives: [
+        "Apply Lens Maker's Formula: 1/f = (mu - 1) * (1/R1 - 1/R2)",
+        "Calculate Total Internal Reflection (TIR) critical angle: sin(i_c) = 1/mu",
+        "Derive magnifying power of Compound Microscope and Astronomical Telescope at normal adjustment"
+      ],
+      selfCheckQuestion: "A convex lens of focal length 20 cm in air (mu_g = 1.5) is immersed in water (mu_w = 4/3). What is its new focal length?",
+      selfCheckAnswer: "Using Lens Maker's Formula: In air, 1/f_air = (1.5 - 1)*(1/R1 - 1/R2) = 0.5 * K => K = 1/10. In water, 1/f_water = ((1.5/(4/3)) - 1)*K = (9/8 - 1)*K = (1/8)*(1/10) = 1/80. Therefore, f_water = 80 cm (focal length quadruples in water)."
+    },
+    {
+      topic: "Coordination Compounds & Crystal Field Theory (CFT)",
+      subject: "Chemistry",
+      phase: "Phase 3: High-Yield Problem Solving",
+      priority: "High",
+      references: ["NCERT Class 12 Chemistry Chapter 9", "JD Lee Concise Inorganic Chemistry"],
+      learningObjectives: [
+        "Determine IUPAC names and oxidation numbers of central transition metals",
+        "Understand Crystal Field Splitting (Delta_o) into t2g and eg sets in octahedral complexes",
+        "Predict high spin vs low spin complexes using Spectrochemical Series (CN- > NO2- > en > NH3 > H2O > F- > Cl-)"
+      ],
+      selfCheckQuestion: "Calculate the magnetic moment (spin-only) for [Fe(H2O)6]2+ and [Fe(CN)6]4- in Bohr Magnetons (BM).",
+      selfCheckAnswer: "In [Fe(H2O)6]2+, Fe2+ is 3d6. H2O is a weak field ligand (Delta_o < P), giving high spin t2g4 eg2 with 4 unpaired electrons: mu = sqrt(4*(4+2)) = sqrt(24) ≈ 4.90 BM. In [Fe(CN)6]4-, CN- is a strong field ligand (Delta_o > P), pairing all 6 electrons into t2g6 eg0 with 0 unpaired electrons: mu = 0 BM (diamagnetic)."
+    },
+    {
+      topic: "Full NCERT Mock Test & High-Yield Speed Drill (720 Marks Simulation)",
+      subject: "NEET Comprehensive Simulation",
+      phase: "Phase 4: Full Revision & Mock Tests",
+      priority: "High",
+      references: ["NEET Past 10 Years Solved Papers (NTA)", "NCERT Biology Line-by-Line Revision Notes"],
+      learningObjectives: [
+        "Solve 180 questions (360 Marks Bio + 180 Marks Chem + 180 Marks Phys) within 3 hours 20 mins",
+        "Master negative marking management (+4 / -1) and strict OMR bubbling strategy",
+        "Target scoring >= 340+ in Biology by reviewing NCERT direct diagram and scientist name tables"
+      ],
+      selfCheckQuestion: "What is the recommended section time split for maximizing NEET score in 200 minutes?",
+      selfCheckAnswer: "Optimal strategy: Biology (90 Qs) completed in 45-50 minutes; Chemistry (45 Qs) completed in 40-45 minutes; Physics (45 Qs) allocated 60-70 minutes; leaving 35-40 minutes for OMR verification and reviewing marked high-probability questions."
+    }
+  ];
+
+  // 2. IIT JEE Plan Pool
+  const iitJeePlanPool = [
+    {
+      topic: "Rotational Dynamics, Moment of Inertia & Angular Momentum",
+      subject: "Physics",
+      phase: "Phase 1: Foundation Building",
+      priority: "High",
+      references: ["HC Verma Concepts of Physics Vol 1 Chapter 10", "IE Irodov Problems in General Physics"],
+      learningObjectives: [
+        "Apply Parallel and Perpendicular Axis Theorems for complex rigid bodies",
+        "Solve Pure Rolling condition (v_cm = omega * R, a_cm = alpha * R) on smooth and rough inclines",
+        "Calculate conservation of angular momentum about instantaneous center of rotation"
+      ],
+      selfCheckQuestion: "A solid sphere and a hollow cylinder of identical mass and radius roll down an inclined plane without slipping from rest. Which one reaches the bottom first?",
+      selfCheckAnswer: "The solid sphere reaches first. Acceleration in pure rolling is a = (g * sin(theta)) / (1 + I_cm / (m*R^2)). For solid sphere, I_cm / (m*R^2) = 2/5 = 0.4, giving a = g*sin(theta)/1.4. For hollow cylinder, I_cm / (m*R^2) = 1, giving a = g*sin(theta)/2. The sphere has greater linear acceleration."
+    },
+    {
+      topic: "Differential Calculus: Limits, Continuity, Differentiability & Tangents",
+      subject: "Mathematics",
+      phase: "Phase 1: Foundation Building",
+      priority: "High",
+      references: ["Cengage Mathematics Calculus by G. Tewani", "Sameer Bansal Calculus for Advanced"],
+      learningObjectives: [
+        "Evaluate indeterminate limits using L'Hopital's Rule, Taylor expansions, and standard standard limit theorems",
+        "Check differentiability using Left-Hand and Right-Hand Derivative definitions (LHD = RHD)",
+        "Apply Rolle's Theorem and Lagrange's Mean Value Theorem (LMVT) to polynomial roots"
+      ],
+      selfCheckQuestion: "Evaluate lim (x -> 0) [ (sin x - x + x^3/6) / x^5 ].",
+      selfCheckAnswer: "Using the Taylor series expansion for sin x = x - x^3/3! + x^5/5! - x^7/7!..., numerator becomes (x - x^3/6 + x^5/120 - x + x^3/6) = x^5/120. Dividing by x^5 gives 1/120."
+    },
+    {
+      topic: "Thermodynamics & Kinetic Theory of Gases",
+      subject: "Physics",
+      phase: "Phase 2: Core Syllabus Mastery",
+      priority: "High",
+      references: ["HC Verma Vol 2 Chapters 24-27", "NCERT Class 11 Physics"],
+      learningObjectives: [
+        "Analyze cyclic processes on P-V, T-S, and P-T indicator diagrams and compute net work done",
+        "Apply First Law of Thermodynamics: dQ = dU + dW and calculate molar heat capacities (Cp, Cv, gamma)",
+        "Calculate efficiency of Carnot cycle: eta = 1 - T_cold / T_hot and work done in adiabatic expansion (P * V^gamma = const)"
+      ],
+      selfCheckQuestion: "During an adiabatic expansion of an ideal monoatomic gas (gamma = 5/3), its volume increases by 8 times. By what factor does its absolute temperature decrease?",
+      selfCheckAnswer: "In an adiabatic process, T * V^(gamma - 1) = constant. T1 * V1^(2/3) = T2 * (8*V1)^(2/3) => T2 = T1 / (8^(2/3)) = T1 / ((2^3)^(2/3)) = T1 / 4. The absolute temperature drops to 1/4th (decreases by a factor of 4)."
+    },
+    {
+      topic: "Integral Calculus: Definite Integrals & Area Under Curves",
+      subject: "Mathematics",
+      phase: "Phase 2: Core Syllabus Mastery",
+      priority: "High",
+      references: ["Cengage Calculus Chapter 7 & 8", "RD Sharma Class XII Part 2"],
+      learningObjectives: [
+        "Master King's Property: integral(a to b) f(x)dx = integral(a to b) f(a+b-x)dx",
+        "Differentiate under the integral sign using Leibniz Integral Rule",
+        "Calculate bounded area between intersecting parabolas, circles, and linear functions"
+      ],
+      selfCheckQuestion: "Evaluate integral from 0 to pi/2 of [ sqrt(sin x) / (sqrt(sin x) + sqrt(cos x)) ] dx.",
+      selfCheckAnswer: "Let I = integral(0 to pi/2) sqrt(sin x)/(sqrt(sin x) + sqrt(cos x)) dx. Using King's property f(pi/2 - x), I = integral(0 to pi/2) sqrt(cos x)/(sqrt(cos x) + sqrt(sin x)) dx. Adding both: 2I = integral(0 to pi/2) 1 dx = pi/2 => I = pi/4."
+    },
+    {
+      topic: "Organic Reaction Mechanisms: Carbonyls, Aldol & Cannizzaro",
+      subject: "Chemistry",
+      phase: "Phase 2: Core Syllabus Mastery",
+      priority: "High",
+      references: ["MS Chouhan Advanced Problems in Organic Chemistry", "Peter Sykes Guidebook to Mechanism in Organic Chemistry"],
+      learningObjectives: [
+        "Detail cross-Aldol condensation and intramolecular aldol cyclizations with alpha-hydrogens",
+        "Trace Cannizzaro hydride transfer mechanism in aldehydes lacking alpha-hydrogens (e.g. Formaldehyde, Benzaldehyde)",
+        "Master Grignard reagents addition to esters, ketones, and epoxides"
+      ],
+      selfCheckQuestion: "What happens when Benzaldehyde and Formaldehyde are reacted in concentrated 50% NaOH (Cross-Cannizzaro)? Which species is oxidized and why?",
+      selfCheckAnswer: "Formaldehyde is oxidized to Sodium Formate (HCOONa) while Benzaldehyde is reduced to Benzyl alcohol (C6H5CH2OH). Formaldehyde undergoes nucleophilic attack faster by OH- due to steric accessibility and greater partial positive charge on carbonyl carbon, making it the hydride donor."
+    },
+    {
+      topic: "Coordinate Geometry: Conic Sections (Parabola, Ellipse, Hyperbola)",
+      subject: "Mathematics",
+      phase: "Phase 3: High-Yield Problem Solving",
+      priority: "High",
+      references: ["SL Loney Coordinate Geometry", "Cengage Mathematics Coordinate Geometry by G. Tewani"],
+      learningObjectives: [
+        "Formulate tangent and normal equations in slope, point, and parametric forms (y = mx + a/m, y = mx +- sqrt(a^2*m^2 + b^2))",
+        "Derive locus of points of intersection of perpendicular tangents (Director Circle)",
+        "Solve problems on focal chords, eccentricity, and asymptotes of rectangular hyperbolas (xy = c^2)"
+      ],
+      selfCheckQuestion: "What is the equation of the Director Circle of the ellipse x^2/a^2 + y^2/b^2 = 1?",
+      selfCheckAnswer: "The Director Circle is the locus of intersection of two perpendicular tangents to the ellipse, given by x^2 + y^2 = a^2 + b^2."
+    },
+    {
+      topic: "Electrostatics: Gauss Law, Dipoles & Capacitance",
+      subject: "Physics",
+      phase: "Phase 2: Core Syllabus Mastery",
+      priority: "High",
+      references: ["HC Verma Vol 2 Chapter 29 & 30", "NCERT Class 12 Physics"],
+      learningObjectives: [
+        "Calculate electric flux using Gauss's Law for conducting spherical shells, infinite line charges, and non-conducting slabs",
+        "Derive torque (tau = p x E) and potential energy (U = -p . E) of an electric dipole in uniform fields",
+        "Compute equivalent capacitance of bridge circuits and dielectric insertion effects (C = K * C0)"
+      ],
+      selfCheckQuestion: "A parallel plate capacitor with plate area A and separation d is filled with two dielectric slabs of constants K1 and K2 each of thickness d/2. What is the equivalent capacitance?",
+      selfCheckAnswer: "The two halves act as two capacitors in series: C1 = K1*eps0*A/(d/2) = 2*K1*eps0*A/d and C2 = 2*K2*eps0*A/d. In series, 1/C_eq = 1/C1 + 1/C2 => C_eq = (2 * eps0 * A / d) * (K1 * K2 / (K1 + K2))."
+    },
+    {
+      topic: "Vectors & 3D Geometry: Shortest Distance & Planes",
+      subject: "Mathematics",
+      phase: "Phase 3: High-Yield Problem Solving",
+      priority: "High",
+      references: ["Cengage Vectors & 3D Geometry", "RD Sharma Class XII"],
+      learningObjectives: [
+        "Compute scalar triple product [a b c] for coplanarity and vector triple product a x (b x c)",
+        "Calculate shortest distance between skew lines: d = |(a2 - a1) . (b1 x b2)| / |b1 x b2|",
+        "Formulate plane passing through intersection of two planes (P1 + lambda * P2 = 0)"
+      ],
+      selfCheckQuestion: "If three vectors a, b, and c are coplanar, what is the value of their scalar triple product [a b c]?",
+      selfCheckAnswer: "The scalar triple product [a b c] = a . (b x c) equals 0 because the vector (b x c) is perpendicular to the plane containing b and c, and therefore perpendicular to vector a (which lies in the same plane), making the dot product zero."
+    },
+    {
+      topic: "Chemical Kinetics & Electrochemistry (Nernst Equation)",
+      subject: "Chemistry",
+      phase: "Phase 3: High-Yield Problem Solving",
+      priority: "High",
+      references: ["NCERT Class 12 Chemistry Chapter 3 & 4", "N Awasthi Physical Chemistry for JEE"],
+      learningObjectives: [
+        "Integrate rate laws for Zero, 1st, and 2nd order reactions and calculate half-life (t_1/2)",
+        "Apply Arrhenius Equation: ln(k2/k1) = (Ea/R) * (1/T1 - 1/T2) for activation energy",
+        "Use Nernst Equation: E_cell = E0_cell - (0.0591/n) * log(Q) at 298 K to calculate equilibrium constant K_eq"
+      ],
+      selfCheckQuestion: "For a first-order reaction, what is the ratio of time required for 99.9% completion (t_99.9%) to the half-life (t_50%)?",
+      selfCheckAnswer: "t_99.9% = (2.303/k) * log(100 / (100 - 99.9)) = (2.303/k) * log(1000) = (2.303/k) * 3. Half-life t_50% = (2.303/k) * log(2) = (2.303/k) * 0.3010. Therefore, ratio = 3 / 0.3010 ≈ 10. The time required for 99.9% completion is approximately 10 times the half-life."
+    },
+    {
+      topic: "Full JEE Advanced Computer Based Test (CBT) Mock Simulation",
+      subject: "IIT JEE Comprehensive Simulation",
+      phase: "Phase 4: Full Revision & Mock Tests",
+      priority: "High",
+      references: ["IIT JEE Advanced Solved Papers (2015-2024)", "Aspires Academy JEE Elite Mock Series"],
+      learningObjectives: [
+        "Simulate Paper 1 and Paper 2 (3 hours each) with Multi-Correct, Numerical Value, and Matrix Match formats",
+        "Master negative marking elimination for multiple-choice questions (+4 / -2)",
+        "Build psychological endurance for solving 6 hours of high-intensity analytical problems"
+      ],
+      selfCheckQuestion: "What is the optimal tactical approach when encountering multi-correct questions with partial marking (+4, -2)?",
+      selfCheckAnswer: "In multi-correct questions with partial marking, mark only the options you are 100% mathematically certain of. If a question has 3 correct options (A, B, C) and you are completely certain of A and B, marking A and B gives partial positive marks (+2), whereas guessing C incorrectly incurs a severe penalty (-2)."
+    }
+  ];
+
+  // 3. UPSC CSE Plan Pool
   const upscPlanPool = [
     {
       topic: "Preamble & Salient Features of the Constitution",
@@ -281,7 +585,7 @@ app.post('/api/study-planner', async (req, res) => {
         "Identify major mountain passes (Zoji La, Shipki La, Nathu La) and their strategic relevance"
       ],
       selfCheckQuestion: "Which major tributary of the Indus originates near the Rohtang Pass, and what major hydroelectric project is situated on it?",
-      selfCheckAnswer: "The Sutlej and Beas originate near the Rohtang Pass (Beas Kund specifically for the Beas River, while the Sutlej enters India from Tibet through Shipki La). The Beas River merges with Sutlej at Harike. The famous Bhakra-Nangal dam complex is built on the Sutlej river."
+      selfCheckAnswer: "The Beas River originates near Rohtang Pass (Beas Kund). It merges with the Sutlej at Harike in Punjab. The Bhakra-Nangal dam is situated on the Sutlej river."
     },
     {
       topic: "Biodiversity Conservation: National Parks & Wildlife Protection Act",
@@ -355,10 +659,11 @@ app.post('/api/study-planner', async (req, res) => {
     }
   ];
 
+  // 4. TNPSC Plan Pool (Group 1, 2, 4)
   const tnpscPlanPool = [
     {
       topic: "Thirukkural: Role in Ethics, Modern Administration & Humanity",
-      subject: "Tamil Heritage",
+      subject: "Tamil Heritage (Unit 8)",
       phase: "Phase 1: Foundation Building",
       priority: "High",
       references: ["Samacheer Kalvi Class 11 & 12 Special Tamil", "Unit 8 TNPSC Syllabus Guide"],
@@ -367,12 +672,12 @@ app.post('/api/study-planner', async (req, res) => {
         "Analyze how Thirukkural addresses social equity, equality, and compassion",
         "Write custom ethical explanations of major Kurals related to governance"
       ],
-      selfCheckQuestion: "How does Thirukkural define a ideal King/State in the 'Iraimatchi' (Greatness of King) chapter?",
-      selfCheckAnswer: "In the Kural 'Murai Seythu Kaapaatrum...', Valluvar states that a ruler who administers justice and protects his subjects is regarded as a divine leader. The state must excel in four actions: creating wealth, acquiring it, safeguarding it, and distributing it equitably."
+      selfCheckQuestion: "How does Thirukkural define an ideal King/State in the 'Iraimatchi' (Greatness of King) chapter?",
+      selfCheckAnswer: "In the Kural 'Murai Seythu Kaapaatrum...', Valluvar states that a ruler who administers justice and protects his subjects is regarded as a divine leader. The state must excel in four actions: creating wealth (Iyattral), acquiring it (Eettal), safeguarding it (Kaathal), and distributing it equitably (Vaguthal)."
     },
     {
       topic: "Justice Party Rule & Non-Brahmin Movement (1916-1944)",
-      subject: "History & Culture",
+      subject: "History & Culture (Unit 8)",
       phase: "Phase 1: Foundation Building",
       priority: "High",
       references: ["Social Transformation in Tamil Nadu - Samacheer Class 10 Unit 10", "Unit 8 History textbook"],
@@ -400,7 +705,7 @@ app.post('/api/study-planner', async (req, res) => {
     },
     {
       topic: "Social Reform Movements: Self-Respect Movement & Periyar",
-      subject: "Tamil Heritage",
+      subject: "Tamil Heritage (Unit 8)",
       phase: "Phase 2: Core Syllabus Mastery",
       priority: "High",
       references: ["Socio-Religious Reform Movements of 19th and 20th Century", "Unit 8/9 TNPSC guidelines"],
@@ -428,7 +733,7 @@ app.post('/api/study-planner', async (req, res) => {
     },
     {
       topic: "Development Administration: Welfare Schemes of Tamil Nadu",
-      subject: "Development Admin",
+      subject: "Development Admin (Unit 9)",
       phase: "Phase 2: Core Syllabus Mastery",
       priority: "High",
       references: ["TNPSC Unit 9 Development Administration Syllabus", "Tamil Nadu State Budget Highlight summaries"],
@@ -443,7 +748,7 @@ app.post('/api/study-planner', async (req, res) => {
     {
       topic: "Aptitude: Ratio and Proportion & Time and Work",
       subject: "Aptitude",
-      phase: "Phase 3: Integration & Answer Writing",
+      phase: "Phase 3: High-Yield Problem Solving",
       priority: "High",
       references: ["Samacheer Kalvi Class 7 & 8 Mathematics", "TNPSC Aptitude Solved Question Papers"],
       learningObjectives: [
@@ -470,8 +775,8 @@ app.post('/api/study-planner', async (req, res) => {
     },
     {
       topic: "Economy of Tamil Nadu: Industrial Clusters & Economy Indicators",
-      subject: "Economy",
-      phase: "Phase 4: High-Yield Revision",
+      subject: "Economy (Unit 9)",
+      phase: "Phase 4: Full Revision & Mock Tests",
       priority: "Medium",
       references: ["Samacheer Kalvi Class 11 Economics Chapter 11 on Tamil Nadu Economy"],
       learningObjectives: [
@@ -484,8 +789,8 @@ app.post('/api/study-planner', async (req, res) => {
     },
     {
       topic: "Comprehensive Revision & Mock Test on General Tamil & General Studies",
-      subject: "General Studies Core",
-      phase: "Phase 4: High-Yield Revision",
+      subject: "TNPSC Comprehensive Simulation",
+      phase: "Phase 4: Full Revision & Mock Tests",
       priority: "High",
       references: ["TNPSC Group I/II/IV Full Model Tests", "Aptitude formula sheet review"],
       learningObjectives: [
@@ -498,8 +803,119 @@ app.post('/api/study-planner', async (req, res) => {
     }
   ];
 
-  // Select pool based on exam
-  const activePool = exam.startsWith('TNPSC') ? tnpscPlanPool : upscPlanPool;
+  // 5. SSC CGL / RRB NTPC Plan Pool
+  const sscRrbPlanPool = [
+    {
+      topic: "Quantitative Aptitude: Number Systems, LCM-HCF & Divisibility Rules",
+      subject: "Quantitative Aptitude",
+      phase: "Phase 1: Foundation Building",
+      priority: "High",
+      references: ["RS Aggarwal Quantitative Aptitude", "Kiran SSC Mathematics Solved Papers"],
+      learningObjectives: [
+        "Master divisibility rules for 7, 11, 13, 72, and 88",
+        "Calculate unit digits and remainder theorems (Euler's totient & Fermat theorem)",
+        "Solve LCM and HCF application problems with shortcut ratio methods"
+      ],
+      selfCheckQuestion: "If a 9-digit number 785x3678y is divisible by 72, find the value of (x + y).",
+      selfCheckAnswer: "For divisibility by 72, the number must be divisible by 8 and 9. For divisibility by 8, the last 3 digits 78y must be divisible by 8 => 784 is divisible by 8, so y = 4. For divisibility by 9, the sum of digits (7+8+5+x+3+6+7+8+4 = 48 + x) must be divisible by 9 => 48 + 6 = 54, so x = 6. Therefore, x + y = 6 + 4 = 10."
+    },
+    {
+      topic: "Logical Reasoning: Syllogisms, Venn Diagrams & Statement Assumptions",
+      subject: "Reasoning & Intelligence",
+      phase: "Phase 1: Foundation Building",
+      priority: "High",
+      references: ["MK Pandey Analytical Reasoning", "R.S. Aggarwal Verbal & Non-Verbal Reasoning"],
+      learningObjectives: [
+        "Evaluate standard 3-statement syllogisms using Venn Diagrams without assumption fallacies",
+        "Differentiate between 'Some', 'All', 'No', and 'Some Not' conditions with possibilities",
+        "Solve coding-decoding, blood relations, and seating arrangement puzzles in under 60 seconds"
+      ],
+      selfCheckQuestion: "Statements: All Cups are Plates. Some Plates are Bowls. Conclusion I: Some Cups are Bowls. Conclusion II: Some Bowls are Plates. Which conclusion follows?",
+      selfCheckAnswer: "Only Conclusion II follows. Plates and Bowls have an overlapping intersection ('Some Plates are Bowls' implies 'Some Bowls are Plates'). Cups are entirely inside Plates, but there is no guaranteed overlap between Cups and Bowls."
+    },
+    {
+      topic: "General Awareness: Indian Polity (Articles, Amendments & Constitutional Bodies)",
+      subject: "General Awareness",
+      phase: "Phase 2: Core Syllabus Mastery",
+      priority: "High",
+      references: ["Lucent's General Knowledge - Polity Section", "SSC / RRB Past Year Question Bank"],
+      learningObjectives: [
+        "Recall fundamental articles: President (Art 52), Governor (Art 153), CAG (Art 148), Election Commission (Art 324)",
+        "Memorize landmark constitutional amendments (42nd, 44th, 73rd, 86th, 101st GST)",
+        "Differentiate functions of Supreme Court (Art 32) and High Court (Art 226) writ jurisdiction"
+      ],
+      selfCheckQuestion: "Under which Article is the Comptroller and Auditor General (CAG) of India appointed, and who does the CAG submit audit reports to?",
+      selfCheckAnswer: "The CAG of India is appointed under Article 148 by the President of India. Under Article 151, the CAG submits the audit reports relating to the Union to the President, who causes them to be laid before each House of Parliament."
+    },
+    {
+      topic: "General Science: Physics & Chemistry Core Principles (Class 9-10)",
+      subject: "General Science",
+      phase: "Phase 2: Core Syllabus Mastery",
+      priority: "High",
+      references: ["NCERT Science Classes 9 & 10", "Lucent Science Section"],
+      learningObjectives: [
+        "Understand SI units, scalar vs vector quantities, and Newton's laws of motion",
+        "Master the Periodic table groups, common chemical formulas (Baking Soda, Bleaching Powder, Plaster of Paris)",
+        "Recall human digestive and circulatory systems, vitamins, and deficiency diseases"
+      ],
+      selfCheckQuestion: "What is the chemical formula of Plaster of Paris, and what happens when it reacts with water?",
+      selfCheckAnswer: "The chemical formula of Plaster of Paris (Hemihydrate calcium sulfate) is CaSO4 · 1/2 H2O. When mixed with water, it rehydrates to form Gypsum (CaSO4 · 2 H2O), setting into a hard solid mass."
+    },
+    {
+      topic: "English Comprehension: Spotting Errors, Idioms & Cloze Test",
+      subject: "English Language",
+      phase: "Phase 3: High-Yield Problem Solving",
+      priority: "High",
+      references: ["Neetu Singh - English for General Competitions Vol 1", "SP Bakshi Objective General English"],
+      learningObjectives: [
+        "Master Subject-Verb Agreement rules, conditional clauses (If + had + V3, would have + V3)",
+        "Identify high-frequency idioms, phrases, and one-word substitutions",
+        "Solve 5-blank cloze tests with high context recognition"
+      ],
+      selfCheckQuestion: "Spot the error: 'Neither the manager nor the employees was present at the annual audit conference.'",
+      selfCheckAnswer: "The error is 'was present'. According to the rule of proximity for 'Neither... nor', when subjects differ in number, the verb agrees with the subject closest to it. Since 'employees' is plural, the correct verb is 'were present'."
+    },
+    {
+      topic: "Speed Mathematics: Time, Speed & Distance, Train & Boat Problems",
+      subject: "Quantitative Aptitude",
+      phase: "Phase 3: High-Yield Problem Solving",
+      priority: "High",
+      references: ["RS Aggarwal Arithmetic", "Fast Track Objective Arithmetic by Rajesh Verma"],
+      learningObjectives: [
+        "Apply conversion factors: km/h to m/s (multiply by 5/18)",
+        "Calculate relative speed for objects moving in the same direction (S1 - S2) vs opposite directions (S1 + S2)",
+        "Solve upstream (u = b - s) and downstream (d = b + s) boat problems with quick substitution"
+      ],
+      selfCheckQuestion: "A train 180 meters long is traveling at 54 km/h. How many seconds will it take to cross a platform 270 meters long?",
+      selfCheckAnswer: "Speed = 54 * (5/18) = 15 m/s. Total distance to cover = length of train + length of platform = 180 + 270 = 450 meters. Time = Distance / Speed = 450 / 15 = 30 seconds."
+    },
+    {
+      topic: "Full Mock Test Speed Simulation (100 Questions in 60 Minutes)",
+      subject: "SSC / RRB Speed Simulation",
+      phase: "Phase 4: Full Revision & Mock Tests",
+      priority: "High",
+      references: ["Testbook / Gradeup SSC CGL & RRB NTPC Model Papers", "Timer-based Mock Drills"],
+      learningObjectives: [
+        "Complete 100 questions (25 Reasoning + 25 GA + 25 Quant + 25 English) within 60 minutes",
+        "Maintain accuracy >= 88% while skipping time-consuming single questions in under 15 seconds",
+        "Master sectional time budget: Reasoning 15 mins, GA 7 mins, English 10 mins, Quant 25 mins, 3 mins buffer"
+      ],
+      selfCheckQuestion: "What is the single most important rule for clearing SSC/RRB Tier 1 cutoffs?",
+      selfCheckAnswer: "Strict time discipline: Never spend more than 60 seconds on any single question in Round 1. Skip tricky puzzles or calculation-heavy geometry instantly, lock in all straightforward questions across all 4 sections first, then return to flagged items in Round 2."
+    }
+  ];
+
+  // Select exact pool based on requested exam
+  let activePool = upscPlanPool;
+  if (exam === 'NEET') {
+    activePool = neetPlanPool;
+  } else if (exam === 'IIT_JEE') {
+    activePool = iitJeePlanPool;
+  } else if (exam.startsWith('TNPSC')) {
+    activePool = tnpscPlanPool;
+  } else if (exam === 'SSC_CGL' || exam === 'RRB_NTPC') {
+    activePool = sscRrbPlanPool;
+  }
   
   for (let i = 0; i < taskCount; i++) {
     const dayNum = Math.round(((i + 1) / taskCount) * totalDays);
@@ -513,10 +929,10 @@ app.post('/api/study-planner', async (req, res) => {
       hours: parseFloat(dailyHours),
       completed: false,
       subtasks: [
-        `Read official textbooks/material: ${poolItem.references[0]}`,
-        `Fulfill active recall objectives (listed in detailed planner expansion panel)`,
-        `Solve past board papers matching "${poolItem.topic}"`,
-        `Consult with Personal AI Coach if any conceptual doubts persist`
+        `Study official core textbooks: ${poolItem.references[0]}`,
+        `Complete active recall cognitive objectives in study planner expansion panel`,
+        `Solve past 10 years question papers for ${exam} on "${poolItem.topic}"`,
+        `Discuss tricky concepts or verify doubts with AI Personal Coach`
       ],
       phase: poolItem.phase,
       priority: poolItem.priority,

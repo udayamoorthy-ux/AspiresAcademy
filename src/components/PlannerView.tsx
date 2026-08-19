@@ -34,9 +34,153 @@ export default function PlannerView({ selectedExam, setActiveTab }: PlannerViewP
 
   // Custom added tasks
   const [customTopic, setCustomTopic] = useState<string>('');
-  const [customSubject, setCustomSubject] = useState<string>('General Studies');
+  
+  // Get exam specific default subjects
+  const getExamSubjects = (exam: ExamType): string[] => {
+    switch (exam) {
+      case 'NEET':
+        return [
+          'Biology (Botany)',
+          'Biology (Zoology)',
+          'Chemistry (Organic)',
+          'Chemistry (Inorganic)',
+          'Chemistry (Physical)',
+          'Physics (Mechanics & Heat)',
+          'Physics (Optics & Modern Physics)',
+          'NCERT High-Yield Revision'
+        ];
+      case 'IIT_JEE':
+        return [
+          'Physics (Mechanics & Electrodynamics)',
+          'Physics (Optics, Waves & Modern)',
+          'Chemistry (Organic Mechanisms)',
+          'Chemistry (Inorganic & Coordination)',
+          'Chemistry (Physical & Thermodynamics)',
+          'Mathematics (Calculus & Functions)',
+          'Mathematics (Algebra & Coordinate)',
+          'Mathematics (Vectors & 3D)',
+          'JEE Advanced Problem Solving'
+        ];
+      case 'TNPSC_G1':
+      case 'TNPSC_G2':
+      case 'TNPSC_G4':
+        return [
+          'Tamil Heritage (Unit 8)',
+          'Development Administration (Unit 9)',
+          'General Tamil (Grammar & Lit)',
+          'Aptitude & Mental Ability',
+          'Indian Polity & Governance',
+          'History & Culture of India/TN',
+          'Economy & Budget Analysis',
+          'General Science'
+        ];
+      case 'SSC_CGL':
+      case 'RRB_NTPC':
+        return [
+          'Quantitative Aptitude',
+          'Reasoning & Intelligence',
+          'General Science (PCB)',
+          'General Awareness & Static GK',
+          'English Comprehension',
+          'Speed Drills & CBT Practice'
+        ];
+      case 'UPSC':
+      default:
+        return [
+          'Polity & Constitution',
+          'Modern History & Freedom Struggle',
+          'Economy & Macroeconomics',
+          'Geography & Mapping',
+          'Environment & Biodiversity',
+          'CSAT Quantitative & Logical',
+          'Ethics & Answer Writing'
+        ];
+    }
+  };
+
+  const availableSubjects = getExamSubjects(selectedExam);
+  const [customSubject, setCustomSubject] = useState<string>(availableSubjects[0]);
   const [customDay, setCustomDay] = useState<number>(1);
   const [customHours, setCustomHours] = useState<number>(4);
+
+  // Update default custom subject when exam changes
+  useEffect(() => {
+    const subjects = getExamSubjects(selectedExam);
+    setCustomSubject(subjects[0]);
+  }, [selectedExam]);
+
+  // Exam-specific display name & focus banner
+  const getExamMeta = (exam: ExamType) => {
+    switch (exam) {
+      case 'NEET':
+        return {
+          title: 'NEET UG Medical Entrance Blueprint',
+          badge: 'NEET UG Medical Path',
+          accent: 'emerald',
+          subtext: 'NCERT-aligned syllabus covering Biology (Botany & Zoology), Chemistry (Organic/Inorganic/Physical), and Physics with Active Recall challenges.',
+          keyFocus: ['Botany & Zoology (NCERT)', 'Organic & Coordination Chemistry', 'Mechanics, Optics & Modern Physics']
+        };
+      case 'IIT_JEE':
+        return {
+          title: 'IIT JEE Main & Advanced Master Schedule',
+          badge: 'IIT JEE Engineering Path',
+          accent: 'indigo',
+          subtext: 'High-rigor analytical curriculum covering Advanced Physics, Multivariable Calculus, Organic Mechanisms, and Coordinate Geometry.',
+          keyFocus: ['Calculus & Coordinate Geometry', 'Rotational & Electrodynamics', 'Reaction Mechanisms & MOT']
+        };
+      case 'TNPSC_G1':
+        return {
+          title: 'TNPSC Group 1 Deputy Collector & DSP Strategic Plan',
+          badge: 'TNPSC Group 1 Officer Path',
+          accent: 'emerald',
+          subtext: 'State administrative curriculum focusing on Unit 8 Tamil Heritage, Unit 9 Development Admin, General Studies, and Aptitude.',
+          keyFocus: ['Unit 8 Thirukkural & Heritage', 'Unit 9 Development Administration', 'Aptitude & Samacheer Kalvi GS']
+        };
+      case 'TNPSC_G2':
+        return {
+          title: 'TNPSC Group 2 & 2A Comprehensive Schedule',
+          badge: 'TNPSC Group 2/2A Path',
+          accent: 'emerald',
+          subtext: 'Language eligibility & General Studies course covering General Tamil, General Studies, and State Governance.',
+          keyFocus: ['General Tamil Grammar & Literature', 'Samacheer Kalvi GS Standards', 'Mental Ability & Current Affairs']
+        };
+      case 'TNPSC_G4':
+        return {
+          title: 'TNPSC Group 4 & VAO High-Speed Blueprint',
+          badge: 'TNPSC Group 4 & VAO Path',
+          accent: 'emerald',
+          subtext: 'High-speed factual & Samacheer Kalvi coverage for General Tamil, General Studies, and Mental Ability.',
+          keyFocus: ['General Tamil 100 Qs Strategy', 'Samacheer Kalvi Classes 6-10', 'Aptitude Shortcut Techniques']
+        };
+      case 'SSC_CGL':
+        return {
+          title: 'SSC CGL Tier 1 & 2 Quantitative & Reasoning Plan',
+          badge: 'SSC CGL Tier 1 & 2',
+          accent: 'amber',
+          subtext: 'Speed-based competitive syllabus targeting 100 questions in 60 minutes across Quant, Reasoning, English, and GA.',
+          keyFocus: ['Quantitative Speed Shortcuts', 'Logical & Syllogism Puzzles', 'English Grammar & Static GK']
+        };
+      case 'RRB_NTPC':
+        return {
+          title: 'RRB NTPC & Railway Recruitment Schedule',
+          badge: 'RRB NTPC Railways Path',
+          accent: 'amber',
+          subtext: 'Railway board standard syllabus emphasizing General Science (NCERT 9-10), Arithmetic, and Reasoning speed.',
+          keyFocus: ['10th NCERT Physics & Chemistry', 'Arithmetic & Time-Speed Problems', 'Railway Knowledge & Reasoning']
+        };
+      case 'UPSC':
+      default:
+        return {
+          title: 'UPSC CSE Civil Services (IAS/IPS) Timeline',
+          badge: 'UPSC CSE Prelims & Mains',
+          accent: 'emerald',
+          subtext: 'Comprehensive integrated timeline covering GS Papers 1-4, NCERT foundations, standard references, and CSAT.',
+          keyFocus: ['Polity (Laxmikanth) & Modern History', 'Macroeconomics & Budgeting', 'Environment & CSAT Integration']
+        };
+    }
+  };
+
+  const examMeta = getExamMeta(selectedExam);
 
   // Load from LocalStorage if exists
   useEffect(() => {
@@ -195,24 +339,49 @@ export default function PlannerView({ selectedExam, setActiveTab }: PlannerViewP
     <div className="space-y-6" id="planner-view-container">
       {/* Configuration Header Card */}
       <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-6 text-slate-800">
-        <div className="flex items-center justify-between border-b border-slate-100 pb-4">
-          <div className="space-y-1">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-5">
+          <div className="space-y-1.5">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="px-2.5 py-0.5 rounded-full text-xs font-extrabold uppercase tracking-wider bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center gap-1">
+                <Brain className="h-3.5 w-3.5 text-emerald-700" />
+                {examMeta.badge}
+              </span>
+              <span className="text-xs font-semibold text-slate-400">Exam-Specific AI Engine</span>
+            </div>
             <h2 className="text-2xl font-extrabold flex items-center gap-2 text-slate-950 font-display">
               <Calendar className="h-6 w-6 text-emerald-600" />
-              Interactive Smart Study Planner
+              {examMeta.title}
             </h2>
-            <p className="text-sm md:text-base text-slate-500 leading-relaxed font-sans">
-              Calibrate your study limits. Our AI compiles a high-yield learning timeline mapping to specified dates.
+            <p className="text-sm text-slate-600 leading-relaxed font-sans max-w-3xl">
+              {examMeta.subtext}
             </p>
+            <div className="flex flex-wrap items-center gap-2 pt-1">
+              <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Curriculum Focus:</span>
+              {examMeta.keyFocus.map((focusItem, idx) => (
+                <span key={idx} className="px-2 py-0.5 rounded-md bg-slate-100 border border-slate-200 text-xs font-medium text-slate-700">
+                  {focusItem}
+                </span>
+              ))}
+            </div>
           </div>
           {studyPlan && (
-            <button
-              onClick={clearCurrentPlan}
-              className="text-xs text-rose-600 hover:text-rose-700 flex items-center gap-1.5 bg-rose-50 px-3 py-1.5 rounded-lg border border-rose-200 transition-colors"
-            >
-              <RefreshCw className="h-3 w-3" />
-              Reset Plan
-            </button>
+            <div className="flex items-center gap-2 self-start md:self-auto">
+              <button
+                onClick={generatePlan}
+                disabled={loading}
+                className="text-xs text-emerald-700 hover:text-emerald-800 flex items-center gap-1.5 bg-emerald-50 hover:bg-emerald-100 px-3 py-2 rounded-lg border border-emerald-200 font-bold transition-colors cursor-pointer"
+                title="Regenerate plan tailored to this exam"
+              >
+                <RefreshCw className={`h-3 w-3 ${loading ? 'animate-spin' : ''}`} />
+                Re-Generate Plan
+              </button>
+              <button
+                onClick={clearCurrentPlan}
+                className="text-xs text-rose-600 hover:text-rose-700 flex items-center gap-1.5 bg-rose-50 hover:bg-rose-100 px-3 py-2 rounded-lg border border-rose-200 font-bold transition-colors cursor-pointer"
+              >
+                Reset
+              </button>
+            </div>
           )}
         </div>
 
@@ -590,26 +759,32 @@ export default function PlannerView({ selectedExam, setActiveTab }: PlannerViewP
                     required
                     value={customTopic}
                     onChange={(e) => setCustomTopic(e.target.value)}
-                    placeholder="e.g. Laxmikanth Chapter 15: Emergency Provisions"
+                    placeholder={
+                      selectedExam === 'NEET'
+                        ? 'e.g. NCERT Class 12: Genetics & Molecular Inheritance'
+                        : selectedExam === 'IIT_JEE'
+                        ? 'e.g. Irodov / HC Verma: Rotational Mechanics Problems'
+                        : selectedExam.startsWith('TNPSC')
+                        ? 'e.g. Samacheer Kalvi 10th Tamil & Thirukkural (Unit 8)'
+                        : 'e.g. Laxmikanth Chapter 15: Emergency Provisions'
+                    }
                     className="w-full bg-slate-50 border border-slate-250 rounded-xl px-4 py-3 text-sm text-slate-900 focus:outline-none focus:bg-white focus:border-emerald-500 transition-colors"
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-slate-550 uppercase tracking-wider block">Broad Category</label>
+                    <label className="text-xs font-bold text-slate-550 uppercase tracking-wider block">Subject / Stream</label>
                     <select
                       value={customSubject}
                       onChange={(e) => setCustomSubject(e.target.value)}
                       className="w-full bg-slate-50 border border-slate-250 rounded-xl px-3 py-3 text-sm text-slate-900 focus:outline-none focus:bg-white focus:border-emerald-500 transition-colors"
                     >
-                      <option value="Polity">Polity & Constitution</option>
-                      <option value="History">History & Culture</option>
-                      <option value="General Tamil">General Tamil</option>
-                      <option value="Heritage">Tamil Heritage</option>
-                      <option value="Aptitude">Aptitude</option>
-                      <option value="Economy">Economy</option>
-                      <option value="Science">General Science</option>
+                      {availableSubjects.map((subj) => (
+                        <option key={subj} value={subj}>
+                          {subj}
+                        </option>
+                      ))}
                     </select>
                   </div>
 
