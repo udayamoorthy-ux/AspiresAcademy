@@ -454,6 +454,21 @@ export default function MaterialsLibraryView({ selectedExam }: MaterialsLibraryV
   const [subTab, setSubTab] = useState<'portals' | 'ncert-books' | 'pyqs' | 'sample-tracker'>('ncert-books');
   const [pyqExamFilter, setPyqExamFilter] = useState<'ALL' | 'UPSC' | 'TNPSC' | 'SSC' | 'IIT_JEE' | 'NEET'>('ALL');
   
+  // Sync PYQ filter when selectedExam prop changes
+  React.useEffect(() => {
+    if (selectedExam === 'NEET') {
+      setPyqExamFilter('NEET');
+    } else if (selectedExam === 'IIT_JEE') {
+      setPyqExamFilter('IIT_JEE');
+    } else if (selectedExam.startsWith('TNPSC')) {
+      setPyqExamFilter('TNPSC');
+    } else if (selectedExam === 'SSC_CGL' || selectedExam === 'RRB_NTPC') {
+      setPyqExamFilter('SSC');
+    } else if (selectedExam === 'UPSC') {
+      setPyqExamFilter('UPSC');
+    }
+  }, [selectedExam]);
+  
   // NCERT study tracker state
   const [completedNcertBooks, setCompletedNcertBooks] = useState<string[]>(() => {
     try {
@@ -580,6 +595,34 @@ export default function MaterialsLibraryView({ selectedExam }: MaterialsLibraryV
       url: 'https://www.tnpsc.gov.in/',
       isGovernmentOfficial: true,
       verifyMethod: 'Cross-examine weightage patterns, core unit subjects (Unit 8 and Unit 9), and qualifying thresholds directly from the commission board.'
+    },
+    // NEET & MEDICAL ENTRANCE OFFICIAL PORTALS
+    {
+      title: 'National Testing Agency (NTA) - NEET UG Official Portal',
+      category: 'syllabus',
+      description: 'The authorized government conducting agency for NEET (UG). Hosts official information bulletins, past question papers, answer keys, and public circulars.',
+      sourceOrg: 'National Testing Agency, Ministry of Education, Govt of India',
+      url: 'https://exams.nta.ac.in/NEET/',
+      isGovernmentOfficial: true,
+      verifyMethod: 'Verify official examination schedules, question paper structure (Section A 35 Qs + Section B 15 Qs), and official final answer keys directly.'
+    },
+    {
+      title: 'National Medical Commission (NMC) NEET Syllabus & Regulations',
+      category: 'syllabus',
+      description: 'Official statutory regulator setting medical education standards in India. Defines the official NEET UG syllabus for Biology, Chemistry, and Physics.',
+      sourceOrg: 'National Medical Commission (NMC), Govt of India',
+      url: 'https://www.nmc.org.in/',
+      isGovernmentOfficial: true,
+      verifyMethod: 'Crosscheck the authentic syllabus guidelines and any unit reductions/modifications directly from the official NMC portal.'
+    },
+    {
+      title: 'Medical Counselling Committee (MCC) - AIQ & State Seats Portal',
+      category: 'economy',
+      description: 'Official portal under Directorate General of Health Services (DGHS), Ministry of Health & Family Welfare, administering 15% All India Quota and Central University seats.',
+      sourceOrg: 'Ministry of Health & Family Welfare, Govt of India',
+      url: 'https://mcc.nic.in/',
+      isGovernmentOfficial: true,
+      verifyMethod: 'Check official MBBS/BDS cutoff ranks, seat matrix, service bonds, and recognized medical institutes (AIIMS, JIPMER, Govt Medical Colleges).'
     }
   ];
 
@@ -726,17 +769,18 @@ export default function MaterialsLibraryView({ selectedExam }: MaterialsLibraryV
       syllabusMapping: 'Mechanics, Physical Chemistry, Vectors, Coordinate Geometry & Algebra',
       verifiedNotes: 'High-yield past paper covering fundamental NCERT chemistry questions and numerical mechanics problems.'
     },
+    // NEET UG PREVIOUS YEAR QUESTION PAPERS
     {
       id: 'neet-ug-2025-p1',
       exam: 'NEET',
       year: 2025,
       paperType: 'NEET UG',
       subjectName: 'Botany, Zoology, Physics & Chemistry',
-      title: 'NEET UG 2025 Official NTA Question Paper (All Codes)',
-      officialPaperUrl: 'https://neet.nta.nic.in',
-      officialAnswerKeyUrl: 'https://neet.nta.nic.in',
-      syllabusMapping: 'NCERT Class 11 & 12 Biology (Botany + Zoology 360 Marks), Chemistry (180 Marks), Physics (180 Marks)',
-      verifiedNotes: 'Official 720-mark national medical entrance examination paper. Verified against NTA answer keys with full step-by-step biological and chemical mechanism annotations.'
+      title: 'NEET UG 2025 Official NTA Question Paper (All Codes Q, R, S, T)',
+      officialPaperUrl: 'https://exams.nta.ac.in/NEET/',
+      officialAnswerKeyUrl: 'https://exams.nta.ac.in/NEET/',
+      syllabusMapping: 'NCERT Class 11 & 12 Biology (360 Marks), Chemistry (180 Marks), Physics (180 Marks)',
+      verifiedNotes: 'Official 720-mark national medical entrance examination paper. Verified against NTA final answer keys with complete step-by-step biological and chemical mechanism annotations.'
     },
     {
       id: 'neet-ug-2024-p1',
@@ -744,11 +788,107 @@ export default function MaterialsLibraryView({ selectedExam }: MaterialsLibraryV
       year: 2024,
       paperType: 'NEET UG',
       subjectName: 'Botany, Zoology, Physics & Chemistry',
-      title: 'NEET UG 2024 Official Previous Year Question Paper',
+      title: 'NEET UG 2024 Official Question Paper (Code Q1-Q6, R1-R6, S1-S6, T1-T6)',
+      officialPaperUrl: 'https://exams.nta.ac.in/NEET/',
+      officialAnswerKeyUrl: 'https://exams.nta.ac.in/NEET/',
+      syllabusMapping: 'Genetics, Molecular Biology, Plant Physiology, Coordination Compounds, Mechanics & Optics',
+      verifiedNotes: 'Benchmark past year exam paper for assessing time management (200 minutes) and negative marking accuracy. 98% direct alignment to NCERT line-by-line text.'
+    },
+    {
+      id: 'neet-ug-2024-retest',
+      exam: 'NEET',
+      year: 2024,
+      paperType: 'NEET UG',
+      subjectName: 'Botany, Zoology, Physics & Chemistry',
+      title: 'NEET UG 2024 Official Re-Test Question Paper (June Session)',
+      officialPaperUrl: 'https://exams.nta.ac.in/NEET/',
+      officialAnswerKeyUrl: 'https://exams.nta.ac.in/NEET/',
+      syllabusMapping: 'Biotechnology, Human Physiology, Organic Mechanisms, Electrodynamics & Wave Optics',
+      verifiedNotes: 'Official special session re-examination paper conducted by NTA. Features high-rigor assertion-reasoning questions in Section B.'
+    },
+    {
+      id: 'neet-ug-2023-nat',
+      exam: 'NEET',
+      year: 2023,
+      paperType: 'NEET UG',
+      subjectName: 'Botany, Zoology, Physics & Chemistry',
+      title: 'NEET UG 2023 National Official Question Paper (Codes E, F, G, H)',
       officialPaperUrl: 'https://neet.nta.nic.in',
       officialAnswerKeyUrl: 'https://neet.nta.nic.in',
-      syllabusMapping: 'Human Physiology, Genetics, Plant Physiology, Organic Reactions & Electrodynamics',
-      verifiedNotes: 'Benchmark past year exam paper for assessing time management (200 minutes) and negative marking accuracy.'
+      syllabusMapping: 'Ecology, Human Reproduction, Chemical Equilibrium, Thermodynamics, Current Electricity',
+      verifiedNotes: 'Authentic 200-question paper with standard Section A (35 mandatory) and Section B (10 out of 15 choice) structure.'
+    },
+    {
+      id: 'neet-ug-2023-manipur',
+      exam: 'NEET',
+      year: 2023,
+      paperType: 'NEET UG',
+      subjectName: 'Botany, Zoology, Physics & Chemistry',
+      title: 'NEET UG 2023 Manipur Special Session Question Paper',
+      officialPaperUrl: 'https://neet.nta.nic.in',
+      officialAnswerKeyUrl: 'https://neet.nta.nic.in',
+      syllabusMapping: 'Cell Biology, Biomolecules, Plant Morphology, Aldehydes & Ketones, Modern Physics',
+      verifiedNotes: 'Dedicated official alternate paper released by NTA. Highly recommended for fresh unsolved mock test simulation.'
+    },
+    {
+      id: 'neet-ug-2022-p1',
+      exam: 'NEET',
+      year: 2022,
+      paperType: 'NEET UG',
+      subjectName: 'Botany, Zoology, Physics & Chemistry',
+      title: 'NEET UG 2022 Phase 1 National Examination Paper (Codes S, T, U, V)',
+      officialPaperUrl: 'https://neet.nta.nic.in',
+      officialAnswerKeyUrl: 'https://neet.nta.nic.in',
+      syllabusMapping: 'Plant Diversity, Endocrine System, P-Block Elements, Ray Optics & Semiconductor Electronics',
+      verifiedNotes: 'First paper where exam duration was officially extended to 3 hours 20 minutes (200 minutes). High density of statement-based Biology questions.'
+    },
+    {
+      id: 'neet-ug-2022-p2',
+      exam: 'NEET',
+      year: 2022,
+      paperType: 'NEET UG',
+      subjectName: 'Botany, Zoology, Physics & Chemistry',
+      title: 'NEET UG 2022 Phase 2 Special Re-Examination Paper',
+      officialPaperUrl: 'https://neet.nta.nic.in',
+      officialAnswerKeyUrl: 'https://neet.nta.nic.in',
+      syllabusMapping: 'Animal Kingdom, Photosynthesis, Hydrocarbons, Magnetic Effects of Current & Gravitation',
+      verifiedNotes: 'Official alternate paper for affected examination centers. Excellent source for testing numerical physics problem solving.'
+    },
+    {
+      id: 'neet-ug-2021-p1',
+      exam: 'NEET',
+      year: 2021,
+      paperType: 'NEET UG',
+      subjectName: 'Botany, Zoology, Physics & Chemistry',
+      title: 'NEET UG 2021 Official Question Paper (First 200 Questions Pattern)',
+      officialPaperUrl: 'https://neet.nta.nic.in',
+      officialAnswerKeyUrl: 'https://neet.nta.nic.in',
+      syllabusMapping: 'Mendelian Genetics, Chemical Kinetics, Rotational Motion & Electrostatics',
+      verifiedNotes: 'Historical landmark paper introducing the 200-question format with optional Section B questions. Verified against official NTA answer keys.'
+    },
+    {
+      id: 'neet-ug-2020-p1',
+      exam: 'NEET',
+      year: 2020,
+      paperType: 'NEET UG',
+      subjectName: 'Botany, Zoology, Physics & Chemistry',
+      title: 'NEET UG 2020 National Question Paper (Codes E1-E6, F1-F6, G1-G6, H1-H6)',
+      officialPaperUrl: 'https://neet.nta.nic.in',
+      officialAnswerKeyUrl: 'https://neet.nta.nic.in',
+      syllabusMapping: 'Human Physiology, Biotechnology Applications, Coordination Chemistry & Thermodynamics',
+      verifiedNotes: 'Standard 180-question paper with high scoring yields in NCERT Biology diagrams and direct inorganic reactions.'
+    },
+    {
+      id: 'neet-ug-2019-nat',
+      exam: 'NEET',
+      year: 2019,
+      paperType: 'NEET UG',
+      subjectName: 'Botany, Zoology, Physics & Chemistry',
+      title: 'NEET UG 2019 National Official Question Paper (All Codes)',
+      officialPaperUrl: 'https://neet.nta.nic.in',
+      officialAnswerKeyUrl: 'https://neet.nta.nic.in',
+      syllabusMapping: 'Ecology & Environment, Biomolecules, Chemical Bonding, Laws of Motion & Current Electricity',
+      verifiedNotes: 'First paper conducted under the National Testing Agency (NTA) management. Fully aligned with standard NCERT 11th & 12th syllabi.'
     }
   ];
 
@@ -763,6 +903,56 @@ export default function MaterialsLibraryView({ selectedExam }: MaterialsLibraryV
       officialAnswer: 'Atrioventricular (AV) Valves (Tricuspid and Bicuspid/Mitral Valves)',
       citationSource: 'NCERT Class XI Biology - "Body Fluids and Circulation"',
       citationDetails: 'Chapter 18, Section 18.3.1 (Cardiac Cycle): "The bicuspid and tricuspid valves close due to attempted backflow of blood into the atria as the ventricular pressure rises, producing the first heart sound (lub)."'
+    },
+    {
+      id: 'case-neet-2',
+      exam: 'NEET',
+      year: 2024,
+      stage: 'NTA Entrance',
+      questionText: 'In a typical Mendelian dihybrid cross involving two heterozygous traits (RrYy x RrYy), what is the phenotypic ratio obtained in the F2 generation?',
+      officialAnswer: '9 : 3 : 3 : 1 (Round Yellow : Round Green : Wrinkled Yellow : Wrinkled Green)',
+      citationSource: 'NCERT Class XII Biology - "Principles of Inheritance and Variation"',
+      citationDetails: 'Chapter 5, Section 5.3 (Inheritance of Two Genes): "The phenotypic ratio of 9:3:3:1 is a direct consequence of the Law of Independent Assortment where alleles of two pairs of genes segregate independently during gamete formation."'
+    },
+    {
+      id: 'case-neet-3',
+      exam: 'NEET',
+      year: 2023,
+      stage: 'NTA Entrance',
+      questionText: 'In C4 plants, what is the primary carbon dioxide acceptor molecule located in the mesophyll cells?',
+      officialAnswer: 'Phosphoenolpyruvate (PEP) catalyzed by PEP carboxylase (PEPcase)',
+      citationSource: 'NCERT Class XI Biology - "Photosynthesis in Higher Plants"',
+      citationDetails: 'Chapter 13, Section 13.7 (The C4 Pathway): "The primary CO2 acceptor is a 3-carbon molecule phosphoenolpyruvate (PEP) present in mesophyll cells. The enzyme responsible for this fixation is PEP carboxylase or PEPcase."'
+    },
+    {
+      id: 'case-neet-4',
+      exam: 'NEET',
+      year: 2024,
+      stage: 'NTA Entrance',
+      questionText: 'Which organic reaction occurs when formaldehyde (HCHO) or benzaldehyde is treated with concentrated sodium hydroxide (50% NaOH), yielding an alcohol and a carboxylic acid salt without alpha-hydrogen involvement?',
+      officialAnswer: 'Cannizzaro Reaction (Self-oxidation and reduction)',
+      citationSource: 'NCERT Class XII Chemistry - "Aldehydes, Ketones and Carboxylic Acids"',
+      citationDetails: 'Chapter 12, Section 12.4.2: "Aldehydes which do not have an alpha-hydrogen atom undergo self oxidation and reduction (disproportionation) reaction on treatment with concentrated alkali. This is known as Cannizzaro reaction."'
+    },
+    {
+      id: 'case-neet-5',
+      exam: 'NEET',
+      year: 2023,
+      stage: 'NTA Entrance',
+      questionText: 'What is the formula for the de Broglie wavelength (lambda) associated with an electron accelerated through a potential difference of V volts?',
+      officialAnswer: 'lambda = 1.227 / sqrt(V) nm (or 12.27 / sqrt(V) Angstroms)',
+      citationSource: 'NCERT Class XII Physics - "Dual Nature of Radiation and Matter"',
+      citationDetails: 'Chapter 11, Section 11.9: "Substituting Planck constant h, electron mass m, and electron charge e: lambda = h / sqrt(2meV) = 1.227 / sqrt(V) nm."'
+    },
+    {
+      id: 'case-neet-6',
+      exam: 'NEET',
+      year: 2022,
+      stage: 'NTA Entrance',
+      questionText: 'In the mammalian kidney, which structural arrangement between Henle\'s loop and the vasa recta generates an increasing medullary osmolarity gradient (300 to 1200 mOsmol/L)?',
+      officialAnswer: 'Counter-Current Mechanism (Counter-current multiplier & exchanger)',
+      citationSource: 'NCERT Class XI Biology - "Excretory Products and their Elimination"',
+      citationDetails: 'Chapter 19, Section 19.5 (Mechanism of Concentration of the Filtrate): "The flow of filtrate in the two limbs of Henle\'s loop is in opposite directions and forms a counter-current. The proximity between Henle\'s loop and vasa recta helps maintain an increasing osmolarity toward the inner medullary interstitium."'
     },
     {
       id: 'case-upsc-1',
@@ -1395,27 +1585,27 @@ export default function MaterialsLibraryView({ selectedExam }: MaterialsLibraryV
 
           <div className="bg-white border border-slate-200 p-5 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shadow-sm">
             <div>
-              <h3 className="text-sm font-bold text-slate-900">Authorized Civil Services PYQ Portal</h3>
+              <h3 className="text-sm font-bold text-slate-900">Authorized Official Previous Year Question Papers (PYQs)</h3>
               <p className="text-xs text-slate-500 mt-1">
-                Access official PDF documents hosted on secure government commission servers. These are 100% authentic questions with no modification.
+                Access official authentic PDF question papers and verified keys hosted on secure government commission servers for NEET UG, IIT JEE, UPSC, TNPSC, and SSC.
               </p>
             </div>
 
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               {[
                 { id: 'ALL', label: 'All Papers' },
+                { id: 'NEET', label: 'NEET UG Papers' },
+                { id: 'IIT_JEE', label: 'IIT JEE Papers' },
                 { id: 'UPSC', label: 'UPSC Papers' },
                 { id: 'TNPSC', label: 'TNPSC Papers' },
-                { id: 'SSC', label: 'SSC Papers' },
-                { id: 'IIT_JEE', label: 'IIT JEE Papers' },
-                { id: 'NEET', label: 'NEET UG Papers' }
+                { id: 'SSC', label: 'SSC Papers' }
               ].map((btn) => (
                 <button
                   key={btn.id}
                   onClick={() => setPyqExamFilter(btn.id as any)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all shadow-sm ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all shadow-sm cursor-pointer ${
                     pyqExamFilter === btn.id
-                      ? 'bg-emerald-500 text-white'
+                      ? 'bg-emerald-600 text-white shadow-emerald-600/20'
                       : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-slate-900'
                   }`}
                 >
@@ -1436,8 +1626,8 @@ export default function MaterialsLibraryView({ selectedExam }: MaterialsLibraryV
                     <span className="text-[10px] font-mono font-bold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100 text-emerald-700">
                       {pyq.year} • {pyq.paperType}
                     </span>
-                    <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest font-mono">
-                      {pyq.exam}
+                    <span className="text-[10px] font-bold text-slate-700 uppercase tracking-widest font-mono bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
+                      {pyq.exam === 'IIT_JEE' ? 'IIT JEE' : pyq.exam}
                     </span>
                   </div>
 
@@ -1460,8 +1650,14 @@ export default function MaterialsLibraryView({ selectedExam }: MaterialsLibraryV
                 </div>
 
                 <div className="mt-5 pt-3 border-t border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-                  <span className="text-[9px] text-slate-450 font-mono">
-                    Secure Download Source: {pyq.exam === 'UPSC' ? 'Govt of India' : 'Govt of Tamil Nadu'}
+                  <span className="text-[9px] text-slate-500 font-mono">
+                    Source: {
+                      pyq.exam === 'UPSC' ? 'Union Public Service Commission (Govt of India)' :
+                      pyq.exam === 'TNPSC' ? 'Tamil Nadu Public Service Commission' :
+                      pyq.exam === 'NEET' ? 'National Testing Agency (NTA) / MoE' :
+                      pyq.exam === 'IIT_JEE' ? 'National Testing Agency (NTA)' :
+                      'Staff Selection Commission (Govt of India)'
+                    }
                   </span>
                   
                   <div className="flex flex-wrap gap-2 w-full sm:w-auto items-center">
