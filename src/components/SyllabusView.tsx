@@ -123,7 +123,11 @@ export default function SyllabusView({ selectedExam, onSelectExam }: SyllabusVie
           <div className="space-y-2 leading-relaxed">
             <p className="font-bold text-emerald-900 text-base">Preparation Strategy Tip:</p>
             <p className="text-slate-600 font-sans text-sm">
-              UPSC requires a focus on analytical thinking, extensive answer writing, and current policy reviews. TNPSC heavily focuses on factual precision, General Tamil (Group II/IV core), Development Administration metrics, and regional Tamil Nadu history. Toggle between exam tabs above to calibrate your study tools!
+              {selectedExam === 'NEET' && 'NEET UG demands absolute mastery of NCERT Class 11 & 12 Biology line-by-line (Botany & Zoology 360/360), high-speed numerical problem-solving in Physics, and organic/inorganic chemistry mechanisms with negative marking discipline.'}
+              {selectedExam === 'IIT_JEE' && 'IIT JEE Main & Advanced demands rigorous multi-conceptual problem solving across Mechanics, Electrodynamics, Organic Mechanisms, and Higher Mathematics (Calculus, Vectors, Coordinate Geometry).'}
+              {selectedExam === 'UPSC' && 'UPSC CSE requires analytical thinking, deep conceptual linkages, interdisciplinary essay/answer writing, and continuous current policy reviews.'}
+              {selectedExam.startsWith('TNPSC') && 'TNPSC heavily focuses on factual precision, General Tamil/English, Unit 8 (Tamil Society & Culture), and Unit 9 (Development Administration in Tamil Nadu).'}
+              {(selectedExam === 'SSC_CGL' || selectedExam === 'RRB_NTPC') && 'SSC & RRB exams require speed and accuracy across Quantitative Aptitude, Logical Reasoning, General Awareness, and Computer Proficiency.'}
             </p>
           </div>
         </div>
