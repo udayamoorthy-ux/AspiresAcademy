@@ -183,13 +183,91 @@ const JEE_SUBJECTS = [
   }
 ];
 
+const NEET_SUBJECTS = [
+  {
+    id: 'botany',
+    name: 'Botany (தாவரவியல் - Plant Biology)',
+    description: 'Plant Diversity, Anatomy, Photosynthesis, Respiration, Plant Growth, and Ecology.',
+    icon: BookOpen,
+    color: 'emerald',
+    topics: [
+      'Biological Classification & Plant Kingdom (Algae to Angiosperms)',
+      'Morphology & Anatomy of Flowering Plants',
+      'Cell: The Unit of Life & Cell Cycle / Cell Division',
+      'Photosynthesis in Higher Plants (C3, C4 & CAM Pathways)',
+      'Respiration in Plants & Plant Growth Regulators (Auxin, Cytokinin)',
+      'Sexual Reproduction in Flowering Plants',
+      'Principles of Inheritance & Molecular Basis of Inheritance',
+      'Organisms and Populations & Ecosystem Dynamics',
+      'Biodiversity and its Conservation'
+    ]
+  },
+  {
+    id: 'zoology',
+    name: 'Zoology (விலங்கியல் - Human & Animal Biology)',
+    description: 'Human Physiology, Animal Kingdom, Reproduction, Genetics, and Biotechnology.',
+    icon: Award,
+    color: 'amber',
+    topics: [
+      'Animal Kingdom (Non-Chordates & Chordates Classification)',
+      'Structural Organisation in Animals (Epithelial, Connective Tissues & Frog/Cockroach)',
+      'Human Digestion, Breathing & Exchange of Gases',
+      'Body Fluids and Circulation (Cardiac Cycle, ECG & Blood Groups)',
+      'Excretory Products and Elimination (Counter-Current Mechanism)',
+      'Locomotion and Movement & Neural Control and Coordination',
+      'Chemical Coordination and Integration (Endocrine Hormones)',
+      'Human Reproduction & Reproductive Health',
+      'Biotechnology: Principles, Processes & Applications in Medicine'
+    ]
+  },
+  {
+    id: 'chemistry',
+    name: 'Chemistry (வேதியியல் - Physical, Organic & Inorganic)',
+    description: 'Structure of Atom, Chemical Bonding, Thermodynamics, GOC, and Coordination Chemistry.',
+    icon: Layers,
+    color: 'blue',
+    topics: [
+      'Some Basic Concepts of Chemistry (Mole Concept)',
+      'Structure of Atom & Periodic Table Trends',
+      'Chemical Bonding and Molecular Structure (VSEPR, Hybridization)',
+      'Chemical Thermodynamics & Chemical / Ionic Equilibrium',
+      'Redox Reactions & Electrochemistry (Nernst Equation)',
+      'Chemical Kinetics & Solutions (Colligative Properties)',
+      'Coordination Compounds & d/f-Block Elements',
+      'General Organic Chemistry (Inductive, Resonance, Hyperconjugation)',
+      'Hydrocarbons, Haloalkanes, Alcohols, Aldehydes & Amines',
+      'Biomolecules (Proteins, Nucleic Acids, Enzymes, Vitamins)'
+    ]
+  },
+  {
+    id: 'physics',
+    name: 'Physics (இயற்பியல் - High-Yield Medical Entrance Physics)',
+    description: 'Mechanics, Gravitation, Thermodynamics, Electrodynamics, Optics, and Modern Physics.',
+    icon: Compass,
+    color: 'purple',
+    topics: [
+      'Units, Measurements & Error Analysis',
+      'Kinematics: Motion in a Straight Line & Motion in a Plane (Projectiles)',
+      'Laws of Motion, Friction & Circular Dynamics',
+      'Work, Energy and Power & System of Particles / Rotational Dynamics',
+      'Gravitation & Mechanical Properties of Solids and Fluids (Bernoulli, Viscosity)',
+      'Thermal Properties of Matter & Thermodynamics',
+      'Oscillations & Simple Harmonic Motion (SHM) / Waves',
+      'Electrostatics & Current Electricity (Ohm\'s Law, Kirchhoff, Potentiometer)',
+      'Moving Charges, Magnetism & Electromagnetic Induction (Faraday, Lenz)',
+      'Ray Optics (Lenses, Mirrors) & Wave Optics (Interference, Diffraction)',
+      'Dual Nature of Radiation, Atoms, Nuclei & Semiconductor Electronics'
+    ]
+  }
+];
+
 export default function SubjectQuizView({
   selectedExam,
   onVoicePlay,
   isPremium = false,
   onPremiumClick
 }: SubjectQuizViewProps) {
-  const SUBJECTS = selectedExam === 'IIT_JEE' ? JEE_SUBJECTS : CIVIL_SUBJECTS;
+  const SUBJECTS = selectedExam === 'NEET' ? NEET_SUBJECTS : selectedExam === 'IIT_JEE' ? JEE_SUBJECTS : CIVIL_SUBJECTS;
   const [selectedSubject, setSelectedSubject] = useState<string>('');
   const [selectedTopic, setSelectedTopic] = useState<string>('');
   const [customTopic, setCustomTopic] = useState<string>('');

@@ -59,7 +59,7 @@ interface InteractivePYQCase {
   id: string;
   exam: 'UPSC' | 'TNPSC' | 'SSC' | 'IIT_JEE' | 'NEET';
   year: number;
-  stage: 'Prelims' | 'Mains' | 'NTA Entrance';
+  stage: string;
   questionText: string;
   officialAnswer: string;
   citationSource: string;
@@ -909,8 +909,8 @@ export default function MaterialsLibraryView({ selectedExam }: MaterialsLibraryV
     {
       id: 'case-neet-1',
       exam: 'NEET',
-      year: 2024,
-      stage: 'NTA Entrance',
+      year: 2025,
+      stage: 'NEET UG 2025',
       questionText: 'During the human cardiac cycle, what structures prevent the backflow of blood from the ventricles into the atria during ventricular systole?',
       officialAnswer: 'Atrioventricular (AV) Valves (Tricuspid and Bicuspid/Mitral Valves)',
       citationSource: 'NCERT Class XI Biology - "Body Fluids and Circulation"',
@@ -920,37 +920,67 @@ export default function MaterialsLibraryView({ selectedExam }: MaterialsLibraryV
       id: 'case-neet-2',
       exam: 'NEET',
       year: 2024,
-      stage: 'NTA Entrance',
+      stage: 'NEET UG 2024 (Codes Q, R, S, T)',
       questionText: 'In a typical Mendelian dihybrid cross involving two heterozygous traits (RrYy x RrYy), what is the phenotypic ratio obtained in the F2 generation?',
       officialAnswer: '9 : 3 : 3 : 1 (Round Yellow : Round Green : Wrinkled Yellow : Wrinkled Green)',
       citationSource: 'NCERT Class XII Biology - "Principles of Inheritance and Variation"',
       citationDetails: 'Chapter 5, Section 5.3 (Inheritance of Two Genes): "The phenotypic ratio of 9:3:3:1 is a direct consequence of the Law of Independent Assortment where alleles of two pairs of genes segregate independently during gamete formation."'
     },
     {
+      id: 'case-neet-2b',
+      exam: 'NEET',
+      year: 2024,
+      stage: 'NEET UG 2024 Special Re-Test',
+      questionText: 'Which restriction endonuclease enzyme was the first to be isolated and produces blunt or sticky ends by recognizing specific 6 base-pair palindromic sequences?',
+      officialAnswer: 'Hind II (isolated from Haemophilus influenzae Rd)',
+      citationSource: 'NCERT Class XII Biology - "Biotechnology: Principles and Processes"',
+      citationDetails: 'Chapter 11, Section 11.2.1: "The first restriction endonuclease - Hind II, whose functioning depended on a specific DNA nucleotide sequence was isolated and characterized five years later. It was found that Hind II always cut DNA molecules at a particular point by recognizing a specific sequence of six base pairs."'
+    },
+    {
       id: 'case-neet-3',
       exam: 'NEET',
       year: 2023,
-      stage: 'NTA Entrance',
+      stage: 'NEET UG 2023 National Paper',
       questionText: 'In C4 plants, what is the primary carbon dioxide acceptor molecule located in the mesophyll cells?',
       officialAnswer: 'Phosphoenolpyruvate (PEP) catalyzed by PEP carboxylase (PEPcase)',
       citationSource: 'NCERT Class XI Biology - "Photosynthesis in Higher Plants"',
       citationDetails: 'Chapter 13, Section 13.7 (The C4 Pathway): "The primary CO2 acceptor is a 3-carbon molecule phosphoenolpyruvate (PEP) present in mesophyll cells. The enzyme responsible for this fixation is PEP carboxylase or PEPcase."'
     },
     {
+      id: 'case-neet-3b',
+      exam: 'NEET',
+      year: 2023,
+      stage: 'NEET UG 2023 Manipur Session',
+      questionText: 'Which hormone is secreted by the juxtaglomerular cells of the kidney in response to a fall in glomerular blood flow / GFR to stimulate the renin-angiotensin mechanism?',
+      officialAnswer: 'Renin (which converts angiotensinogen in blood to angiotensin I and subsequently to angiotensin II)',
+      citationSource: 'NCERT Class XI Biology - "Excretory Products and their Elimination"',
+      citationDetails: 'Chapter 19, Section 19.6 (Regulation of Kidney Function): "A fall in glomerular blood flow/glomerular blood pressure/GFR can activate the JG cells to release renin which converts angiotensinogen in blood to angiotensin I and further to angiotensin II."'
+    },
+    {
       id: 'case-neet-4',
       exam: 'NEET',
-      year: 2024,
-      stage: 'NTA Entrance',
+      year: 2022,
+      stage: 'NEET UG 2022 Phase 1',
       questionText: 'Which organic reaction occurs when formaldehyde (HCHO) or benzaldehyde is treated with concentrated sodium hydroxide (50% NaOH), yielding an alcohol and a carboxylic acid salt without alpha-hydrogen involvement?',
       officialAnswer: 'Cannizzaro Reaction (Self-oxidation and reduction)',
       citationSource: 'NCERT Class XII Chemistry - "Aldehydes, Ketones and Carboxylic Acids"',
       citationDetails: 'Chapter 12, Section 12.4.2: "Aldehydes which do not have an alpha-hydrogen atom undergo self oxidation and reduction (disproportionation) reaction on treatment with concentrated alkali. This is known as Cannizzaro reaction."'
     },
     {
+      id: 'case-neet-4b',
+      exam: 'NEET',
+      year: 2022,
+      stage: 'NEET UG 2022 Phase 2 Re-Exam',
+      questionText: 'In the mammalian kidney, which structural arrangement between Henle\'s loop and the vasa recta generates an increasing medullary osmolarity gradient (300 to 1200 mOsmol/L)?',
+      officialAnswer: 'Counter-Current Mechanism (Counter-current multiplier & exchanger)',
+      citationSource: 'NCERT Class XI Biology - "Excretory Products and their Elimination"',
+      citationDetails: 'Chapter 19, Section 19.5 (Mechanism of Concentration of the Filtrate): "The flow of filtrate in the two limbs of Henle\'s loop is in opposite directions and forms a counter-current. The proximity between Henle\'s loop and vasa recta helps maintain an increasing osmolarity toward the inner medullary interstitium."'
+    },
+    {
       id: 'case-neet-5',
       exam: 'NEET',
-      year: 2023,
-      stage: 'NTA Entrance',
+      year: 2021,
+      stage: 'NEET UG 2021 200-Question Format',
       questionText: 'What is the formula for the de Broglie wavelength (lambda) associated with an electron accelerated through a potential difference of V volts?',
       officialAnswer: 'lambda = 1.227 / sqrt(V) nm (or 12.27 / sqrt(V) Angstroms)',
       citationSource: 'NCERT Class XII Physics - "Dual Nature of Radiation and Matter"',
@@ -959,12 +989,32 @@ export default function MaterialsLibraryView({ selectedExam }: MaterialsLibraryV
     {
       id: 'case-neet-6',
       exam: 'NEET',
-      year: 2022,
-      stage: 'NTA Entrance',
-      questionText: 'In the mammalian kidney, which structural arrangement between Henle\'s loop and the vasa recta generates an increasing medullary osmolarity gradient (300 to 1200 mOsmol/L)?',
-      officialAnswer: 'Counter-Current Mechanism (Counter-current multiplier & exchanger)',
-      citationSource: 'NCERT Class XI Biology - "Excretory Products and their Elimination"',
-      citationDetails: 'Chapter 19, Section 19.5 (Mechanism of Concentration of the Filtrate): "The flow of filtrate in the two limbs of Henle\'s loop is in opposite directions and forms a counter-current. The proximity between Henle\'s loop and vasa recta helps maintain an increasing osmolarity toward the inner medullary interstitium."'
+      year: 2020,
+      stage: 'NEET UG 2020 National Paper',
+      questionText: 'Which enzyme is responsible for the unwinding of DNA double helix during biological DNA replication and transcription?',
+      officialAnswer: 'DNA Helicase (utilizing ATP hydrolysis to break hydrogen bonds)',
+      citationSource: 'NCERT Class XII Biology - "Molecular Basis of Inheritance"',
+      citationDetails: 'Chapter 6, Section 6.4.2 (Replication Fork): "The replication occurs within a small opening of the DNA helix, referred to as replication fork, unzipped continuously by DNA helicase enzymes."'
+    },
+    {
+      id: 'case-neet-7',
+      exam: 'NEET',
+      year: 2019,
+      stage: 'NEET UG 2019 National Paper',
+      questionText: 'What is the phenotypic and genotypic ratio observed in Incomplete Dominance (e.g., flower color in Antirrhinum majus / Snapdragon)?',
+      officialAnswer: '1 Red : 2 Pink : 1 White (Phenotypic ratio 1:2:1 equals Genotypic ratio 1:2:1)',
+      citationSource: 'NCERT Class XII Biology - "Principles of Inheritance and Variation"',
+      citationDetails: 'Chapter 5, Section 5.2.2.1 (Incomplete Dominance): "In the cross between true-breeding red (RR) and white (rr) snapdragons, the F1 (Rr) was pink. The F2 resulted in 1 (RR) Red : 2 (Rr) Pink : 1 (rr) White with identical phenotypic and genotypic ratio 1:2:1."'
+    },
+    {
+      id: 'case-neet-8',
+      exam: 'NEET',
+      year: 2019,
+      stage: 'NEET UG 2019 Odisha Special Session',
+      questionText: 'What is the magnetic field B at the center of a circular coil of radius R carrying a steady current I with N turns?',
+      officialAnswer: 'B = (mu_0 * N * I) / (2 * R)',
+      citationSource: 'NCERT Class XII Physics - "Moving Charges and Magnetism"',
+      citationDetails: 'Chapter 4, Section 4.5 (Magnetic Field on the Axis of a Circular Current Loop): "At the center x = 0, the magnetic field equation simplifies directly to B = (mu_0 * N * I) / (2R)."'
     },
     {
       id: 'case-upsc-1',
@@ -1021,6 +1071,15 @@ export default function MaterialsLibraryView({ selectedExam }: MaterialsLibraryV
                           pyq.subjectName.toLowerCase().includes(searchTerm.toLowerCase()) ||
                           pyq.syllabusMapping.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesExam = pyqExamFilter === 'ALL' || pyq.exam === pyqExamFilter;
+    return matchesSearch && matchesExam;
+  });
+
+  const filteredInteractiveCases = interactiveCases.filter(c => {
+    const matchesSearch = c.questionText.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                          c.citationSource.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          c.citationDetails.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          c.officialAnswer.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesExam = pyqExamFilter === 'ALL' || c.exam === pyqExamFilter;
     return matchesSearch && matchesExam;
   });
 
@@ -1732,51 +1791,83 @@ export default function MaterialsLibraryView({ selectedExam }: MaterialsLibraryV
       {/* SYLLABUS TO SOURCE MAPPING */}
       {subTab === 'sample-tracker' && (
         <div className="space-y-6" id="mapping-tracker-area">
-          <div className="bg-white border border-slate-200 p-5 rounded-2xl shadow-sm">
-            <h3 className="text-sm font-bold text-slate-900">The Syllabus-to-Source Mapping Standard</h3>
-            <p className="text-xs text-slate-500 mt-1 leading-relaxed">
-              Every authentic civil services exam question stems directly from official reference textbooks, central statutes, or standard academic records. Look below to see real PYQs and where their exact authoritative answers are located.
-            </p>
+          <div className="bg-white border border-slate-200 p-5 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shadow-sm">
+            <div>
+              <h3 className="text-sm font-bold text-slate-900">The Syllabus-to-Source Mapping Standard ({filteredInteractiveCases.length} Verified Citations)</h3>
+              <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+                Every authentic medical entrance and civil services exam question stems directly from official NCERT reference textbooks, central statutes, or standard academic records. Look below to see real PYQs and where their exact authoritative answers are located.
+              </p>
+            </div>
+
+            <div className="flex flex-wrap gap-2 flex-shrink-0">
+              {[
+                { id: 'ALL', label: 'All Exams' },
+                { id: 'NEET', label: 'NEET UG' },
+                { id: 'IIT_JEE', label: 'IIT JEE' },
+                { id: 'UPSC', label: 'UPSC CSE' },
+                { id: 'TNPSC', label: 'TNPSC' },
+                { id: 'SSC', label: 'SSC CGL' }
+              ].map((btn) => (
+                <button
+                  key={btn.id}
+                  onClick={() => setPyqExamFilter(btn.id as any)}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all shadow-sm cursor-pointer ${
+                    pyqExamFilter === btn.id
+                      ? 'bg-emerald-600 text-white shadow-emerald-600/20'
+                      : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                  }`}
+                >
+                  {btn.label}
+                </button>
+              ))}
+            </div>
           </div>
 
           <div className="space-y-4">
-            {interactiveCases.map((c) => (
-              <div 
-                key={c.id} 
-                className="bg-white border border-slate-200 rounded-2xl p-6 space-y-4 shadow-sm"
-              >
-                <div className="flex justify-between items-center border-b border-slate-100 pb-2">
-                  <div className="flex items-center gap-2">
-                    <span className="text-[10px] uppercase font-bold font-mono bg-amber-50 px-2 py-0.5 rounded text-amber-700 border border-amber-100">
-                      {c.exam} {c.year} PYQ
-                    </span>
-                    <span className="text-[10px] font-mono text-slate-500">{c.stage} Stage</span>
-                  </div>
-                  <span className="text-[10px] font-bold text-emerald-600 flex items-center gap-1 font-mono">
-                    <CheckCircle className="h-3.5 w-3.5" />
-                    Verified Solution
-                  </span>
-                </div>
-
-                <div className="space-y-2">
-                  <span className="text-xs font-semibold text-slate-500 block uppercase tracking-wider">Official Question Paper Snippet</span>
-                  <p className="text-xs md:text-sm text-slate-900 font-extrabold leading-snug">"{c.questionText}"</p>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-3 border-t border-slate-100">
-                  <div className="bg-slate-50 p-4 rounded-xl border border-slate-200/60">
-                    <span className="text-[10px] uppercase font-bold text-emerald-700 block mb-1">Official Commission Answer</span>
-                    <p className="text-xs font-bold text-slate-800 font-mono italic">"{c.officialAnswer}"</p>
-                  </div>
-
-                  <div className="bg-slate-50 p-4 rounded-xl border border-emerald-200">
-                    <span className="text-[10px] uppercase font-bold text-amber-700 block mb-1">Official Academic / Legislative Citation</span>
-                    <p className="text-xs font-bold text-slate-800">{c.citationSource}</p>
-                    <p className="text-[11px] text-slate-600 mt-1 leading-relaxed">{c.citationDetails}</p>
-                  </div>
-                </div>
+            {filteredInteractiveCases.length === 0 ? (
+              <div className="bg-white border border-slate-200 rounded-2xl p-8 text-center space-y-2">
+                <p className="text-sm font-bold text-slate-700">No questions found matching your filter.</p>
+                <p className="text-xs text-slate-500">Try selecting "All Exams" or changing your search terms.</p>
               </div>
-            ))}
+            ) : (
+              filteredInteractiveCases.map((c) => (
+                <div 
+                  key={c.id} 
+                  className="bg-white border border-slate-200 rounded-2xl p-6 space-y-4 shadow-sm"
+                >
+                  <div className="flex justify-between items-center border-b border-slate-100 pb-2">
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] uppercase font-bold font-mono bg-amber-50 px-2 py-0.5 rounded text-amber-700 border border-amber-100">
+                        {c.exam} {c.year} PYQ
+                      </span>
+                      <span className="text-[10px] font-mono text-slate-500">{c.stage} Stage</span>
+                    </div>
+                    <span className="text-[10px] font-bold text-emerald-600 flex items-center gap-1 font-mono">
+                      <CheckCircle className="h-3.5 w-3.5" />
+                      Verified Solution
+                    </span>
+                  </div>
+
+                  <div className="space-y-2">
+                    <span className="text-xs font-semibold text-slate-500 block uppercase tracking-wider">Official Question Paper Snippet</span>
+                    <p className="text-xs md:text-sm text-slate-900 font-extrabold leading-snug">"{c.questionText}"</p>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-3 border-t border-slate-100">
+                    <div className="bg-slate-50 p-4 rounded-xl border border-slate-200/60">
+                      <span className="text-[10px] uppercase font-bold text-emerald-700 block mb-1">Official Commission Answer</span>
+                      <p className="text-xs font-bold text-slate-800 font-mono italic">"{c.officialAnswer}"</p>
+                    </div>
+
+                    <div className="bg-slate-50 p-4 rounded-xl border border-emerald-200">
+                      <span className="text-[10px] uppercase font-bold text-amber-700 block mb-1">Official Academic / Legislative Citation</span>
+                      <p className="text-xs font-bold text-slate-800">{c.citationSource}</p>
+                      <p className="text-[11px] text-slate-600 mt-1 leading-relaxed">{c.citationDetails}</p>
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </div>
       )}
