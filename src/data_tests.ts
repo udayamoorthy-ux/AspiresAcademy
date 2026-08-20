@@ -1327,7 +1327,29 @@ export const PREVIOUS_YEAR_PRACTICE_TESTS: PracticeTest[] = [
     actualQuestionCount: 100,
     durationMinutes: 200,
     subjectScope: 'Grand All-India Simulation test with negative marking (-1) adhering strictly to NTA NEET UG pattern',
-    officialPaperUrl: 'https://neet.nta.nic.in',
+    officialPaperUrl: 'https://exams.nta.ac.in/NEET/',
     questions: compile100Questions('pt-neet-all-india-mock', false, false, false, false, false, true)
+  },
+  {
+    id: 'pt-neet-2023-pyq',
+    exam: 'NEET',
+    title: 'NEET UG 2023 Official Question Paper (National Session)',
+    year: 2023,
+    actualQuestionCount: 100,
+    durationMinutes: 200,
+    subjectScope: 'Authentic 200-minute medical entrance paper: Genetics, Human Physiology, Organic Chemistry & Electrodynamics',
+    officialPaperUrl: 'https://exams.nta.ac.in/NEET/',
+    questions: compile100Questions('pt-neet-2023-pyq', false, false, false, false, false, true)
+  },
+  {
+    id: 'pt-neet-2022-pyq',
+    exam: 'NEET',
+    title: 'NEET UG 2022 Official Question Paper (Phase 1 & Phase 2)',
+    year: 2022,
+    actualQuestionCount: 100,
+    durationMinutes: 200,
+    subjectScope: 'Standard 200-question pattern covering Plant Diversity, Cell Biology, Thermodynamics & Ray Optics',
+    officialPaperUrl: 'https://exams.nta.ac.in/NEET/',
+    questions: compile100Questions('pt-neet-2022-pyq', false, false, false, false, false, true)
   }
 ];
