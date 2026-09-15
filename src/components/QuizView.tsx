@@ -27,7 +27,10 @@ import {
   FileText,
   Crown,
   Copy,
-  Check
+  Check,
+  Volume2,
+  Headphones,
+  Split
 } from 'lucide-react';
 
 interface QuizViewProps {
@@ -177,7 +180,9 @@ export default function QuizView({
     if (session && (session.id.startsWith('preset-') || session.id.startsWith('ai-'))) {
       startStaticQuiz();
     }
-    if (selectedExam === 'NEET') {
+    if (selectedExam === 'IELTS') {
+      setActivePYQFilter('IELTS');
+    } else if (selectedExam === 'NEET') {
       setActivePYQFilter('NEET');
     } else if (selectedExam === 'IIT_JEE') {
       setActivePYQFilter('IIT_JEE');
@@ -432,64 +437,136 @@ export default function QuizView({
                   />
                 </div>
 
-                {/* Question Text */}
-                <div className="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-4">
-                  {session.questions[session.currentQuestionIndex].subject && (
-                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-amber-700 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">
-                      {session.questions[session.currentQuestionIndex].subject}
-                    </span>
-                  )}
-                  <p className="text-sm md:text-base font-extrabold leading-relaxed text-slate-850 whitespace-pre-line pt-1">
-                    {session.questions[session.currentQuestionIndex].text}
-                  </p>
+                {/* Question Text & Authentic IELTS Reading/Listening Context Renderers */}
+                {(() => {
+                  const currentQ = session.questions[session.currentQuestionIndex];
+                  const fullText = currentQ.text;
+                  const isListening = currentQ.subject?.toLowerCase().includes('listening') || fullText.includes('AUDIO TRANSCRIPT') || fullText.includes('In IELTS Listening') || fullText.includes('Section 1') || fullText.includes('Section 2') || fullText.includes('Section 3') || fullText.includes('Section 4');
+                  const isReading = currentQ.subject?.toLowerCase().includes('reading') || fullText.includes('READING PASSAGE') || fullText.includes('READING EXCERPT') || fullText.includes('In an IELTS Reading') || fullText.includes('In an IELTS Academic Reading');
 
-                  {/* Multiple Choice Options */}
-                  <div className="grid grid-cols-1 gap-2.5" id="options-choices-grid">
-                    {session.questions[session.currentQuestionIndex].options.map((option, idx) => {
-                      const isSelected = selectedAnswerIndex === idx;
-                      const isCorrect = session.questions[session.currentQuestionIndex].correctAnswerIndex === idx;
-                      
-                      let btnStyle = "border-slate-200 bg-white hover:bg-slate-50 text-slate-700";
-                      
-                      if (hasAnswered) {
-                        if (isCorrect) {
-                          btnStyle = "border-emerald-300 bg-emerald-50/50 text-emerald-800";
-                        } else if (isSelected) {
-                          btnStyle = "border-rose-300 bg-rose-50/50 text-rose-800";
-                        } else {
-                          btnStyle = "border-slate-100 bg-slate-50/30 text-slate-400";
-                        }
-                      } else if (isSelected) {
-                        btnStyle = "border-amber-550 bg-amber-50 text-amber-800";
-                      }
+                  // Extract passage or transcript if present
+                  const parts = fullText.split(/\n\s*Question:\s*/i);
+                  const hasPassageSplit = parts.length > 1;
+                  const contextBody = hasPassageSplit ? parts[0] : null;
+                  const questionPrompt = hasPassageSplit ? parts[1] : fullText;
 
-                      return (
-                        <button
-                          key={idx}
-                          disabled={hasAnswered}
-                          onClick={() => handleSelectOption(idx)}
-                          className={`w-full text-left p-4 rounded-xl border text-xs md:text-sm font-semibold transition-all flex items-center justify-between gap-3 leading-relaxed disabled:cursor-default ${btnStyle}`}
-                        >
-                          <div className="flex gap-3 items-center">
-                            <span className={`h-6 w-6 rounded-lg flex items-center justify-center font-mono text-xs font-black flex-shrink-0 ${
-                              isSelected ? 'bg-amber-500 text-slate-950' : 'bg-slate-100 border border-slate-250 text-slate-600'
-                            }`}>
-                              {String.fromCharCode(65 + idx)}
-                            </span>
-                            <span>{option}</span>
+                  return (
+                    <div className="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-4">
+                      <div className="flex items-center justify-between flex-wrap gap-2">
+                        {currentQ.subject && (
+                          <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-amber-700 bg-amber-500/10 px-2.5 py-1 rounded border border-amber-500/20">
+                            {currentQ.subject}
+                          </span>
+                        )}
+
+                        {/* Audio playback button for Listening recordings */}
+                        {isListening && onVoicePlay && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const speechContent = contextBody 
+                                ? contextBody.replace(/^(AUDIO TRANSCRIPT|In IELTS Listening[^:]*:?)\s*/i, '')
+                                : fullText;
+                              onVoicePlay(speechContent, `IELTS Listening Audio Track`);
+                            }}
+                            className="text-xs bg-sky-600 hover:bg-sky-500 text-white font-bold px-3 py-1.5 rounded-xl flex items-center gap-1.5 transition-all shadow-sm cursor-pointer"
+                            title="Play Real IELTS Audio Track"
+                          >
+                            <Headphones className="h-3.5 w-3.5" />
+                            <span>Play Audio Track</span>
+                          </button>
+                        )}
+                      </div>
+
+                      {/* Authentic Reading Passage / Listening Audio Card */}
+                      {contextBody && (
+                        <div className={`p-4 rounded-xl border text-xs md:text-sm leading-relaxed ${
+                          isListening 
+                            ? 'bg-sky-50/90 border-sky-200 text-sky-950' 
+                            : isReading
+                            ? 'bg-amber-50/60 border-amber-200/80 text-slate-800'
+                            : 'bg-white border-slate-200 text-slate-800'
+                        }`}>
+                          <div className="flex items-center gap-2 mb-2 pb-1.5 border-b border-black/5 font-mono text-[10px] font-black uppercase tracking-wider text-slate-600">
+                            {isListening ? (
+                              <>
+                                <Headphones className="h-3.5 w-3.5 text-sky-600" />
+                                <span>IELTS Listening Recording Transcript / Audio Script:</span>
+                              </>
+                            ) : (
+                              <>
+                                <BookOpen className="h-3.5 w-3.5 text-amber-700" />
+                                <span>IELTS Academic Reading Passage Text:</span>
+                              </>
+                            )}
                           </div>
+                          <div className="font-normal whitespace-pre-line leading-relaxed text-slate-800">
+                            {contextBody.replace(/^(READING PASSAGE|READING EXCERPT|AUDIO TRANSCRIPT):?\s*/i, '')}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Question Prompt */}
+                      <div className="pt-1">
+                        {contextBody && (
+                          <div className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-500 mb-1">
+                            Question:
+                          </div>
+                        )}
+                        <p className="text-sm md:text-base font-extrabold leading-relaxed text-slate-900 whitespace-pre-line">
+                          {questionPrompt}
+                        </p>
+                      </div>
+
+                      {/* Multiple Choice Options */}
+                      <div className="grid grid-cols-1 gap-2.5" id="options-choices-grid">
+                        {currentQ.options.map((option, idx) => {
+                          const isSelected = selectedAnswerIndex === idx;
+                          const isCorrect = currentQ.correctAnswerIndex === idx;
                           
-                          {hasAnswered && isCorrect && (
-                            <CheckCircle2 className="h-5 w-5 text-emerald-400 flex-shrink-0" />
-                          )}
-                          {hasAnswered && isSelected && !isCorrect && (
-                            <AlertTriangle className="h-5 w-5 text-rose-400 flex-shrink-0" />
-                          )}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
+                          let btnStyle = "border-slate-200 bg-white hover:bg-slate-50 text-slate-700";
+                          
+                          if (hasAnswered) {
+                            if (isCorrect) {
+                              btnStyle = "border-emerald-300 bg-emerald-50/50 text-emerald-800";
+                            } else if (isSelected) {
+                              btnStyle = "border-rose-300 bg-rose-50/50 text-rose-800";
+                            } else {
+                              btnStyle = "border-slate-100 bg-slate-50/30 text-slate-400";
+                            }
+                          } else if (isSelected) {
+                            btnStyle = "border-amber-550 bg-amber-50 text-amber-800";
+                          }
+
+                          return (
+                            <button
+                              key={idx}
+                              disabled={hasAnswered}
+                              onClick={() => handleSelectOption(idx)}
+                              className={`w-full text-left p-4 rounded-xl border text-xs md:text-sm font-semibold transition-all flex items-center justify-between gap-3 leading-relaxed disabled:cursor-default ${btnStyle}`}
+                            >
+                              <div className="flex gap-3 items-center">
+                                <span className={`h-6 w-6 rounded-lg flex items-center justify-center font-mono text-xs font-black flex-shrink-0 ${
+                                  isSelected ? 'bg-amber-500 text-slate-950' : 'bg-slate-100 border border-slate-250 text-slate-600'
+                                }`}>
+                                  {String.fromCharCode(65 + idx)}
+                                </span>
+                                <span>{option}</span>
+                              </div>
+                              
+                              {hasAnswered && isCorrect && (
+                                <CheckCircle2 className="h-5 w-5 text-emerald-400 flex-shrink-0" />
+                              )}
+                              {hasAnswered && isSelected && !isCorrect && (
+                                <AlertTriangle className="h-5 w-5 text-rose-400 flex-shrink-0" />
+                              )}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                })()}
 
                 {/* Verification & Navigation controls */}
                 <div className="flex justify-between items-center pt-3 border-t border-slate-100" id="quiz-navigation-action-bar">
