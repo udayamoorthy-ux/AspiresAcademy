@@ -388,6 +388,30 @@ function compile100Questions(testId: string, isUPSC: boolean, isTamilMediumInclu
         a: 'Technological superiority in automated cardiac diagnostic screening',
         wrong: ['A brief overview of general hospital nursing shifts', 'The total economic cost of surgical instruments', 'History of manual stethoscope invention'],
         subject: 'Reading (Matching Headings)'
+      },
+      {
+        q: 'In an IELTS Academic Reading text on cognitive linguistics: "Chomsky\'s universal grammar hypothesis asserts that syntactic foundations are biologically innate, whereas emergentist linguists contend that language acquisition derives primarily from socio-pragmatic exposure."\n\nQuestion: Emergentist linguists agree that syntactic competence is strictly predetermined by human genetics alone.',
+        a: 'FALSE',
+        wrong: ['TRUE', 'NOT GIVEN', 'CANNOT BE DETERMINED'],
+        subject: 'Reading (True/False/Not Given)'
+      },
+      {
+        q: 'In an IELTS Reading passage on Renewable Energy: "Offshore wind installations yield higher and more consistent velocity profiles than onshore turbines, though undersea subsea transmission cabling introduces capital risks."\n\nQuestion: What major obstacle is highlighted regarding offshore wind installations?',
+        a: 'Capital expenditure and technical risks of undersea transmission cabling',
+        wrong: ['Inconsistent offshore wind velocity profiles', 'Lack of wind over open oceanic waters', 'Strict ban by the United Nations on marine engineering'],
+        subject: 'Reading (Sentence Completion & Retrieval)'
+      },
+      {
+        q: 'In an IELTS Academic Reading excerpt: "Glaciologists measuring ice cores in Antarctica have observed atmospheric carbon concentrations reaching peaks unprecedented in the past 800,000 geological years."\n\nQuestion: Scientific records confirm carbon concentrations 1 million years ago were higher than current levels.',
+        a: 'NOT GIVEN',
+        wrong: ['TRUE', 'FALSE', 'COMPLETELY ACCURATE'],
+        subject: 'Reading (True/False/Not Given)'
+      },
+      {
+        q: 'Which title best captures an academic passage analyzing both the cognitive benefits of bilingualism in infants and the societal challenges of heritage language retention in immigrant communities?',
+        a: 'Bilingualism: Cognitive Advantages and Sociolinguistic Complexities',
+        wrong: ['A Simple Guide to Learning Spanish in Two Weeks', 'Why Monolingual Societies Never Grow Economically', 'The Complete Dictionary of World Dialects'],
+        subject: 'Reading (Global Multiple Choice / Text Synthesis)'
       }
     ];
 
@@ -409,6 +433,24 @@ function compile100Questions(testId: string, isUPSC: boolean, isTamilMediumInclu
         a: 'Research methodology and sampling technique',
         wrong: ['Budget allocation and funding', 'Proofreading final bibliography formatting', 'Selecting questionnaire printing paper'],
         subject: 'Listening (Academic Discussion Comprehension)'
+      },
+      {
+        q: 'In IELTS Listening Section 1 (Hotel Reservation), the clerk says: "Your confirmation booking reference is Hotel Kilo Seven Nine Tango Delta." How should this code be written on the intake slip?',
+        a: 'HK79TD',
+        wrong: ['HK79DT', 'HK78TD', 'KH79TD'],
+        subject: 'Listening (Alphanumeric Code Transcription)'
+      },
+      {
+        q: 'In IELTS Listening Section 4 (Scientific Lecture), the lecturer remarks: "The primary anthropogenic catalyst for soil salinization in arid agriculture is over-reliance on flood irrigation without adequate subterranean drainage." What is the main cause identified?',
+        a: 'Flood irrigation combined with inadequate subterranean drainage',
+        wrong: ['Excessive organic composting', 'Acid rain precipitation from industrial plants', 'Uncontrolled natural deforestation along riverbanks'],
+        subject: 'Listening (Academic Lecture Note-Taking)'
+      },
+      {
+        q: 'In IELTS Listening Section 2 (Community Notice), the coordinator says: "The annual recycling drop-off depot will operate solely on alternate Saturdays from eight-thirty in the morning until quarter past one." What are the operating hours?',
+        a: 'Alternate Saturdays, 8:30 AM to 1:15 PM',
+        wrong: ['Every weekday from 8:00 AM to 1:30 PM', 'Sundays only from 9:00 AM to 2:15 PM', 'Every Saturday from 8:30 AM to 2:00 PM'],
+        subject: 'Listening (Time & Scheduling Details)'
       }
     ];
 
@@ -430,6 +472,24 @@ function compile100Questions(testId: string, isUPSC: boolean, isTamilMediumInclu
         a: 'Not only does early bilingual education enhance cognitive flexibility, but it also fosters cross-cultural empathy.',
         wrong: ['Not only early bilingual education enhances cognitive flexibility, but also fosters empathy.', 'Not only bilingual education do enhance flexibility, but it is fostering empathy.', 'Not only does bilingual education to enhance, but it also is fostering empathy.'],
         subject: 'Grammar & Syntactic Range'
+      },
+      {
+        q: 'In IELTS Writing Task 1 (Process Diagram), which passive construction best conveys sequential manufacturing without subjective opinion?',
+        a: 'Once the raw timber is harvested, it is mechanically pulverized and chemically treated to extract cellulose fibers.',
+        wrong: ['After harvesting wood, workers should happily treat it because it is nice.', 'The workers will pulverized timber and then making papers quickly.', 'Logs are being cut and I believe this process is very interesting.'],
+        subject: 'Writing Task 1 (Process & Passive Voice)'
+      },
+      {
+        q: 'Which paragraph conclusion best adheres to IELTS Academic Task 2 conventions for an Opinion Essay?',
+        a: 'In conclusion, despite the valid financial concerns raised by detractors, investing in renewable public transit yields far superior long-term environmental dividends.',
+        wrong: ['In a nutshell, that is all my personal thoughts and thank you for reading my essay.', 'To summarize, both sides have good points and maybe governments will figure it out.', 'Finally, I have proven 100% that my idea is the only correct answer.'],
+        subject: 'Writing Task 2 (Conclusive Synthesis)'
+      },
+      {
+        q: 'Choose the sentence exhibiting sophisticated academic nominalization suitable for high-band IELTS discourse:',
+        a: 'The rapid proliferation of telecommuting has catalyzed a profound decentralization of metropolitan workforces.',
+        wrong: ['People work from home much more so they do not live in big cities anymore.', 'Working from homes is growing quickly and people are moving away.', 'Because computers are everywhere, workers do things in various places.'],
+        subject: 'Lexical Resource (Academic Nominalization)'
       }
     ];
 
@@ -445,6 +505,18 @@ function compile100Questions(testId: string, isUPSC: boolean, isTamilMediumInclu
         a: 'I take your point to a certain extent; however, one cannot overlook the fact that...',
         wrong: ['I am 50 percent agreeing with your sentence right now.', 'You are half wrong and half right maybe.', 'Yes and no because I said so.'],
         subject: 'Speaking (Discourse Markers & Nuance)'
+      },
+      {
+        q: 'How should an IELTS Speaking candidate handle an unexpected unfamiliar question in Part 3 without creating dead silence?',
+        a: 'Use natural hesitation fillers: "That is an intriguing question; looking at it from an economic perspective, I would argue that..."',
+        wrong: ['Remain completely frozen for 20 seconds.', 'Tell the examiner "I do not know anything about this topic next question please."', 'Start singing or reciting random memorized nursery rhymes.'],
+        subject: 'Speaking (Fluency & Fillers)'
+      },
+      {
+        q: 'Which response exhibits appropriate Band 8+ idiomatic flexibility to describe personal determination in an IELTS Speaking interview?',
+        a: 'Whenever I hit an academic stumbling block, I make a conscious effort to persevere and think outside the box.',
+        wrong: ['I just keep my eyes on the red ball and run very hard.', 'I make my brain do lots of things with full powers.', 'I always win because failure is not my friend.'],
+        subject: 'Speaking (Idiomatic Resource)'
       }
     ];
 
@@ -1611,5 +1683,115 @@ export const PREVIOUS_YEAR_PRACTICE_TESTS: PracticeTest[] = [
     subjectScope: 'High-difficulty mock exam targeting Band 8.0-9.0 lexical resource, complex grammar, and precise listening dictation',
     officialPaperUrl: 'https://takeielts.britishcouncil.org',
     questions: compile100Questions('pt-ielts-british-council-mock', false, false, false, false, false, false, true)
+  },
+  {
+    id: 'pt-ielts-cambridge-16-academic',
+    exam: 'IELTS',
+    title: 'Cambridge IELTS 16 Academic Official Practice Test',
+    year: 2021,
+    actualQuestionCount: 100,
+    durationMinutes: 160,
+    subjectScope: 'Authentic Cambridge Academic Reading (Paleontology & Astronomy), Listening Sections 1-4, Task 1 Line Graphs & Task 2 Argumentative Essays',
+    officialPaperUrl: 'https://ielts.idp.com',
+    questions: compile100Questions('pt-ielts-cambridge-16-academic', false, false, false, false, false, false, true)
+  },
+  {
+    id: 'pt-ielts-cambridge-16-general',
+    exam: 'IELTS',
+    title: 'Cambridge IELTS 16 General Training Authentic Exam Papers',
+    year: 2021,
+    actualQuestionCount: 100,
+    durationMinutes: 160,
+    subjectScope: 'Workplace and social context reading passages, accommodation listening forms, Formal/Semi-formal Letters, and General Essay Writing',
+    officialPaperUrl: 'https://ielts.idp.com',
+    questions: compile100Questions('pt-ielts-cambridge-16-general', false, false, false, false, false, false, true)
+  },
+  {
+    id: 'pt-ielts-cambridge-15-academic',
+    exam: 'IELTS',
+    title: 'Cambridge IELTS 15 Academic Diagnostic Full-Length Test',
+    year: 2020,
+    actualQuestionCount: 100,
+    durationMinutes: 160,
+    subjectScope: 'Academic Reading (Urban Planning & Marine Archaeology), Listening Form/Table Completion, Task 1 Process Diagrams & Task 2 Opinion Essays',
+    officialPaperUrl: 'https://ielts.idp.com',
+    questions: compile100Questions('pt-ielts-cambridge-15-academic', false, false, false, false, false, false, true)
+  },
+  {
+    id: 'pt-ielts-cambridge-15-general',
+    exam: 'IELTS',
+    title: 'Cambridge IELTS 15 General Training Diagnostic Test',
+    year: 2020,
+    actualQuestionCount: 100,
+    durationMinutes: 160,
+    subjectScope: 'Employment training manuals, consumer notices, informal letters to friends, and Task 2 Problem-Solution Essays',
+    officialPaperUrl: 'https://ielts.idp.com',
+    questions: compile100Questions('pt-ielts-cambridge-15-general', false, false, false, false, false, false, true)
+  },
+  {
+    id: 'pt-ielts-cambridge-14-academic',
+    exam: 'IELTS',
+    title: 'Cambridge IELTS 14 Academic Authentic Examination',
+    year: 2019,
+    actualQuestionCount: 100,
+    durationMinutes: 160,
+    subjectScope: 'High-yield academic texts covering Cognitive Psychology, Renewable Geothermal Power, Section 3 Group Tutorials & Task 1 Bar Charts',
+    officialPaperUrl: 'https://ielts.idp.com',
+    questions: compile100Questions('pt-ielts-cambridge-14-academic', false, false, false, false, false, false, true)
+  },
+  {
+    id: 'pt-ielts-idp-masterclass-mock',
+    exam: 'IELTS',
+    title: 'IDP Education Official Masterclass Academic Simulation Exam',
+    year: 2025,
+    actualQuestionCount: 100,
+    durationMinutes: 160,
+    subjectScope: 'Official IDP Masterclass test simulation with emphasis on Band 8+ Lexical Resource, Complex Syntax Inversion, and Map Dictation',
+    officialPaperUrl: 'https://ielts.idp.com',
+    questions: compile100Questions('pt-ielts-idp-masterclass-mock', false, false, false, false, false, false, true)
+  },
+  {
+    id: 'pt-ielts-cambridge-18-general',
+    exam: 'IELTS',
+    title: 'Cambridge IELTS 18 General Training Full-Length Practice Test',
+    year: 2023,
+    actualQuestionCount: 100,
+    durationMinutes: 160,
+    subjectScope: 'General Training Sections 1-3 (Staff Handbooks, Public Library Rules, Biography) with Task 1 Formal Complaint Letters and Task 2 Essays',
+    officialPaperUrl: 'https://ielts.idp.com',
+    questions: compile100Questions('pt-ielts-cambridge-18-general', false, false, false, false, false, false, true)
+  },
+  {
+    id: 'pt-ielts-cambridge-17-general',
+    exam: 'IELTS',
+    title: 'Cambridge IELTS 17 General Training Authentic Examination',
+    year: 2022,
+    actualQuestionCount: 100,
+    durationMinutes: 160,
+    subjectScope: 'Immigration & Workplace survival English, telephone directory and timetable comprehension, and Discursive Task 2 Essays',
+    officialPaperUrl: 'https://ielts.idp.com',
+    questions: compile100Questions('pt-ielts-cambridge-17-general', false, false, false, false, false, false, true)
+  },
+  {
+    id: 'pt-ielts-british-council-road-to-ielts',
+    exam: 'IELTS',
+    title: 'British Council "Road to IELTS" Advanced Diagnostic Simulation',
+    year: 2024,
+    actualQuestionCount: 100,
+    durationMinutes: 160,
+    subjectScope: 'Official British Council digital preparation diagnostic covering all 4 skills with advanced distractors and lexical traps',
+    officialPaperUrl: 'https://takeielts.britishcouncil.org',
+    questions: compile100Questions('pt-ielts-british-council-road-to-ielts', false, false, false, false, false, false, true)
+  },
+  {
+    id: 'pt-ielts-all-india-grand-challenge',
+    exam: 'IELTS',
+    title: 'ASPIRES IELTS All-India Band 9 Grand Invitational Mock Exam',
+    year: 2025,
+    actualQuestionCount: 100,
+    durationMinutes: 160,
+    subjectScope: 'Comprehensive benchmark exam featuring high-tier Academic passages, Section 4 unscripted academic lectures, and complex Task 1 mixed charts',
+    officialPaperUrl: 'https://ielts.idp.com',
+    questions: compile100Questions('pt-ielts-all-india-grand-challenge', false, false, false, false, false, false, true)
   }
 ];
