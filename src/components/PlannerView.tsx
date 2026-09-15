@@ -49,6 +49,16 @@ export default function PlannerView({ selectedExam, setActiveTab }: PlannerViewP
           'Physics (Optics & Modern Physics)',
           'NCERT High-Yield Revision'
         ];
+      case 'IELTS':
+        return [
+          'Reading (Academic True/False/Not Given & Headings)',
+          'Listening (Sections 1-4 Dictation & Speed Note-taking)',
+          'Writing Task 1 (Trends, Charts & Process Reports)',
+          'Writing Task 2 (Discursive Essays & Lexical Resource)',
+          'Speaking (Cue Cards & Part 3 Abstract Reasoning)',
+          'Band 8+ Collocations & Advanced Grammar Range',
+          'Full-Length Cambridge Timed Mock Simulation'
+        ];
       case 'IIT_JEE':
         return [
           'Physics (Mechanics & Electrodynamics)',

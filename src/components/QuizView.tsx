@@ -68,7 +68,7 @@ export default function QuizView({
   const [aiQuestionCount, setAiQuestionCount] = useState<number>(10);
   const [selectedAnswerIndex, setSelectedAnswerIndex] = useState<number | null>(null);
   const [hasAnswered, setHasAnswered] = useState<boolean>(false);
-  const [activePYQFilter, setActivePYQFilter] = useState<'ALL' | 'UPSC' | 'TNPSC' | 'SSC' | 'RRB' | 'IIT_JEE' | 'NEET'>('ALL');
+  const [activePYQFilter, setActivePYQFilter] = useState<'ALL' | 'UPSC' | 'TNPSC' | 'SSC' | 'RRB' | 'IIT_JEE' | 'NEET' | 'IELTS'>('ALL');
 
   // Free Tier Usage Counting state for Mock Tests
   const [mockTestCount, setMockTestCount] = useState<number>(() => {
@@ -307,6 +307,7 @@ export default function QuizView({
     // Stage 1 filter: NEET/UPSC/TNPSC/SSC/RRB/IIT_JEE overall switch
     if (activePYQFilter === 'NEET' && test.exam !== 'NEET') return false;
     if (activePYQFilter === 'IIT_JEE' && test.exam !== 'IIT_JEE') return false;
+    if (activePYQFilter === 'IELTS' && test.exam !== 'IELTS') return false;
     if (activePYQFilter === 'UPSC' && test.exam !== 'UPSC') return false;
     if (activePYQFilter === 'TNPSC' && !test.exam.startsWith('TNPSC')) return false;
     if (activePYQFilter === 'SSC' && test.exam !== 'SSC_CGL') return false;
@@ -717,7 +718,8 @@ export default function QuizView({
                     { id: 'UPSC', label: 'UPSC CSE' },
                     { id: 'TNPSC', label: 'TNPSC Boards' },
                     { id: 'SSC', label: 'SSC CGL' },
-                    { id: 'RRB', label: 'RRB NTPC' }
+                    { id: 'RRB', label: 'RRB NTPC' },
+                    { id: 'IELTS', label: 'IELTS Band 8+' }
                   ].map((f) => (
                     <button
                       key={f.id}

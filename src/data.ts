@@ -122,9 +122,33 @@ export const EXAM_DETAILS = {
       { subject: 'Chemistry', description: 'Some Basic Concepts of Chemistry, Structure of Atom, Chemical Bonding, Thermodynamics, Equilibrium, Organic Chemistry Basic Principles, Hydrocarbons, Solutions, Electrochemistry, Kinetics, Coordination Compounds, Biomolecules.' }
     ],
   },
+  IELTS: {
+    title: 'IELTS (International English Language Testing System - Academic & General Training)',
+    shortName: 'IELTS (Academic & GT)',
+    stages: [
+      { name: 'Listening (40 Questions - 30 Minutes)', details: '4 recorded audio sections: Social everyday dialogues, monologues/talks, educational/training discussions, and university lecture monologues.' },
+      { name: 'Reading (40 Questions - 60 Minutes)', details: '3 long texts ranging from descriptive and factual to discursive and analytical. Academic includes scientific/journal excerpts; General includes workplace/daily life texts.' },
+      { name: 'Writing (Task 1 & Task 2 - 60 Minutes)', details: 'Task 1 (150 words - 20 mins): Academic Report / Chart / Diagram or GT Letter. Task 2 (250 words - 40 mins): Formal Argumentative / Discussion / Problem-Solution Essay.' },
+      { name: 'Speaking (11–14 Minutes)', details: 'Part 1: Personal Introduction & Everyday Topics (4-5 mins); Part 2: Individual Cue Card Long Turn (3-4 mins); Part 3: Two-way Analytical & Abstract Discussion (4-5 mins).' }
+    ],
+    syllabus: [
+      { subject: 'Listening Module', description: 'Form completion, note completion, table/flow-chart completion, multiple choice questions, map/plan/diagram labelling, and sentence completion across British, Australian, and North American accents.' },
+      { subject: 'Reading Module', description: 'Skimming and scanning techniques, identifying author viewpoints, True/False/Not Given, Yes/No/Not Given, matching headings, matching information, sentence completion, and summary completion.' },
+      { subject: 'Writing Task 1 (Report / Letter)', description: 'Academic: Describing graphs, bar charts, pie charts, tables, process diagrams, and maps using accurate trend vocabulary. General Training: Formal, semi-formal, and informal letter writing conventions.' },
+      { subject: 'Writing Task 2 (Academic Essay)', description: 'Opinion (Agree/Disagree) Essays, Discussion (Both Views & Opinion) Essays, Advantages vs Disadvantages Essays, Problem & Solution Essays, and Two-part Question Essays graded on TR, CC, LR, and GRA.' },
+      { subject: 'Speaking Module & Pronunciation', description: 'Fluency & Coherence, Lexical Resource (idiomatic language, collocations), Grammatical Range & Accuracy (complex conditionals, relative clauses), and Pronunciation (phonemic clarity, intonation, chunking).' }
+    ],
+  },
 };
 
 export const DEFAULT_ESSAY_PROMPTS: EssayPrompt[] = [
+  {
+    id: 'essay-ielts-1',
+    title: 'IELTS Writing Task 2: Artificial Intelligence and Human Employment',
+    context: 'Some people believe that artificial intelligence and automation will lead to mass unemployment and worsen social inequality. Others argue that technological advancement has always created more jobs than it destroys. Discuss both views and give your own opinion. Give reasons for your answer and include any relevant examples from your knowledge or experience. (Minimum 250 words)',
+    category: 'IELTS Academic & GT Writing Task 2',
+    wordCountTarget: 280,
+  },
   {
     id: 'essay-1',
     title: 'The Role of Artificial Intelligence in India\'s Administrative Governance',

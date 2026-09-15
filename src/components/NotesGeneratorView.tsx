@@ -67,6 +67,12 @@ const PRESET_TOPICS: Record<ExamType, { topic: string; keywords: string }[]> = {
     { topic: 'Genetics: Principles of Inheritance & Molecular Basis', keywords: 'Mendelian ratios, Incomplete dominance, DNA Replication, Lac Operon, Transcription, Translation' },
     { topic: 'Photosynthesis & Cellular Respiration', keywords: 'Light reactions Z-scheme, Calvin C3 cycle, Hatch-Slack C4 pathway, Glycolysis, Krebs cycle, ETS' },
     { topic: 'Biotechnology: Principles & Processes', keywords: 'Restriction endonucleases, EcoRI, pBR322 plasmid, PCR Taq polymerase, Gel electrophoresis, Bt Cotton' }
+  ],
+  IELTS: [
+    { topic: 'Academic Reading: True/False/Not Given & Heading Matching', keywords: 'Factual contradiction vs absent info, keyword scanning, paragraph main idea, topic sentences' },
+    { topic: 'Writing Task 1: Chart, Graph & Map Analysis', keywords: 'Overview structure, trends, peak, plateau, dramatic surge, comparative groupings, data accuracy' },
+    { topic: 'Writing Task 2: Band 8+ Discursive Essays', keywords: 'Task response, thesis statement, PEEL body paragraphs, counter-arguments, cohesive devices, lexical resource' },
+    { topic: 'Speaking & Advanced Lexical Resource', keywords: 'Idiomatic expressions, collocations, fluency fillers, conditional grammar, Part 2 cue card strategy' }
   ]
 };
 

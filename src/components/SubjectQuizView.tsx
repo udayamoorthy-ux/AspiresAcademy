@@ -261,13 +261,79 @@ const NEET_SUBJECTS = [
   }
 ];
 
+const IELTS_SUBJECTS = [
+  {
+    id: 'ielts-reading',
+    name: 'Reading Comprehension (Academic & GT)',
+    description: 'Skimming, scanning, True/False/Not Given, Matching Headings, and summary completion.',
+    icon: BookOpen,
+    color: 'emerald',
+    topics: [
+      'True / False / Not Given (Factual Identification)',
+      'Matching Headings & Central Paragraph Themes',
+      'Summary, Note, Table & Flow-chart Completion',
+      'Multiple Choice & Author Perspective / Claims',
+      'Diagram Label Completion & Scientific Passages'
+    ]
+  },
+  {
+    id: 'ielts-listening',
+    name: 'Listening Skills & Dictation',
+    description: 'Conversational dialogue, lectures, map navigation, and exact numerical note-taking.',
+    icon: Layers,
+    color: 'sky',
+    topics: [
+      'Section 1: Social Everyday Dialogues & Form Filling',
+      'Section 2: Monologues on Local Facilities & Events',
+      'Section 3: Academic Tutorial & Group Discussions',
+      'Section 4: University Lectures & Continuous Dictation',
+      'Map, Plan & Diagram Labelling Under Time Pressure'
+    ]
+  },
+  {
+    id: 'ielts-writing',
+    name: 'Writing Modules (Task 1 & Task 2)',
+    description: 'Visual data reports, formal letters, discursive essays, cohesion, and lexical variety.',
+    icon: BookCheck,
+    color: 'indigo',
+    topics: [
+      'Task 1: Describing Trends in Line, Bar, Pie Charts & Tables',
+      'Task 1: Process Diagrams, Natural Cycles & Structural Maps',
+      'Task 2: Agree / Disagree & Opinion Essays',
+      'Task 2: Discussion Essays (Discuss Both Views & Opinion)',
+      'Task 2: Causes, Effects & Solutions / Direct Two-part Questions',
+      'Academic Cohesive Devices, Transitions & Complex Sentence Structures'
+    ]
+  },
+  {
+    id: 'ielts-speaking',
+    name: 'Speaking & Lexical Resource',
+    description: 'Fluency, PEEL cue-card method, abstract reasoning, and Band 8+ idioms and collocations.',
+    icon: Sparkles,
+    color: 'amber',
+    topics: [
+      'Part 1: Personal Interests, Daily Routines & Introduction',
+      'Part 2: 1-Minute Preparation & 2-Minute Long Turn (PEEL Strategy)',
+      'Part 3: Abstract Analysis & Societal Debates',
+      'Lexical Resource: Academic Collocations, Idioms & Paraphrasing',
+      'Grammatical Range: Inversion, Conditionals & Complex Syntax'
+    ]
+  }
+];
+
 export default function SubjectQuizView({
   selectedExam,
   onVoicePlay,
   isPremium = false,
   onPremiumClick
 }: SubjectQuizViewProps) {
-  const SUBJECTS = selectedExam === 'NEET' ? NEET_SUBJECTS : selectedExam === 'IIT_JEE' ? JEE_SUBJECTS : CIVIL_SUBJECTS;
+  const SUBJECTS = selectedExam === 'IELTS'
+    ? IELTS_SUBJECTS
+    : selectedExam === 'NEET'
+    ? NEET_SUBJECTS
+    : selectedExam === 'IIT_JEE'
+    ? JEE_SUBJECTS
+    : CIVIL_SUBJECTS;
   const [selectedSubject, setSelectedSubject] = useState<string>('');
   const [selectedTopic, setSelectedTopic] = useState<string>('');
   const [customTopic, setCustomTopic] = useState<string>('');

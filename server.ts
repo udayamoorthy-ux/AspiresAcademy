@@ -128,7 +128,8 @@ app.post('/api/study-planner', async (req, res) => {
     SSC_CGL: 'SSC CGL (Combined Graduate Level) Tier 1 & 2 (Quantitative Aptitude, Reasoning, English Comprehension, General Awareness)',
     RRB_NTPC: 'RRB NTPC & Group D (Railways Recruitment) (Mathematics, General Intelligence & Reasoning, General Science, Railway GK)',
     IIT_JEE: 'IIT JEE Main & Advanced (Physics: Mechanics/Electrodynamics/Optics, Chemistry: Organic/Inorganic/Physical, Mathematics: Calculus/Algebra/Coordinate Geometry)',
-    NEET: 'NEET UG Medical Entrance (Biology: NCERT Botany & Zoology/Genetics/Physiology, Physics: Mechanics/Optics/Modern Physics, Chemistry: Organic/Inorganic/Physical)'
+    NEET: 'NEET UG Medical Entrance (Biology: NCERT Botany & Zoology/Genetics/Physiology, Physics: Mechanics/Optics/Modern Physics, Chemistry: Organic/Inorganic/Physical)',
+    IELTS: 'IELTS Academic & General Training (Reading, Listening, Writing Tasks 1 & 2, Speaking, Band 8+ Lexical Resource)'
   };
 
   const examLabel = examLabels[exam] || exam;
@@ -136,7 +137,9 @@ app.post('/api/study-planner', async (req, res) => {
   if (aiClient) {
     try {
       let examSubjectGuidance = "";
-      if (exam === 'NEET') {
+      if (exam === 'IELTS') {
+        examSubjectGuidance = "CRITICAL: The subjects MUST strictly be 'Academic Reading', 'Listening Comprehension', 'Writing Task 1 & 2', and 'Speaking & Fluency'. References MUST cite Cambridge IELTS 1-19, Official Cambridge Guide to IELTS, Pauline Cullen Vocabulary, Barron's IELTS. Do NOT include History, Polity, or Civics.";
+      } else if (exam === 'NEET') {
         examSubjectGuidance = "CRITICAL: The subjects MUST strictly be 'Biology (Botany)', 'Biology (Zoology)', 'Chemistry', and 'Physics'. References MUST be NCERT Class 11/12 Biology, HC Verma, Trueman Biology, OP Tandon, MS Chouhan. Do NOT include History, Polity, or Civics.";
       } else if (exam === 'IIT_JEE') {
         examSubjectGuidance = "CRITICAL: The subjects MUST strictly be 'Physics', 'Chemistry', and 'Mathematics'. References MUST be HC Verma, Irodov, Cengage Mathematics, MS Chouhan, JD Lee. Do NOT include History, Polity, or Biology.";
@@ -905,9 +908,85 @@ app.post('/api/study-planner', async (req, res) => {
     }
   ];
 
+  // IELTS Study Plan Pool
+  const ieltsPlanPool = [
+    {
+      topic: "Academic Reading: True/False/Not Given & Heading Matching",
+      subject: "Academic Reading",
+      phase: "Phase 1: Diagnostic & Skill Building",
+      priority: "High",
+      references: ["Cambridge IELTS 19 Academic Practice Tests", "The Official Cambridge Guide to IELTS"],
+      learningObjectives: [
+        "Master distinction between FALSE (direct factual contradiction) vs NOT GIVEN (information absent)",
+        "Implement keyword skimming and synonym scanning under strict 20-minute per passage constraints",
+        "Achieve 36+/40 accuracy for Band 8.5+ Reading score"
+      ],
+      selfCheckQuestion: "What is the critical semantic difference between FALSE and NOT GIVEN in IELTS Reading?",
+      selfCheckAnswer: "A statement is FALSE if the passage explicitly contradicts or disproves it. A statement is NOT GIVEN if the passage does not contain enough information to confirm or disprove the claim, even if it seems logically plausible in real life."
+    },
+    {
+      topic: "Listening Skills: Sections 1-4 Dictation & Speed Note-Taking",
+      subject: "Listening Comprehension",
+      phase: "Phase 1: Diagnostic & Skill Building",
+      priority: "High",
+      references: ["Cambridge IELTS 18 & 19 Audio Tracks", "Pauline Cullen Common Mistakes at IELTS"],
+      learningObjectives: [
+        "Capture names, numbers, postal codes, and addresses accurately in Section 1 without spelling errors",
+        "Navigate floor plans, maps, and directional signposting words in Section 2",
+        "Follow complex academic multi-speaker debates and lecture transitions in Sections 3 & 4"
+      ],
+      selfCheckQuestion: "In IELTS Listening, if the audio says 'forty-five pounds fifty', what is the proper numerical format to avoid word count deduction?",
+      selfCheckAnswer: "Write '£45.50' (or '45.50' if currency symbol is already printed on the question sheet). Writing 'forty five pounds and fifty pence' wastes word limit and risks spelling deduction."
+    },
+    {
+      topic: "Writing Task 1: Describing Complex Trends, Charts & Maps",
+      subject: "Writing Task 1",
+      phase: "Phase 2: Academic Production",
+      priority: "High",
+      references: ["Cambridge IELTS Writing Band Descriptors", "Barron's Writing for IELTS"],
+      learningObjectives: [
+        "Formulate a Band 9 Overview highlighting 2-3 main key features without data numbers",
+        "Use dynamic trend verbs (escalated, plateaued, plummeted, fluctuated) with accurate adverbs",
+        "Structure two logical body paragraphs with comparative groupings in under 20 minutes"
+      ],
+      selfCheckQuestion: "Why is a clear 'Overview' essential for scoring Band 7+ in IELTS Writing Task 1?",
+      selfCheckAnswer: "Under official Task Achievement criteria, a candidate cannot score Band 7 or above without presenting a clear overview of the main trends, differences, or stages, summarizing key patterns without getting bogged down in individual figures."
+    },
+    {
+      topic: "Writing Task 2: Discursive & Argumentative Essay Mastery",
+      subject: "Writing Task 2",
+      phase: "Phase 2: Academic Production",
+      priority: "High",
+      references: ["Official IELTS Task 2 Public Band Descriptors", "Cambridge IELTS 19 Examiner Model Answers"],
+      learningObjectives: [
+        "Construct 4-paragraph essays with clear thesis statements and topic sentences",
+        "Develop ideas using PEEL (Point, Explanation, Example, Link) to achieve Band 8+ Task Response",
+        "Deploy advanced cohesive devices and complex grammatical structures without mechanical repetition"
+      ],
+      selfCheckQuestion: "What is the penalty for writing under 250 words in IELTS Writing Task 2?",
+      selfCheckAnswer: "Writing fewer than 250 words results in an automatic penalty under Task Response because the candidate has failed to sufficiently address and develop all elements of the prompt."
+    },
+    {
+      topic: "Speaking Interview: Part 2 Cue Cards & Part 3 Abstract Reasoning",
+      subject: "Speaking & Lexical Resource",
+      phase: "Phase 3: Fluency & Pronunciation",
+      priority: "High",
+      references: ["Cambridge IELTS Speaking Diagnostic Videos", "Collins Speaking for IELTS"],
+      learningObjectives: [
+        "Structure 2-minute Part 2 responses seamlessly utilizing the 1-minute preparation note-taking",
+        "Elaborate Part 3 answers from personal anecdotes to societal, philosophical, and global implications",
+        "Demonstrate natural idiomatic expressions, varied intonation, and connected speech"
+      ],
+      selfCheckQuestion: "How should a candidate handle Part 3 questions when asked about future technological trends?",
+      selfCheckAnswer: "Use conditional and speculative grammar ('It is highly probable that...', 'Were governments to invest in...', 'One foreseeable repercussion might be...'), developing the answer beyond personal opinion into wider economic and societal dimensions."
+    }
+  ];
+
   // Select exact pool based on requested exam
   let activePool = upscPlanPool;
-  if (exam === 'NEET') {
+  if (exam === 'IELTS') {
+    activePool = ieltsPlanPool;
+  } else if (exam === 'NEET') {
     activePool = neetPlanPool;
   } else if (exam === 'IIT_JEE') {
     activePool = iitJeePlanPool;
@@ -967,7 +1046,7 @@ app.post('/api/generate-quiz', async (req, res) => {
         model: 'gemini-3.5-flash',
         contents: prompt,
         config: {
-          systemInstruction: 'You are a Senior Question Compiler for UPSC, TNPSC, SSC CGL, RRB NTPC, and IIT JEE (Physics, Chemistry, Mathematics) examinations. Your questions are balanced, challenging, accurate, and test deep conceptual understanding or high-precision numerical problem solving. Every question, option, correct answer, and explanation must be 100% factually and scientifically accurate.',
+          systemInstruction: 'You are a Senior Question Compiler for IELTS (Reading, Listening, Writing, Speaking, Lexical Resource), NEET UG (Biology, Physics, Chemistry), IIT JEE, UPSC, TNPSC, SSC CGL, and RRB NTPC examinations. Your questions are balanced, challenging, authentic, and test deep conceptual or linguistic mastery. Every question, option, correct answer, and explanation must be 100% factually, linguistically, and scientifically accurate.',
           responseMimeType: 'application/json',
           responseSchema: {
             type: Type.OBJECT,
@@ -1192,7 +1271,7 @@ app.post('/api/evaluate-essay', async (req, res) => {
         model: 'gemini-3.5-flash',
         contents: prompt,
         config: {
-          systemInstruction: 'You are an Expert UPSC, TNPSC, and SSC CGL Descriptive/English/General Studies Examiner who grades mains essays, papers, letter/précis submissions, and GS answers. You evaluate structural cohesion, depth of arguments, grammatical accuracy, and logical flow. You must rigorously check for factual accuracy; penalize any fabricated statistics or misattributed constitutional articles. Your model answers must represent 100% authentic, accurate, and official academic outlines.',
+          systemInstruction: 'You are an Expert Examiner for IELTS Writing (Task 1 & Task 2), UPSC CSE, TNPSC, and SSC CGL Descriptive/English submissions. For IELTS essays and reports, evaluate rigorously against the four official criteria: Task Achievement / Task Response, Coherence and Cohesion, Lexical Resource, and Grammatical Range and Accuracy (grading on a 0-100 scale where 90+=Band 9, 80-89=Band 8, 70-79=Band 7). For competitive exams, assess structural cohesion, depth of arguments, and factual accuracy. Provide an actionable model answer outline.',
           responseMimeType: 'application/json',
           responseSchema: {
             type: Type.OBJECT,

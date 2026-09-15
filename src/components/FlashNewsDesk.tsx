@@ -31,7 +31,7 @@ export interface OfficialNotification {
   id: string;
   examType: ExamType;
   title: string;
-  source: 'UPSC' | 'TNPSC' | 'PIB' | 'SSC' | 'RRB';
+  source: 'UPSC' | 'TNPSC' | 'PIB' | 'SSC' | 'RRB' | 'NTA' | 'IELTS';
   category: 'notification' | 'result' | 'key' | 'pib';
   publishDate: string;
   deadlineDate?: string;
@@ -271,6 +271,89 @@ const GOVERNMENT_NOTIFICATIONS_DATA: OfficialNotification[] = [
     ],
     isImportant: true,
     fileSize: '1.2 MB'
+  },
+  // IELTS Alerts
+  {
+    id: 'ielts-1',
+    examType: 'IELTS',
+    title: 'IELTS One Skill Retake (OSR) Expanded Globally by IDP & British Council',
+    source: 'IELTS',
+    category: 'notification',
+    publishDate: 'August 10, 2026',
+    officialLink: 'https://ielts.idp.com/about/one-skill-retake',
+    highlights: [
+      'Candidates can retake any single module (Listening, Reading, Writing, or Speaking) within 60 days of the original test date.',
+      'Accepted by major universities, immigration departments, and professional registration bodies worldwide.',
+      'New Test Report Form (TRF) issued with original scores plus the improved retake score.'
+    ],
+    isImportant: true,
+    fileSize: '750 KB'
+  },
+  {
+    id: 'ielts-2',
+    examType: 'IELTS',
+    title: 'Cambridge IELTS 19 Authentic Practice Test Collection Released',
+    source: 'IELTS',
+    category: 'notification',
+    publishDate: 'August 02, 2026',
+    officialLink: 'https://www.cambridgeenglish.org/exams-and-tests/ielts/',
+    highlights: [
+      'Official examination papers providing the most authentic exam preparation experience for both Academic and General Training.',
+      'Includes updated scoring rubrics, sample candidate writing scripts with examiner annotations, and downloadable audio tracks.',
+      'Covers new question configurations in Listening Section 3 and Academic Reading Passages.'
+    ],
+    isImportant: true,
+    fileSize: '1.8 MB'
+  },
+  {
+    id: 'ielts-3',
+    examType: 'IELTS',
+    title: 'Computer-Delivered IELTS Results Turnaround Accelerated to 3–5 Days',
+    source: 'IELTS',
+    category: 'result',
+    publishDate: 'July 25, 2026',
+    officialLink: 'https://takeielts.britishcouncil.org',
+    highlights: [
+      'Electronic scores and e-TRF available within 3 to 5 calendar days after test completion.',
+      'Free electronic score delivery directly to up to 5 nominated universities or visa processing centers.',
+      'Ensures candidates meet fast-approaching international university intake deadlines.'
+    ],
+    isImportant: false,
+    fileSize: '420 KB'
+  },
+  // IIT JEE Alerts
+  {
+    id: 'jee-1',
+    examType: 'IIT_JEE',
+    title: 'NTA JEE Main 2026 Information Bulletin & Examination Schedule',
+    source: 'NTA',
+    category: 'notification',
+    publishDate: 'August 01, 2026',
+    deadlineDate: 'August 30, 2026',
+    officialLink: 'https://jeemain.nta.ac.in',
+    highlights: [
+      'Session 1 and Session 2 examination schedules, tie-breaking criteria, and computer-based test instructions.',
+      'Detailed syllabus mapping for Physics, Chemistry, and Mathematics.'
+    ],
+    isImportant: true,
+    fileSize: '2.1 MB'
+  },
+  // NEET Alerts
+  {
+    id: 'neet-1',
+    examType: 'NEET',
+    title: 'NEET UG 2026 Official Information Bulletin & Syllabus Notification',
+    source: 'NTA',
+    category: 'notification',
+    publishDate: 'July 15, 2026',
+    deadlineDate: 'August 15, 2026',
+    officialLink: 'https://exams.nta.ac.in/NEET/',
+    highlights: [
+      'Single paper 720-marks format with 180 questions across Botany, Zoology, Physics, and Chemistry.',
+      'Detailed NMC updated curriculum and reservation guidelines for 15% AIQ and 85% State Quota.'
+    ],
+    isImportant: true,
+    fileSize: '2.4 MB'
   }
 ];
 
@@ -360,6 +443,9 @@ export default function FlashNewsDesk({ selectedExam }: FlashNewsDeskProps) {
       case 'TNPSC_G4': return 'TNPSC Group 4 Board';
       case 'SSC_CGL': return 'Staff Selection Commission (SSC)';
       case 'RRB_NTPC': return 'Railway Recruitment Board (RRB)';
+      case 'IIT_JEE': return 'National Testing Agency (NTA - JEE Apex Board)';
+      case 'NEET': return 'National Testing Agency (NTA NEET Medical Board)';
+      case 'IELTS': return 'IELTS Official (IDP, British Council & Cambridge English)';
       default: return 'Government Examination Board';
     }
   };

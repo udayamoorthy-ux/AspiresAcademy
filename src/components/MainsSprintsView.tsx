@@ -154,6 +154,20 @@ const DAILY_SPRINTS: Record<ExamType, SprintPrompt[]> = {
       context: 'NEET Biology - Molecular Basis of Inheritance'
     }
   ],
+  IELTS: [
+    {
+      id: 'ielts-sprint-1',
+      question: 'Some people argue that university education should focus strictly on providing skills for employment, while others believe its primary purpose is the acquisition of knowledge for its own sake. Discuss both views and give your opinion in a concise Band 8+ introduction and first body paragraph.',
+      timeLimit: 300,
+      idealKeywords: ['Tertiary education', 'Employability & pragmatic skills', 'Intellectual enrichment', 'Holistic development', 'Vocational preparation', 'Paradigm shift', 'Critical thinking'],
+      evaluationRubric: [
+        { title: 'Task Response & Paraphrase', desc: 'Candidate effectively paraphrased the background statement without copying prompt wording, presenting a nuanced thesis statement outlining their stance.' },
+        { title: 'Coherence & Cohesion', desc: 'Logical flow using high-level cohesive markers (e.g. "On the one hand", "Conversely", "While proponents argue").' },
+        { title: 'Lexical Resource & Grammar', desc: 'Accurate usage of academic vocabulary and varied compound/complex sentence structures with zero major syntactic flaws.' }
+      ],
+      context: 'IELTS Academic Writing Task 2 - Higher Education & Workforce'
+    }
+  ],
 };
 
 export default function MainsSprintsView({ selectedExam }: { selectedExam: ExamType }) {

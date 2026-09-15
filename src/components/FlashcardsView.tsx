@@ -252,6 +252,41 @@ const FLASHCARD_DECKS: Record<ExamType, Flashcard[]> = {
         'Explains the brilliance of diamonds and the formation of mirages in deserts.'
       ]
     }
+  ],
+  IELTS: [
+    {
+      id: 'ielts-fc-1',
+      category: 'Lexical Resource (Band 8+ Collocations)',
+      question: 'What are 3 high-scoring collocations and academic synonyms for "rapid increase" in IELTS Writing & Speaking?',
+      answer: 'High-yield collocations demonstrate varied vocabulary and natural phrasing beyond simplistic elementary descriptors.',
+      points: [
+        'Verb + Adverb: "Escalated dramatically" or "surged precipitously".',
+        'Adjective + Noun: "Experienced an exponential surge" or "witnessed a marked upturn".',
+        'Plateau & Peak contrast: "Culminated in a historic zenith before stabilizing".'
+      ]
+    },
+    {
+      id: 'ielts-fc-2',
+      category: 'Coherence & Cohesion (Transitional Devices)',
+      question: 'How do you effectively contrast ideas without overusing basic connectors like "but" or "however"?',
+      answer: 'Use varied discourse markers, concessions, and complex sentence structures to signal transition smoothly.',
+      points: [
+        'Concession: "Notwithstanding the evident merits of X, one must acknowledge..."',
+        'Direct Contrast: "Conversely, critics argue with equal vigor that..."',
+        'Subordinating structure: "While proponents champion X, subsequent empirical data reveals Y."'
+      ]
+    },
+    {
+      id: 'ielts-fc-3',
+      category: 'Speaking Part 2 & 3 (Idiomatic Accuracy)',
+      question: 'What constitutes natural, examiner-approved idiomatic language in IELTS Speaking?',
+      answer: 'Using authentic, natural English phrasal verbs, collocations, and contextual idioms rather than obscure proverbs.',
+      points: [
+        '"It was a blessing in disguise when my initial plan fell through."',
+        '"I found myself caught between a rock and a hard place regarding which career path to choose."',
+        '"To cut a long story short, the experience broadened my horizons immensely."'
+      ]
+    }
   ]
 };
 

@@ -950,6 +950,153 @@ export const NEET_QUESTION_POOL: Question[] = [
   }
 ];
 
+// ==========================================
+// 9. IELTS (ACADEMIC & GENERAL TRAINING) POOL
+// ==========================================
+export const IELTS_QUESTION_POOL: Question[] = [
+  {
+    id: 'ielts-001',
+    text: 'In an IELTS Academic Reading passage: "Recent epidemiological studies suggest that regular moderate physical activity mitigates cognitive decline in seniors, although the exact neurological pathways remain incompletely understood."\n\nQuestion: According to the text, the neurological mechanism through which exercise preserves cognitive function is fully proven.',
+    options: ['TRUE', 'FALSE', 'NOT GIVEN', 'CANNOT BE DETERMINED'],
+    correctAnswerIndex: 1,
+    explanation: 'The statement directly contradicts the passage, which explicitly states that the exact neurological pathways "remain incompletely understood". Therefore, the correct answer is FALSE.',
+    subject: 'Reading (True/False/Not Given)'
+  },
+  {
+    id: 'ielts-002',
+    text: 'Which cohesive transitional phrase is most appropriate to introduce an opposing perspective in an IELTS Writing Task 2 academic essay?',
+    options: [
+      'By the way, on the other hand',
+      'Conversely, proponents of the alternative viewpoint argue that',
+      'Secondly, I want to say that opposite people think',
+      'Anyway, some folks disagree because'
+    ],
+    correctAnswerIndex: 1,
+    explanation: '"Conversely, proponents of the alternative viewpoint argue that" provides formal academic register, high lexical resource, and seamless cohesion required for Band 8+ essay discourse.',
+    subject: 'Writing (Cohesion & Coherence)'
+  },
+  {
+    id: 'ielts-003',
+    text: 'In IELTS Listening Section 1 (Form Filling), you hear: "My flight lands at quarter to five in the afternoon on Thursday." What is the correct standard time format to record in the booking form?',
+    options: ['4:15 PM', '4:45 PM', '5:15 PM', '5:45 PM'],
+    correctAnswerIndex: 1,
+    explanation: '"Quarter to five" means 15 minutes before 5:00, which corresponds to 4:45 PM.',
+    subject: 'Listening (Time & Numerical Note-Taking)'
+  },
+  {
+    id: 'ielts-004',
+    text: 'Which of the following phrases represents a high-level (Band 8/9) academic collocation to describe a sharp increase in an IELTS Writing Task 1 chart?',
+    options: [
+      'Went big up very quickly',
+      'Experienced an exponential surge',
+      'Grew lots of numbers up',
+      'Climbed fastly with much marks'
+    ],
+    correctAnswerIndex: 1,
+    explanation: '"Experienced an exponential surge" demonstrates sophisticated lexical resource and natural collocation suitable for academic report writing.',
+    subject: 'Writing Task 1 (Lexical Resource)'
+  },
+  {
+    id: 'ielts-005',
+    text: 'In IELTS Speaking Part 3, how can an aspirant best avoid simplistic one-line answers and exhibit fluency and coherence?',
+    options: [
+      'Repeat the examiner\'s question three times in silence',
+      'Use the PEEL structure: Point, Explanation, Example, and Link to broader societal context',
+      'Memorize a fixed 200-word template and recite it regardless of the topic',
+      'Speak as rapidly as possible without pausing for breath'
+    ],
+    correctAnswerIndex: 1,
+    explanation: 'Using the PEEL structure (Point, Explain, Example, Link) allows candidate answers to develop logically, showing topical depth, cohesive discourse markers, and natural communicative fluency.',
+    subject: 'Speaking (Fluency & Strategy)'
+  },
+  {
+    id: 'ielts-006',
+    text: 'Identify the sentence with correct grammatical structure and punctuation suitable for an IELTS formal essay:',
+    options: [
+      'Despite governments invest in renewable energy, but pollution still rises.',
+      'Although governments have invested heavily in renewable energy, carbon emissions continue to escalate globally.',
+      'In spite of governments invested in green energy, carbon emissions escalating.',
+      'Whereas governments invest, therefore carbon emissions are growing fast.'
+    ],
+    correctAnswerIndex: 1,
+    explanation: 'Option B correctly uses the subordinating conjunction "Although" with a present perfect clause followed by a main clause with proper subject-verb agreement without redundant conjunctions like "but".',
+    subject: 'Grammar & Accuracy'
+  },
+  {
+    id: 'ielts-007',
+    text: 'In an IELTS Academic Reading text: "The architectural restoration project commenced in 1994, spearheaded by the municipal heritage council and funded primarily by international philanthropy."\n\nQuestion: Who provided the primary financial backing for the project?',
+    options: [
+      'The National Ministry of Culture',
+      'International philanthropic donors',
+      'Private commercial banks',
+      'Local municipal taxpayers'
+    ],
+    correctAnswerIndex: 1,
+    explanation: 'The text states the project was "funded primarily by international philanthropy", meaning international philanthropic donors provided the primary funding.',
+    subject: 'Reading (Scanning & Information Retrieval)'
+  },
+  {
+    id: 'ielts-008',
+    text: 'In IELTS Listening Section 2, the speaker provides directional instructions: "From the main entrance, proceed past the reception lobby and turn immediately right before the cafeteria; the seminar room is the second door on your left." Where is the seminar room?',
+    options: [
+      'Inside the cafeteria on the right',
+      'Directly opposite the reception lobby',
+      'Second door on the left along the hallway turned right before the cafeteria',
+      'At the far end of the cafeteria corridor on the right'
+    ],
+    correctAnswerIndex: 2,
+    explanation: 'Following the sequence: enter -> pass reception -> turn right before cafeteria -> proceed to the second door situated on the left.',
+    subject: 'Listening (Map & Directional Following)'
+  },
+  {
+    id: 'ielts-009',
+    text: 'Which idiom/phrase is considered naturally appropriate and idiomatic (Band 8+) in an IELTS Speaking interview describing a past challenging decision?',
+    options: [
+      'I was at a crossroads regarding my career trajectory.',
+      'I was jumping on the cat and dog tree.',
+      'My brain had a fatal computer error.',
+      'I did not do the thing because no time.'
+    ],
+    correctAnswerIndex: 0,
+    explanation: '"To be at a crossroads" is an authentic, natural English idiom denoting a critical juncture where an important choice must be made.',
+    subject: 'Speaking (Idiomatic Vocabulary)'
+  },
+  {
+    id: 'ielts-010',
+    text: 'In IELTS Writing Task 2, what constitutes "Task Response" (TR) for a Band 9 score according to official public band descriptors?',
+    options: [
+      'Writing over 600 words without paragraphs',
+      'Fully addressing all parts of the task with a well-developed, clear position and supported ideas throughout',
+      'Using rare words found in Victorian poetry in every sentence',
+      'Agreeing with the prompt without analyzing counterarguments'
+    ],
+    correctAnswerIndex: 1,
+    explanation: 'Official IELTS Band 9 Task Response descriptor requires fully addressing all parts of the prompt with a clear position throughout, supported by relevant, fully extended, and well-developed ideas.',
+    subject: 'Writing (Band Criteria & Rubrics)'
+  },
+  {
+    id: 'ielts-011',
+    text: 'Choose the most accurate paraphrased synonym for "ubiquitous" in the context of modern digital technology in an IELTS reading or writing context:',
+    options: ['Sporadic', 'Omnipresent / Pervasive', 'Obsolete', 'Rudimentary'],
+    correctAnswerIndex: 1,
+    explanation: '"Ubiquitous" means present, appearing, or found everywhere; synonyms include "omnipresent", "pervasive", and "widespread".',
+    subject: 'Vocabulary & Lexical Resource'
+  },
+  {
+    id: 'ielts-012',
+    text: 'What is the penalty if an IELTS candidate writes fewer than the minimum prescribed words (e.g. fewer than 150 words in Task 1 or fewer than 250 words in Task 2)?',
+    options: [
+      'Immediate disqualification from the examination',
+      'A heavy penalty deducted under the Task Achievement / Task Response band criterion',
+      'No penalty if the spelling is accurate',
+      'A deduction only in the Pronunciation score'
+    ],
+    correctAnswerIndex: 1,
+    explanation: 'Under-length responses fail to sufficiently develop ideas, resulting in severe score penalties under Task Achievement (Task 1) or Task Response (Task 2).',
+    subject: 'Exam Format & Scoring'
+  }
+];
+
 // Master Dictionary Mapping Exam Types to Pools
 export const EXAM_QUESTION_POOLS: Record<ExamType, Question[]> = {
   UPSC: UPSC_QUESTION_POOL,
@@ -960,6 +1107,7 @@ export const EXAM_QUESTION_POOLS: Record<ExamType, Question[]> = {
   RRB_NTPC: RRB_NTPC_QUESTION_POOL,
   IIT_JEE: IIT_JEE_QUESTION_POOL,
   NEET: NEET_QUESTION_POOL,
+  IELTS: IELTS_QUESTION_POOL,
 };
 
 // Backwards-compatible aliases
@@ -1016,7 +1164,8 @@ export function getQuestionsForExam(
     SSC_CGL: 8,
     RRB_NTPC: 10,
     IIT_JEE: 12,
-    NEET: 14
+    NEET: 14,
+    IELTS: 16
   };
   const eOffset = examOffsets[exam] || 0;
 

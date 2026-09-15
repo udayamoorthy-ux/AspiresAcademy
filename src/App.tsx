@@ -102,6 +102,11 @@ const TICKER_HEADLINES: Record<ExamType, string[]> = {
     'NEET UG 2027 Official Notification & Application Window to open at exams.nta.ac.in/NEET in early 2027.',
     'High-Yield Advisory: 360/720 marks allocated to Biology (Botany & Zoology). Revise NCERT line-by-line along with Diagrams & Exemplar.',
     'MCC All-India Quota (AIQ 15%) & State Quota (85%) Medical Counselling schedules and seat matrix updated.'
+  ],
+  IELTS: [
+    'IELTS One Skill Retake (OSR) now available worldwide through IDP & British Council for Academic & General Training.',
+    'Cambridge IELTS 19 authentic practice examination collections and audio tracks released for Band 8+ preparation.',
+    'Computer-Delivered IELTS results published within 3 to 5 calendar days with direct electronic university reporting.'
   ]
 };
 
@@ -138,7 +143,11 @@ export default function App() {
   const handleGenerateAIOutreach = async () => {
     setIsGeneratingOutreach(true);
     try {
-      const promptSubject = selectedExam === 'IIT_JEE'
+      const promptSubject = selectedExam === 'IELTS'
+        ? 'Mixed IELTS Academic & General Training topics spanning Reading Comprehension, Listening Note-taking, Writing Task 1/2 Lexical Resource, and Speaking Idioms'
+        : selectedExam === 'NEET'
+        ? 'Mixed High-Yield NEET UG topics spanning NCERT Botany, Zoology, Organic/Inorganic Chemistry, and Physics'
+        : selectedExam === 'IIT_JEE'
         ? 'Mixed High-Yield IIT JEE Main and Advanced topics spanning Physics, Chemistry, and Mathematics'
         : selectedExam === 'SSC_CGL' || selectedExam === 'RRB_NTPC'
         ? 'Mixed Quantitative Aptitude, Reasoning, General Awareness, and English questions'
@@ -159,7 +168,9 @@ export default function App() {
       if (data.questions && Array.isArray(data.questions) && data.questions.length > 0) {
         // Map the generated questions to ensure they have subjects mapped for the Outreach visualizer
         const mappedQuestions = data.questions.map((q: any, idx: number) => {
-          const defaultSubjects = selectedExam === 'NEET'
+          const defaultSubjects = selectedExam === 'IELTS'
+            ? ['READING COMPREHENSION', 'LISTENING NOTE-TAKING', 'WRITING TASK 1 & 2', 'SPEAKING & LEXICAL RESOURCE', 'ACADEMIC GRAMMAR']
+            : selectedExam === 'NEET'
             ? ['BIOLOGY (BOTANY)', 'BIOLOGY (ZOOLOGY)', 'PHYSICS', 'CHEMISTRY', 'BIOLOGY']
             : selectedExam === 'IIT_JEE'
             ? ['PHYSICS', 'CHEMISTRY', 'MATHEMATICS', 'PHYSICS', 'CHEMISTRY']
@@ -531,7 +542,7 @@ export default function App() {
           </div>
 
           {/* Selector Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 xl:grid-cols-8 gap-2 w-full lg:w-auto relative z-10" id="exam-selector-buttons">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 xl:grid-cols-9 gap-2 w-full lg:w-auto relative z-10" id="exam-selector-buttons">
             {[
               { id: 'UPSC', label: 'UPSC IAS/IPS' },
               { id: 'TNPSC_G1', label: 'TNPSC Group 1' },
@@ -540,7 +551,8 @@ export default function App() {
               { id: 'SSC_CGL', label: 'SSC CGL' },
               { id: 'RRB_NTPC', label: 'RRB NTPC' },
               { id: 'IIT_JEE', label: 'IIT JEE' },
-              { id: 'NEET', label: 'NEET UG' }
+              { id: 'NEET', label: 'NEET UG' },
+              { id: 'IELTS', label: 'IELTS Band 8+' }
             ].map((examItem) => {
               const isActive = selectedExam === examItem.id;
               return (
