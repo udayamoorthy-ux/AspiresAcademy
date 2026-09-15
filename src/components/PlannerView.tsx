@@ -51,13 +51,13 @@ export default function PlannerView({ selectedExam, setActiveTab }: PlannerViewP
         ];
       case 'IELTS':
         return [
-          'Reading (Academic True/False/Not Given & Headings)',
-          'Listening (Sections 1-4 Dictation & Speed Note-taking)',
-          'Writing Task 1 (Trends, Charts & Process Reports)',
-          'Writing Task 2 (Discursive Essays & Lexical Resource)',
-          'Speaking (Cue Cards & Part 3 Abstract Reasoning)',
-          'Band 8+ Collocations & Advanced Grammar Range',
-          'Full-Length Cambridge Timed Mock Simulation'
+          'English Newspaper Reading (The Guardian, The Economist, BBC, NYT Editorial)',
+          'Daily Vocabulary & Lexical Collocations (Academic Word List & Idiomatic Usage)',
+          'Podcasts & Native Listening Immersion (BBC 6-Minute English, TED Talks, NPR)',
+          'Daily Opinion Writing & Argument Formulation (Editorial Summaries & Critical Analysis)',
+          'Spoken English Fluency & Pronunciation (Monologue, Shadowing & Discussion)',
+          'Speed Reading & Synthesizing Complex Non-Fiction Articles',
+          'Timed Exam Strategy & Active Language Review'
         ];
       case 'IIT_JEE':
         return [
@@ -177,6 +177,14 @@ export default function PlannerView({ selectedExam, setActiveTab }: PlannerViewP
           accent: 'amber',
           subtext: 'Railway board standard syllabus emphasizing General Science (NCERT 9-10), Arithmetic, and Reasoning speed.',
           keyFocus: ['10th NCERT Physics & Chemistry', 'Arithmetic & Time-Speed Problems', 'Railway Knowledge & Reasoning']
+        };
+      case 'IELTS':
+        return {
+          title: 'IELTS Language Immersion & Habit Plan',
+          badge: 'IELTS Band 8+ Language Immersion',
+          accent: 'emerald',
+          subtext: 'Generic English proficiency strategy focusing on real-world language immersion: reading international newspapers, expanding lexical collocations, listening to native broadcasts, and daily opinion formulation.',
+          keyFocus: ['Read Newspapers (The Guardian / The Economist)', 'Daily Academic Vocabulary & Collocations', 'Native Podcasts & Opinion Writing']
         };
       case 'UPSC':
       default:
@@ -770,7 +778,9 @@ export default function PlannerView({ selectedExam, setActiveTab }: PlannerViewP
                     value={customTopic}
                     onChange={(e) => setCustomTopic(e.target.value)}
                     placeholder={
-                      selectedExam === 'NEET'
+                      selectedExam === 'IELTS'
+                        ? 'e.g. Read The Economist: Technology editorial & log 10 new collocations'
+                        : selectedExam === 'NEET'
                         ? 'e.g. NCERT Class 12: Genetics & Molecular Inheritance'
                         : selectedExam === 'IIT_JEE'
                         ? 'e.g. Irodov / HC Verma: Rotational Mechanics Problems'

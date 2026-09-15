@@ -69,10 +69,11 @@ const PRESET_TOPICS: Record<ExamType, { topic: string; keywords: string }[]> = {
     { topic: 'Biotechnology: Principles & Processes', keywords: 'Restriction endonucleases, EcoRI, pBR322 plasmid, PCR Taq polymerase, Gel electrophoresis, Bt Cotton' }
   ],
   IELTS: [
-    { topic: 'Academic Reading: True/False/Not Given & Heading Matching', keywords: 'Factual contradiction vs absent info, keyword scanning, paragraph main idea, topic sentences' },
-    { topic: 'Writing Task 1: Chart, Graph & Map Analysis', keywords: 'Overview structure, trends, peak, plateau, dramatic surge, comparative groupings, data accuracy' },
-    { topic: 'Writing Task 2: Band 8+ Discursive Essays', keywords: 'Task response, thesis statement, PEEL body paragraphs, counter-arguments, cohesive devices, lexical resource' },
-    { topic: 'Speaking & Advanced Lexical Resource', keywords: 'Idiomatic expressions, collocations, fluency fillers, conditional grammar, Part 2 cue card strategy' }
+    { topic: 'English Newspaper Reading & Editorial Analysis', keywords: 'The Guardian, The Economist, critical perspective, nuance, stance, summarization, argumentative connectors' },
+    { topic: 'Academic Word List (AWL) & Collocations', keywords: 'High-band collocations, academic vocabulary, lexical precision, idiomatic expressions, connotation' },
+    { topic: 'Native Podcast & Broadcast Listening Comprehension', keywords: 'BBC 6-Minute English, NPR, speed note-taking, accent variety, lecture transition signposts' },
+    { topic: 'Daily Opinion Writing & Editorial Summaries', keywords: 'Task response, thesis statement, PEEL body paragraphs, counter-arguments, cohesive devices, lexical resource' },
+    { topic: 'Speaking Fluency, Pronunciation & Shadowing', keywords: 'Connected speech, intonation, fluency fillers, conditional grammar, 2-minute impromptu monologue' }
   ]
 };
 

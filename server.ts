@@ -138,7 +138,7 @@ app.post('/api/study-planner', async (req, res) => {
     try {
       let examSubjectGuidance = "";
       if (exam === 'IELTS') {
-        examSubjectGuidance = "CRITICAL: The subjects MUST strictly be 'Academic Reading', 'Listening Comprehension', 'Writing Task 1 & 2', and 'Speaking & Fluency'. References MUST cite Cambridge IELTS 1-19, Official Cambridge Guide to IELTS, Pauline Cullen Vocabulary, Barron's IELTS. Do NOT include History, Polity, or Civics.";
+        examSubjectGuidance = "CRITICAL FOR IELTS: IELTS is a generic English language proficiency test, NOT a subject-based exam. The AI study planner MUST NOT give any academic 'chapters' to study. Instead, every single task MUST ask the student to perform generic English immersion and language acquisition activities: reading quality international newspapers (The Economist, The Guardian, BBC News, The New York Times editorial), daily academic vocabulary building (AWL - Academic Word List, collocations, phrasal verbs), listening to native English podcasts and broadcasts (BBC 6-Minute English, NPR, TED Talks), daily opinion writing and summarization of newspaper editorials, and active speaking practice (shadowing native speakers, impromptu 2-minute topic monologues, discussion of current events). References MUST cite newspapers (The Guardian, The Economist, BBC News, Scientific American), vocabulary resources (Pauline Cullen Cambridge Vocabulary for IELTS, English Collocations in Use by McCarthy), and native podcasts. Do NOT present syllabus chapters or academic subjects.";
       } else if (exam === 'NEET') {
         examSubjectGuidance = "CRITICAL: The subjects MUST strictly be 'Biology (Botany)', 'Biology (Zoology)', 'Chemistry', and 'Physics'. References MUST be NCERT Class 11/12 Biology, HC Verma, Trueman Biology, OP Tandon, MS Chouhan. Do NOT include History, Polity, or Civics.";
       } else if (exam === 'IIT_JEE') {
@@ -171,7 +171,7 @@ app.post('/api/study-planner', async (req, res) => {
         model: 'gemini-2.5-flash',
         contents: prompt,
         config: {
-          systemInstruction: 'You are an elite Competitive Exam & Medical/Engineering Entrance Mentor who creates precise, customized, realistic schedules for NEET UG (Biology, Physics, Chemistry), IIT JEE (Physics, Chemistry, Mathematics), UPSC CSE, TNPSC (Units 8 & 9, Tamil, GS), SSC CGL, and RRB NTPC. All topics, chapters, and textbook citations (e.g., NCERT Class 11/12, HC Verma, MS Chouhan, M. Laxmikanth, Spectrum, Samacheer Kalvi) must be 100% authentic, real, and strictly aligned with the target examination.',
+          systemInstruction: 'You are an elite Competitive Exam & Language Immersion Mentor who creates precise, customized, realistic schedules. For competitive exams (NEET UG, IIT JEE, UPSC CSE, TNPSC, SSC CGL, RRB NTPC), cite authentic chapters and core standard textbooks. For IELTS, since it is a generic English language examination, do NOT assign chapters or academic textbooks; instead, assign daily language acquisition routines such as reading international newspapers (The Economist, The Guardian, BBC News), vocabulary and collocation notebooks, native podcasts (BBC 6-Minute English, NPR), editorial opinion drafting, and speaking fluency drills.',
           responseMimeType: 'application/json',
           responseSchema: {
             type: Type.OBJECT,
@@ -908,77 +908,91 @@ app.post('/api/study-planner', async (req, res) => {
     }
   ];
 
-  // IELTS Study Plan Pool
+  // IELTS Study Plan Pool (Generic English Language Immersion & Habits)
   const ieltsPlanPool = [
     {
-      topic: "Academic Reading: True/False/Not Given & Heading Matching",
-      subject: "Academic Reading",
-      phase: "Phase 1: Diagnostic & Skill Building",
+      topic: "Daily International Newspaper Reading (The Guardian / The Economist)",
+      subject: "English Newspaper Reading",
+      phase: "Phase 1: Daily Immersion & Habit Building",
       priority: "High",
-      references: ["Cambridge IELTS 19 Academic Practice Tests", "The Official Cambridge Guide to IELTS"],
+      references: ["The Guardian Long Read / Op-Eds", "The Economist Global Analysis", "BBC News Features"],
       learningObjectives: [
-        "Master distinction between FALSE (direct factual contradiction) vs NOT GIVEN (information absent)",
-        "Implement keyword skimming and synonym scanning under strict 20-minute per passage constraints",
-        "Achieve 36+/40 accuracy for Band 8.5+ Reading score"
+        "Read 2 full analytical articles daily without pausing for every unknown word",
+        "Skim for main ideas and scan for specific evidentiary statistics or quotes",
+        "Annotate author stance, tone, and transitional argumentation techniques"
       ],
-      selfCheckQuestion: "What is the critical semantic difference between FALSE and NOT GIVEN in IELTS Reading?",
-      selfCheckAnswer: "A statement is FALSE if the passage explicitly contradicts or disproves it. A statement is NOT GIVEN if the passage does not contain enough information to confirm or disprove the claim, even if it seems logically plausible in real life."
+      selfCheckQuestion: "What is the most effective way to improve English reading speed and comprehension for IELTS without reading academic textbooks?",
+      selfCheckAnswer: "Read high-quality broadsheet journalism (e.g., The Guardian, The Economist, BBC News) daily. Focus on paragraph topic sentences and synthesizing complex viewpoints rather than memorizing isolated words."
     },
     {
-      topic: "Listening Skills: Sections 1-4 Dictation & Speed Note-Taking",
-      subject: "Listening Comprehension",
-      phase: "Phase 1: Diagnostic & Skill Building",
+      topic: "Academic Vocabulary Log & Lexical Collocations (AWL Mastery)",
+      subject: "Vocabulary & Lexical Resource",
+      phase: "Phase 1: Daily Immersion & Habit Building",
       priority: "High",
-      references: ["Cambridge IELTS 18 & 19 Audio Tracks", "Pauline Cullen Common Mistakes at IELTS"],
+      references: ["Pauline Cullen Cambridge Vocabulary for IELTS", "English Collocations in Use by Michael McCarthy", "Academic Word List (Coxhead)"],
       learningObjectives: [
-        "Capture names, numbers, postal codes, and addresses accurately in Section 1 without spelling errors",
-        "Navigate floor plans, maps, and directional signposting words in Section 2",
-        "Follow complex academic multi-speaker debates and lecture transitions in Sections 3 & 4"
+        "Extract 10-15 high-band academic collocations daily into a personalized lexical notebook",
+        "Practice natural word pairings (e.g., 'profound implication', 'striking disparity', 'foster innovation')",
+        "Replace vague words like 'good', 'bad', 'thing' with precise nuance"
       ],
-      selfCheckQuestion: "In IELTS Listening, if the audio says 'forty-five pounds fifty', what is the proper numerical format to avoid word count deduction?",
-      selfCheckAnswer: "Write '£45.50' (or '45.50' if currency symbol is already printed on the question sheet). Writing 'forty five pounds and fifty pence' wastes word limit and risks spelling deduction."
+      selfCheckQuestion: "Why are collocations and topic-specific lexical resources valued over obscure 'rare' dictionary words in IELTS scoring?",
+      selfCheckAnswer: "Band descriptors reward natural, precise collocation and idiom appropriate to context. Rote insertion of obscure words often results in unnatural usage, whereas accurate collocations demonstrate true native-like fluency."
     },
     {
-      topic: "Writing Task 1: Describing Complex Trends, Charts & Maps",
-      subject: "Writing Task 1",
-      phase: "Phase 2: Academic Production",
+      topic: "Native English Podcasts & News Broadcasts (BBC / NPR / TED)",
+      subject: "Native Listening Immersion",
+      phase: "Phase 2: Comprehensive Audio Fluency",
       priority: "High",
-      references: ["Cambridge IELTS Writing Band Descriptors", "Barron's Writing for IELTS"],
+      references: ["BBC 6-Minute English", "NPR All Things Considered", "TED Radio Hour", "ABC Radio Australia"],
       learningObjectives: [
-        "Formulate a Band 9 Overview highlighting 2-3 main key features without data numbers",
-        "Use dynamic trend verbs (escalated, plateaued, plummeted, fluctuated) with accurate adverbs",
-        "Structure two logical body paragraphs with comparative groupings in under 20 minutes"
+        "Listen to 30-45 minutes of native speakers with varied accents (British, Australian, North American)",
+        "Practice speed note-taking and summarizing multi-speaker discussions in real time",
+        "Catch subtle changes in tone, sarcasm, agreement, and contradiction"
       ],
-      selfCheckQuestion: "Why is a clear 'Overview' essential for scoring Band 7+ in IELTS Writing Task 1?",
-      selfCheckAnswer: "Under official Task Achievement criteria, a candidate cannot score Band 7 or above without presenting a clear overview of the main trends, differences, or stages, summarizing key patterns without getting bogged down in individual figures."
+      selfCheckQuestion: "How does listening to diverse radio broadcasts like BBC or NPR help in IELTS Listening Sections 3 and 4?",
+      selfCheckAnswer: "It acclimates candidates to varied accents (British, Australian, American), rapid lecture transitions, signposting words, and natural speech elisions encountered in Section 3 and 4 academic discussions."
     },
     {
-      topic: "Writing Task 2: Discursive & Argumentative Essay Mastery",
-      subject: "Writing Task 2",
-      phase: "Phase 2: Academic Production",
+      topic: "Editorial Opinion Writing & Critical Argument Summarization",
+      subject: "Daily Opinion Writing",
+      phase: "Phase 2: Comprehensive Language Production",
       priority: "High",
-      references: ["Official IELTS Task 2 Public Band Descriptors", "Cambridge IELTS 19 Examiner Model Answers"],
+      references: ["The Guardian Editorial Page", "Financial Times Lex Column", "Official IELTS Writing Band Descriptors"],
       learningObjectives: [
-        "Construct 4-paragraph essays with clear thesis statements and topic sentences",
-        "Develop ideas using PEEL (Point, Explanation, Example, Link) to achieve Band 8+ Task Response",
-        "Deploy advanced cohesive devices and complex grammatical structures without mechanical repetition"
+        "Draft a 250-word analytical response to a contemporary editorial article in 30 minutes",
+        "Structure arguments clearly using Point, Evidence, Explanation, Link (PEEL)",
+        "Deploy varied sentence syntax (relative clauses, conditionals, passive forms) accurately"
       ],
-      selfCheckQuestion: "What is the penalty for writing under 250 words in IELTS Writing Task 2?",
-      selfCheckAnswer: "Writing fewer than 250 words results in an automatic penalty under Task Response because the candidate has failed to sufficiently address and develop all elements of the prompt."
+      selfCheckQuestion: "How should a daily writing habit be organized to attain Band 8+ fluency?",
+      selfCheckAnswer: "Pick a current event editorial from a newspaper, identify the central contention, and write a 250-word critique expressing your perspective with 2 clear supporting reasons and real-world illustrations."
     },
     {
-      topic: "Speaking Interview: Part 2 Cue Cards & Part 3 Abstract Reasoning",
-      subject: "Speaking & Lexical Resource",
-      phase: "Phase 3: Fluency & Pronunciation",
+      topic: "Spoken English Fluency, Shadowing & 2-Minute Monologue Drills",
+      subject: "Fluency & Pronunciation",
+      phase: "Phase 3: Real-Time Communication",
       priority: "High",
-      references: ["Cambridge IELTS Speaking Diagnostic Videos", "Collins Speaking for IELTS"],
+      references: ["BBC Learning English Pronunciation", "IELTS Speaking Part 2/3 Topics", "English Speech Shadowing Audio"],
       learningObjectives: [
-        "Structure 2-minute Part 2 responses seamlessly utilizing the 1-minute preparation note-taking",
-        "Elaborate Part 3 answers from personal anecdotes to societal, philosophical, and global implications",
-        "Demonstrate natural idiomatic expressions, varied intonation, and connected speech"
+        "Shadow 5 minutes of native speech daily to calibrate sentence stress, rhythm, and intonation",
+        "Deliver an unscripted 2-minute monologue on an abstract social or technological topic without stalling",
+        "Use conversational discourse markers ('To put it into perspective...', 'On the flip side...') effortlessly"
       ],
-      selfCheckQuestion: "How should a candidate handle Part 3 questions when asked about future technological trends?",
-      selfCheckAnswer: "Use conditional and speculative grammar ('It is highly probable that...', 'Were governments to invest in...', 'One foreseeable repercussion might be...'), developing the answer beyond personal opinion into wider economic and societal dimensions."
+      selfCheckQuestion: "What is 'speech shadowing' and why is it recommended for IELTS candidates?",
+      selfCheckAnswer: "Shadowing is speaking along with a native audio recording simultaneously with minimal delay. It trains muscle memory for natural English rhythm, intonation, connected speech, and elision."
+    },
+    {
+      topic: "Timed Cambridge Mock Simulation & Linguistic Weakness Review",
+      subject: "Timed Performance & Reflection",
+      phase: "Phase 4: Test Readiness & Fine-Tuning",
+      priority: "High",
+      references: ["Cambridge IELTS 19 Academic Practice Tests", "Personal Mistake & Vocabulary Journal"],
+      learningObjectives: [
+        "Simulate a timed Reading & Listening test under exact exam room constraints",
+        "Audit errors to categorize whether mistakes stemmed from vocabulary gaps, speed, or question misinterpretation",
+        "Review vocabulary logs and write corrections for any flawed essay sentences"
+      ],
+      selfCheckQuestion: "What should you do immediately after completing a timed IELTS practice test?",
+      selfCheckAnswer: "Analyze every incorrect or guessed question in detail. Identify the exact sentence or synonym in the text/transcript that determined the answer, and add newly encountered words to your vocabulary log."
     }
   ];
 
@@ -1000,6 +1014,20 @@ app.post('/api/study-planner', async (req, res) => {
     const dayNum = Math.round(((i + 1) / taskCount) * totalDays);
     const poolItem = activePool[i % activePool.length];
     
+    const subtasks = exam === 'IELTS'
+      ? [
+          `Daily reading or listening habit: Engage deeply with ${poolItem.references[0]}`,
+          `Record 10 new collocations or phrases into your active vocabulary notebook`,
+          `Practice active language output: write an analytical summary or do 5-min speech shadowing`,
+          `Discuss vocabulary nuances, idioms, or essay structures with your AI Coach`
+        ]
+      : [
+          `Study official core textbooks: ${poolItem.references[0]}`,
+          `Complete active recall cognitive objectives in study planner expansion panel`,
+          `Solve past 10 years question papers for ${exam} on "${poolItem.topic}"`,
+          `Discuss tricky concepts or verify doubts with AI Personal Coach`
+        ];
+
     generatedTasks.push({
       id: `task-offline-${i}-${Date.now()}`,
       day: dayNum,
@@ -1007,12 +1035,7 @@ app.post('/api/study-planner', async (req, res) => {
       subject: poolItem.subject,
       hours: parseFloat(dailyHours),
       completed: false,
-      subtasks: [
-        `Study official core textbooks: ${poolItem.references[0]}`,
-        `Complete active recall cognitive objectives in study planner expansion panel`,
-        `Solve past 10 years question papers for ${exam} on "${poolItem.topic}"`,
-        `Discuss tricky concepts or verify doubts with AI Personal Coach`
-      ],
+      subtasks: subtasks,
       phase: poolItem.phase,
       priority: poolItem.priority,
       references: poolItem.references,
