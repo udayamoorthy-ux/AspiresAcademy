@@ -13,10 +13,15 @@ import {
   HelpCircle,
   RefreshCw,
   Sparkles,
-  Play
+  Play,
+  Users,
+  Crown,
+  ArrowRight,
+  Lock
 } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, BarChart, Bar, Cell } from 'recharts';
 import { ExamType } from '../types';
+import { isOwnerEmail } from '../utils/authUtils';
 
 interface QuizAttempt {
   id: string;
@@ -30,16 +35,48 @@ interface QuizAttempt {
 interface PerformanceAnalyticsViewProps {
   selectedExam: ExamType;
   onVoicePlay?: (text: string, title: string) => void;
+  userEmail?: string;
+  setActiveTab?: (tab: any) => void;
 }
 
-export default function PerformanceAnalyticsView({ selectedExam, onVoicePlay }: PerformanceAnalyticsViewProps) {
+export default function PerformanceAnalyticsView({ 
+  selectedExam, 
+  onVoicePlay, 
+  userEmail = '', 
+  setActiveTab 
+}: PerformanceAnalyticsViewProps) {
+  const isUserAdmin = isOwnerEmail(userEmail);
+
   const [plannerProgress, setPlannerProgress] = useState({ completed: 0, total: 0, percent: 0 });
   const [quizHistory, setQuizHistory] = useState<QuizAttempt[]>([]);
   const [siteVisits, setSiteVisits] = useState<number>(0);
   const [isLiveConnection, setIsLiveConnection] = useState<boolean>(false);
+  const [adminSubscriberCount, setAdminSubscriberCount] = useState<number | null>(null);
   const [streakDays, setStreakDays] = useState<boolean[]>([true, true, false, true, false, false, false]); // Mon-Sun
   const [essayScores, setEssayScores] = useState({ structure: 70, content: 65, expression: 75, grammar: 80 });
   const [toast, setToast] = useState<string | null>(null);
+
+  // Fetch admin subscribers count if user is admin
+  useEffect(() => {
+    if (!isUserAdmin) return;
+    fetch('/api/subscribers', {
+      headers: {
+        'x-admin-email': userEmail
+      }
+    })
+      .then(res => {
+        if (!res.ok) throw new Error('Not authorized');
+        return res.json();
+      })
+      .then(data => {
+        if (data && typeof data.total === 'number') {
+          setAdminSubscriberCount(data.total);
+        }
+      })
+      .catch(err => {
+        console.warn("Could not fetch admin subscriber stats:", err);
+      });
+  }, [isUserAdmin, userEmail]);
 
   useEffect(() => {
     // Track real global site visits on mount from server
@@ -586,7 +623,7 @@ export default function PerformanceAnalyticsView({ selectedExam, onVoicePlay }: 
           </div>
 
           {/* Real-time Simulated Stats Panel */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className={`grid grid-cols-1 ${isUserAdmin ? 'md:grid-cols-2 lg:grid-cols-4' : 'md:grid-cols-3'} gap-4`}>
             <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 p-5 rounded-2xl space-y-1.5 relative">
               <div className="absolute right-3 top-3 flex items-center gap-1.5">
                 <span className={`h-2 w-2 rounded-full ${isLiveConnection ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'}`} />
@@ -630,6 +667,37 @@ export default function PerformanceAnalyticsView({ selectedExam, onVoicePlay }: 
                 </div>
               </div>
             </div>
+
+            {/* Admin-Exclusive Subscriber Count Tile */}
+            {isUserAdmin && (
+              <div className="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 p-5 rounded-2xl space-y-2 relative">
+                <div className="absolute right-3 top-3 flex items-center gap-1">
+                  <span className="text-[9px] font-mono font-bold text-amber-800 uppercase px-1.5 py-0.5 rounded bg-amber-100 border border-amber-200 flex items-center gap-1">
+                    <Crown className="h-2.5 w-2.5 text-amber-600" />
+                    Admin Only
+                  </span>
+                </div>
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-amber-800 block">Alert Subscribers</span>
+                <div className="flex items-baseline gap-2">
+                  <span className="text-3xl font-black text-amber-950 font-mono">
+                    {adminSubscriberCount !== null ? adminSubscriberCount : '...'}
+                  </span>
+                  <span className="text-xs text-amber-700 font-bold">registered</span>
+                </div>
+                <p className="text-[10.5px] text-amber-900/80 leading-relaxed font-sans">
+                  Confidential subscriber roster for exam broadcasts and alerts.
+                </p>
+                {setActiveTab && (
+                  <button
+                    onClick={() => setActiveTab('notifications')}
+                    className="mt-1 text-[10.5px] font-bold text-amber-900 hover:text-amber-700 flex items-center gap-1 group cursor-pointer transition-colors"
+                  >
+                    <span>Manage Full Roster</span>
+                    <ArrowRight className="h-3 w-3 group-hover:translate-x-0.5 transition-transform" />
+                  </button>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Step-by-Step Educational Guide for Real Website Tracking */}

@@ -20,11 +20,32 @@ import {
   Bookmark,
   Sparkles,
   RefreshCw,
-  Rss
+  Rss,
+  Users,
+  Copy,
+  Check,
+  Trash2,
+  Plus,
+  Lock,
+  Crown,
+  Maximize2,
+  Minimize2,
+  X,
+  FileSpreadsheet
 } from 'lucide-react';
+import { isOwnerEmail } from '../utils/authUtils';
 
 interface FlashNewsDeskProps {
   selectedExam: ExamType;
+  userEmail?: string;
+}
+
+export interface SubscriberItem {
+  id: string;
+  email: string;
+  exam: string;
+  subscribedAt: string;
+  status: 'active' | 'unsubscribed';
 }
 
 export interface OfficialNotification {
@@ -357,13 +378,56 @@ const GOVERNMENT_NOTIFICATIONS_DATA: OfficialNotification[] = [
   }
 ];
 
-export default function FlashNewsDesk({ selectedExam }: FlashNewsDeskProps) {
+export default function FlashNewsDesk({ selectedExam, userEmail = '' }: FlashNewsDeskProps) {
+  const isUserAdmin = isOwnerEmail(userEmail);
+
   const [activeCategory, setActiveCategory] = useState<'all' | 'notification' | 'result' | 'key' | 'pib'>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [subscribed, setSubscribed] = useState<boolean>(false);
   const [subscriberEmail, setSubscriberEmail] = useState<string>('');
   const [bookmarkedIds, setBookmarkedIds] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+
+  // Admin Subscribers Roster State (Strictly Admin-Only)
+  const [subscribersList, setSubscribersList] = useState<SubscriberItem[]>([]);
+  const [loadingSubscribers, setLoadingSubscribers] = useState<boolean>(false);
+  const [subscriberSearch, setSubscriberSearch] = useState<string>('');
+  const [subscriberExamFilter, setSubscriberExamFilter] = useState<string>('all');
+  const [copiedAll, setCopiedAll] = useState<boolean>(false);
+  const [copiedEmailId, setCopiedEmailId] = useState<string | null>(null);
+  const [showAddSubscriberModal, setShowAddSubscriberModal] = useState<boolean>(false);
+  const [newSubEmail, setNewSubEmail] = useState<string>('');
+  const [newSubExam, setNewSubExam] = useState<string>('UPSC');
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+  const [isSubscribersExpanded, setIsSubscribersExpanded] = useState<boolean>(false);
+  const [adminActionMessage, setAdminActionMessage] = useState<string | null>(null);
+
+  // Fetch admin-only subscribers list from secure backend
+  const fetchSubscribers = async () => {
+    if (!isUserAdmin) return;
+    setLoadingSubscribers(true);
+    try {
+      const res = await fetch('/api/subscribers', {
+        headers: {
+          'x-admin-email': userEmail
+        }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setSubscribersList(data.subscribers || []);
+      }
+    } catch (err) {
+      console.warn("Failed to load subscribers roster:", err);
+    } finally {
+      setLoadingSubscribers(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isUserAdmin) {
+      fetchSubscribers();
+    }
+  }, [isUserAdmin, userEmail]);
 
   // Load subscriptions & bookmarks from local storage
   useEffect(() => {
@@ -407,12 +471,25 @@ export default function FlashNewsDesk({ selectedExam }: FlashNewsDeskProps) {
   };
 
   // Handle alert registration
-  const handleSubscribe = (e: React.FormEvent) => {
+  const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!subscriberEmail.trim()) return;
 
     localStorage.setItem(`alert-subscribed-${selectedExam}`, subscriberEmail);
     setSubscribed(true);
+
+    try {
+      await fetch('/api/subscribers', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: subscriberEmail.trim(), exam: selectedExam })
+      });
+      if (isUserAdmin) {
+        fetchSubscribers();
+      }
+    } catch (err) {
+      console.warn("Could not sync subscription to server:", err);
+    }
   };
 
   const handleUnsubscribe = () => {
@@ -420,6 +497,95 @@ export default function FlashNewsDesk({ selectedExam }: FlashNewsDeskProps) {
     setSubscribed(false);
     setSubscriberEmail('');
   };
+
+  // Admin Actions
+  const handleCopyAllEmails = () => {
+    const listToCopy = filteredSubscribers.length > 0 ? filteredSubscribers : subscribersList;
+    const emails = listToCopy.map(s => s.email).join(', ');
+    navigator.clipboard.writeText(emails);
+    setCopiedAll(true);
+    setAdminActionMessage(`Copied ${listToCopy.length} email(s) for BCC bulk alerts!`);
+    setTimeout(() => {
+      setCopiedAll(false);
+      setAdminActionMessage(null);
+    }, 3000);
+  };
+
+  const handleCopySingleEmail = (id: string, email: string) => {
+    navigator.clipboard.writeText(email);
+    setCopiedEmailId(id);
+    setTimeout(() => setCopiedEmailId(null), 2000);
+  };
+
+  const handleExportCSV = () => {
+    const headers = ['Subscriber_ID', 'Email_Address', 'Target_Exam', 'Subscribed_At', 'Status'];
+    const rows = filteredSubscribers.map(s => [
+      s.id,
+      `"${s.email}"`,
+      `"${s.exam}"`,
+      `"${s.subscribedAt}"`,
+      s.status
+    ]);
+    const csvContent = "data:text/csv;charset=utf-8," + [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `aspires_subscribers_${Date.now()}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    setAdminActionMessage(`Exported ${filteredSubscribers.length} subscriber records to CSV.`);
+    setTimeout(() => setAdminActionMessage(null), 3000);
+  };
+
+  const handleDeleteSubscriber = async (id: string) => {
+    try {
+      const res = await fetch(`/api/subscribers/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'x-admin-email': userEmail
+        }
+      });
+      if (res.ok) {
+        setSubscribersList(prev => prev.filter(s => s.id !== id));
+        setDeleteConfirmId(null);
+        setAdminActionMessage('Subscriber successfully removed.');
+        setTimeout(() => setAdminActionMessage(null), 3000);
+      }
+    } catch (err) {
+      console.error("Failed to delete subscriber:", err);
+    }
+  };
+
+  const handleAddSubscriber = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newSubEmail.trim() || !newSubEmail.includes('@')) return;
+    try {
+      const res = await fetch('/api/subscribers', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: newSubEmail.trim(), exam: newSubExam })
+      });
+      if (res.ok) {
+        setNewSubEmail('');
+        setShowAddSubscriberModal(false);
+        fetchSubscribers();
+        setAdminActionMessage(`Registered ${newSubEmail.trim()} successfully.`);
+        setTimeout(() => setAdminActionMessage(null), 3000);
+      }
+    } catch (err) {
+      console.error("Failed to add subscriber:", err);
+    }
+  };
+
+  // Filtered subscribers list for admin
+  const filteredSubscribers = subscribersList.filter(sub => {
+    const matchesExam = subscriberExamFilter === 'all' || sub.exam === subscriberExamFilter;
+    const matchesSearch = !subscriberSearch.trim() || 
+      sub.email.toLowerCase().includes(subscriberSearch.toLowerCase()) ||
+      sub.exam.toLowerCase().includes(subscriberSearch.toLowerCase());
+    return matchesExam && matchesSearch;
+  });
 
   // Filter logic:
   // 1. Match current exam type
@@ -741,6 +907,209 @@ export default function FlashNewsDesk({ selectedExam }: FlashNewsDeskProps) {
             </div>
           </div>
 
+          {/* Admin-Exclusive Alert Subscribers Roster: Rendered ONLY when isUserAdmin is true */}
+          {isUserAdmin && (
+            <div className="bg-slate-900 border border-slate-800 text-white rounded-2xl p-5 space-y-4 shadow-sm relative overflow-hidden" id="admin-subscribers-panel">
+              {/* Header */}
+              <div className="flex items-start justify-between gap-3 border-b border-slate-800 pb-3">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[10px] uppercase font-mono font-bold px-2 py-0.5 rounded bg-amber-400/10 text-amber-400 border border-amber-400/20 flex items-center gap-1">
+                      <Crown className="h-3 w-3 text-amber-400" />
+                      Admin Exclusive Roster
+                    </span>
+                    <span className="text-[9px] font-mono text-slate-400">
+                      {subscribersList.length} Total
+                    </span>
+                  </div>
+                  <h4 className="font-extrabold text-sm text-white flex items-center gap-2">
+                    <Users className="h-4 w-4 text-emerald-400" />
+                    Alert & Portal Subscribers
+                  </h4>
+                  <p className="text-[11px] text-slate-400 leading-relaxed font-sans">
+                    Confidential roster of registered aspirants. <span className="text-emerald-400 font-semibold">Visible only to admin ({userEmail})</span>.
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-1.5 shrink-0">
+                  <button
+                    onClick={fetchSubscribers}
+                    disabled={loadingSubscribers}
+                    title="Refresh Subscriber Roster"
+                    className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors cursor-pointer"
+                  >
+                    <RefreshCw className={`h-3.5 w-3.5 ${loadingSubscribers ? 'animate-spin text-emerald-400' : ''}`} />
+                  </button>
+                  <button
+                    onClick={() => setIsSubscribersExpanded(!isSubscribersExpanded)}
+                    title={isSubscribersExpanded ? "Collapse View" : "Expand Table View"}
+                    className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors cursor-pointer"
+                  >
+                    {isSubscribersExpanded ? <Minimize2 className="h-3.5 w-3.5" /> : <Maximize2 className="h-3.5 w-3.5" />}
+                  </button>
+                </div>
+              </div>
+
+              {/* Action Toolbar */}
+              <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
+                <div className="flex items-center gap-1.5">
+                  <button
+                    onClick={handleCopyAllEmails}
+                    disabled={filteredSubscribers.length === 0}
+                    className="bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-bold text-[10px] px-2.5 py-1.5 rounded-lg transition-all flex items-center gap-1 cursor-pointer active:scale-95"
+                    title="Copy filtered emails for BCC in Gmail / mailer"
+                  >
+                    {copiedAll ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
+                    <span>{copiedAll ? 'Copied!' : `Copy Emails (${filteredSubscribers.length})`}</span>
+                  </button>
+                  <button
+                    onClick={handleExportCSV}
+                    disabled={filteredSubscribers.length === 0}
+                    className="bg-slate-800 hover:bg-slate-700 disabled:opacity-50 text-slate-200 font-bold text-[10px] px-2.5 py-1.5 rounded-lg transition-all flex items-center gap-1 cursor-pointer border border-slate-700"
+                    title="Download CSV file"
+                  >
+                    <FileSpreadsheet className="h-3 w-3 text-emerald-400" />
+                    <span>Export CSV</span>
+                  </button>
+                </div>
+
+                <button
+                  onClick={() => setShowAddSubscriberModal(true)}
+                  className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-[10px] px-2.5 py-1.5 rounded-lg transition-all flex items-center gap-1 cursor-pointer"
+                >
+                  <Plus className="h-3 w-3" />
+                  <span>Add Subscriber</span>
+                </button>
+              </div>
+
+              {/* Status Message Feedback */}
+              {adminActionMessage && (
+                <div className="bg-emerald-950/80 border border-emerald-500/40 text-emerald-300 text-[10.5px] px-3 py-1.5 rounded-lg flex items-center gap-2">
+                  <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
+                  <span>{adminActionMessage}</span>
+                </div>
+              )}
+
+              {/* Search & Exam Filter */}
+              <div className="space-y-2 pt-1">
+                <div className="relative">
+                  <Search className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-slate-400" />
+                  <input
+                    type="text"
+                    placeholder="Search subscribers by email..."
+                    value={subscriberSearch}
+                    onChange={(e) => setSubscriberSearch(e.target.value)}
+                    className="w-full pl-8 pr-7 py-1.5 bg-slate-800/80 border border-slate-700 focus:border-emerald-500 focus:outline-none rounded-xl text-[11px] text-white placeholder-slate-400 font-mono"
+                  />
+                  {subscriberSearch && (
+                    <button
+                      onClick={() => setSubscriberSearch('')}
+                      className="absolute right-2.5 top-2 text-slate-400 hover:text-white text-xs font-bold"
+                    >
+                      ✕
+                    </button>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-1 overflow-x-auto pb-1 text-[10px] font-mono">
+                  {['all', 'UPSC', 'TNPSC_G1', 'NEET', 'IIT_JEE', 'SSC_CGL', 'RRB_NTPC', 'IELTS'].map(examKey => (
+                    <button
+                      key={examKey}
+                      onClick={() => setSubscriberExamFilter(examKey)}
+                      className={`px-2 py-0.5 rounded-md whitespace-nowrap transition-colors cursor-pointer ${
+                        subscriberExamFilter === examKey
+                          ? 'bg-emerald-500 text-slate-950 font-bold'
+                          : 'bg-slate-800 text-slate-400 hover:text-slate-200'
+                      }`}
+                    >
+                      {examKey === 'all' ? 'All' : examKey}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Subscriber List Items */}
+              <div className={`space-y-2 overflow-y-auto pr-1 ${isSubscribersExpanded ? 'max-h-96' : 'max-h-64'}`}>
+                {loadingSubscribers ? (
+                  <div className="py-8 text-center text-slate-400 text-xs flex items-center justify-center gap-2">
+                    <RefreshCw className="h-4 w-4 animate-spin text-emerald-400" />
+                    <span>Loading subscriber registry...</span>
+                  </div>
+                ) : filteredSubscribers.length === 0 ? (
+                  <div className="py-6 text-center text-slate-500 text-xs border border-dashed border-slate-800 rounded-xl">
+                    No subscribers found matching filter.
+                  </div>
+                ) : (
+                  filteredSubscribers.map(sub => (
+                    <div
+                      key={sub.id}
+                      className="bg-slate-800/70 hover:bg-slate-800 border border-slate-700/60 hover:border-slate-650 p-2.5 rounded-xl space-y-1.5 transition-all text-xs"
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="font-mono font-bold text-white text-[11px] truncate" title={sub.email}>
+                          {sub.email}
+                        </span>
+                        <div className="flex items-center gap-1 shrink-0">
+                          <button
+                            onClick={() => handleCopySingleEmail(sub.id, sub.email)}
+                            title="Copy email address"
+                            className="p-1 rounded bg-slate-700 hover:bg-slate-600 text-slate-300 transition-colors"
+                          >
+                            {copiedEmailId === sub.id ? <Check className="h-3 w-3 text-emerald-400" /> : <Copy className="h-3 w-3" />}
+                          </button>
+                          {deleteConfirmId === sub.id ? (
+                            <div className="flex items-center gap-1 bg-rose-950/90 p-0.5 rounded border border-rose-600">
+                              <button
+                                onClick={() => handleDeleteSubscriber(sub.id)}
+                                className="text-[9px] bg-rose-600 hover:bg-rose-500 text-white font-bold px-1.5 py-0.5 rounded cursor-pointer"
+                                title="Confirm remove"
+                              >
+                                Delete
+                              </button>
+                              <button
+                                onClick={() => setDeleteConfirmId(null)}
+                                className="text-[9px] text-slate-300 hover:text-white px-1 cursor-pointer"
+                              >
+                                Cancel
+                              </button>
+                            </div>
+                          ) : (
+                            <button
+                              onClick={() => setDeleteConfirmId(sub.id)}
+                              title="Remove subscriber from alert list"
+                              className="p-1 rounded bg-slate-700 hover:bg-rose-900/60 text-slate-400 hover:text-rose-300 transition-colors cursor-pointer"
+                            >
+                              <Trash2 className="h-3 w-3" />
+                            </button>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between text-[10px] text-slate-400 font-mono">
+                        <span className="px-1.5 py-0.5 rounded bg-slate-900 text-amber-300 border border-slate-700">
+                          {sub.exam}
+                        </span>
+                        <span className="flex items-center gap-1 text-slate-400">
+                          <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                          {sub.subscribedAt}
+                        </span>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+
+              {/* Privacy lock footer note */}
+              <div className="text-[10px] text-slate-400 font-mono pt-1 border-t border-slate-800/80 flex items-center justify-between">
+                <span className="flex items-center gap-1 text-amber-400">
+                  <Lock className="h-3 w-3" />
+                  Admin Only View
+                </span>
+                <span className="text-slate-400 font-semibold">{filteredSubscribers.length} shown</span>
+              </div>
+            </div>
+          )}
+
           {/* Quick link official gateways directories */}
           <div className="bg-white border border-slate-200 p-5 rounded-2xl space-y-4 shadow-sm" id="gateways-card">
             <h3 className="font-extrabold text-xs text-slate-800 uppercase tracking-widest font-mono flex items-center gap-1.5 border-b border-slate-100 pb-3">
@@ -783,6 +1152,83 @@ export default function FlashNewsDesk({ selectedExam }: FlashNewsDeskProps) {
         </div>
 
       </div>
+
+      {/* Admin-only Add Subscriber Modal */}
+      {isUserAdmin && showAddSubscriberModal && (
+        <div className="fixed inset-0 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fadeIn">
+          <div className="bg-slate-900 border border-slate-800 text-white rounded-2xl p-5 max-w-sm w-full space-y-4 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+              <div className="flex items-center gap-2">
+                <span className="p-1.5 rounded-lg bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                  <Crown className="h-4 w-4" />
+                </span>
+                <h4 className="font-extrabold text-sm text-white">
+                  Add Alert Subscriber
+                </h4>
+              </div>
+              <button
+                onClick={() => setShowAddSubscriberModal(false)}
+                className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 cursor-pointer transition-colors"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+
+            <form onSubmit={handleAddSubscriber} className="space-y-3">
+              <div className="space-y-1">
+                <label className="text-[10px] font-mono text-slate-400 uppercase tracking-wider block">
+                  Aspirant Email Address
+                </label>
+                <input
+                  type="email"
+                  required
+                  placeholder="e.g. aspirant@gmail.com"
+                  value={newSubEmail}
+                  onChange={(e) => setNewSubEmail(e.target.value)}
+                  className="w-full bg-slate-800 border border-slate-700 focus:border-emerald-500 focus:outline-none rounded-xl p-2.5 text-xs text-white placeholder-slate-500 font-mono transition-colors"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-[10px] font-mono text-slate-400 uppercase tracking-wider block">
+                  Target Exam
+                </label>
+                <select
+                  value={newSubExam}
+                  onChange={(e) => setNewSubExam(e.target.value)}
+                  className="w-full bg-slate-800 border border-slate-700 focus:border-emerald-500 focus:outline-none rounded-xl p-2.5 text-xs text-white font-mono transition-colors cursor-pointer"
+                >
+                  <option value="UPSC">UPSC Civil Services</option>
+                  <option value="TNPSC_G1">TNPSC Group 1</option>
+                  <option value="TNPSC_G2">TNPSC Group 2 & IIA</option>
+                  <option value="TNPSC_G4">TNPSC Group 4 & VAO</option>
+                  <option value="NEET">NEET UG Medical</option>
+                  <option value="IIT_JEE">IIT JEE Engineering</option>
+                  <option value="SSC_CGL">SSC CGL</option>
+                  <option value="RRB_NTPC">RRB NTPC Railways</option>
+                  <option value="IELTS">IELTS English</option>
+                </select>
+              </div>
+
+              <div className="flex gap-2 pt-2">
+                <button
+                  type="submit"
+                  className="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs py-2.5 rounded-xl transition-all shadow shadow-emerald-600/20 cursor-pointer"
+                >
+                  Register Subscriber
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowAddSubscriberModal(false)}
+                  className="px-4 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs py-2.5 rounded-xl transition-all cursor-pointer"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
     </div>
   );

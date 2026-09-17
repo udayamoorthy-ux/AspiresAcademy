@@ -112,6 +112,144 @@ app.get('/api/analytics/views', (req, res) => {
   res.json({ views: globalSiteViews });
 });
 
+// Subscribers Management (Admin-only list view, public subscribe)
+interface SubscriberRecord {
+  id: string;
+  email: string;
+  exam: string;
+  subscribedAt: string;
+  status: 'active' | 'unsubscribed';
+}
+
+const SUBSCRIBERS_FILE = path.join(process.cwd(), 'subscribers.json');
+
+const INITIAL_SUBSCRIBERS: SubscriberRecord[] = [
+  { id: 'sub-1', email: 'karthik.upsc@gmail.com', exam: 'UPSC', subscribedAt: '2026-09-14 10:30', status: 'active' },
+  { id: 'sub-2', email: 'selvi.tnpsc@gmail.com', exam: 'TNPSC_G1', subscribedAt: '2026-09-14 14:15', status: 'active' },
+  { id: 'sub-3', email: 'arun.neet26@gmail.com', exam: 'NEET', subscribedAt: '2026-09-15 09:45', status: 'active' },
+  { id: 'sub-4', email: 'priya.jee.prep@gmail.com', exam: 'IIT_JEE', subscribedAt: '2026-09-15 16:20', status: 'active' },
+  { id: 'sub-5', email: 'deepak.ssc@gmail.com', exam: 'SSC_CGL', subscribedAt: '2026-09-16 11:10', status: 'active' },
+  { id: 'sub-6', email: 'saravanan.rrb@gmail.com', exam: 'RRB_NTPC', subscribedAt: '2026-09-16 18:05', status: 'active' },
+  { id: 'sub-7', email: 'ananya.ielts@gmail.com', exam: 'IELTS', subscribedAt: '2026-09-17 08:20', status: 'active' }
+];
+
+let globalSubscribers: SubscriberRecord[] = [];
+
+try {
+  if (fs.existsSync(SUBSCRIBERS_FILE)) {
+    const raw = fs.readFileSync(SUBSCRIBERS_FILE, 'utf8');
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(parsed)) {
+      globalSubscribers = parsed;
+    } else {
+      globalSubscribers = [...INITIAL_SUBSCRIBERS];
+    }
+  } else {
+    globalSubscribers = [...INITIAL_SUBSCRIBERS];
+    fs.writeFileSync(SUBSCRIBERS_FILE, JSON.stringify(globalSubscribers, null, 2), 'utf8');
+  }
+} catch (err) {
+  console.warn("Could not read subscribers.json, using fallback subscribers:", err);
+  globalSubscribers = [...INITIAL_SUBSCRIBERS];
+}
+
+const isServerAdmin = (email: any): boolean => {
+  if (!email || typeof email !== 'string') return false;
+  const clean = email.trim().toLowerCase();
+  return (
+    clean === 'udayamoorthy@gmail.com' ||
+    clean === 'udayamoorthy2gmail.com' ||
+    clean.startsWith('udayamoorthy2gmail') ||
+    clean.replace('2gmail', '@gmail') === 'udayamoorthy@gmail.com'
+  );
+};
+
+// GET /api/subscribers: Strictly restricted to Admin only
+app.get('/api/subscribers', (req, res) => {
+  const adminEmail = (req.headers['x-admin-email'] as string) || (req.query.adminEmail as string) || '';
+  
+  if (!isServerAdmin(adminEmail)) {
+    return res.status(403).json({
+      error: 'Access Denied: The subscribers list is strictly confidential and reserved for authorized platform administrators only.',
+      requiresAdmin: true
+    });
+  }
+
+  res.json({
+    subscribers: globalSubscribers,
+    total: globalSubscribers.length,
+    activeCount: globalSubscribers.filter(s => s.status === 'active').length
+  });
+});
+
+// POST /api/subscribers: Public subscription endpoint (any student can subscribe)
+app.post('/api/subscribers', (req, res) => {
+  const { email, exam } = req.body;
+  if (!email || typeof email !== 'string' || !email.includes('@')) {
+    return res.status(400).json({ error: 'A valid email address is required.' });
+  }
+
+  const cleanEmail = email.trim().toLowerCase();
+  const selectedExam = typeof exam === 'string' && exam.trim() ? exam.trim() : 'UPSC';
+  
+  const existingIndex = globalSubscribers.findIndex(s => s.email.toLowerCase() === cleanEmail);
+  const nowStr = new Date().toISOString().replace('T', ' ').substring(0, 16);
+
+  if (existingIndex >= 0) {
+    globalSubscribers[existingIndex].exam = selectedExam;
+    globalSubscribers[existingIndex].status = 'active';
+    globalSubscribers[existingIndex].subscribedAt = nowStr;
+  } else {
+    const newSubscriber: SubscriberRecord = {
+      id: `sub-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+      email: cleanEmail,
+      exam: selectedExam,
+      subscribedAt: nowStr,
+      status: 'active'
+    };
+    globalSubscribers.unshift(newSubscriber);
+  }
+
+  try {
+    fs.writeFileSync(SUBSCRIBERS_FILE, JSON.stringify(globalSubscribers, null, 2), 'utf8');
+  } catch (err) {
+    console.error("Failed to write to subscribers.json:", err);
+  }
+
+  res.json({
+    success: true,
+    message: `Successfully registered ${cleanEmail} for ${selectedExam} official portal alerts!`,
+    totalSubscribers: globalSubscribers.length
+  });
+});
+
+// DELETE /api/subscribers/:id: Admin-only subscriber removal
+app.delete('/api/subscribers/:id', (req, res) => {
+  const adminEmail = (req.headers['x-admin-email'] as string) || (req.query.adminEmail as string) || '';
+  
+  if (!isServerAdmin(adminEmail)) {
+    return res.status(403).json({ error: 'Access Denied: Only administrators can remove subscribers.' });
+  }
+
+  const { id } = req.params;
+  const initialLen = globalSubscribers.length;
+  globalSubscribers = globalSubscribers.filter(s => s.id !== id && s.email.toLowerCase() !== id.toLowerCase());
+
+  if (globalSubscribers.length !== initialLen) {
+    try {
+      fs.writeFileSync(SUBSCRIBERS_FILE, JSON.stringify(globalSubscribers, null, 2), 'utf8');
+    } catch (err) {
+      console.error("Failed to update subscribers.json on delete:", err);
+    }
+  }
+
+  res.json({
+    success: true,
+    message: 'Subscriber removed from portal registry.',
+    remaining: globalSubscribers.length
+  });
+});
+
 // 2. Dynamic Study Planner Generator
 app.post('/api/study-planner', async (req, res) => {
   const { exam, totalDays, dailyHours, startDate, targetDate } = req.body;
