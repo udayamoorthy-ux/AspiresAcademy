@@ -353,7 +353,7 @@ export default function SubjectQuizView({
   const checkLimit = (): boolean => {
     if (isPremium) return true;
     if (quizCount >= 2) {
-      alert("Free Tier Limit Reached: You have reached your daily limit of 2 Subject Quizzes. Upgrade to ASPIRES Premium to unlock unlimited custom, topic-wise, and AI-powered assessments!");
+      alert("Free Tier Limit Reached: You have reached your daily limit of 2 Subject Quizzes. Upgrade to ASPIRES Premium to unlock unlimited custom, topic-wise, and comprehensive assessments!");
       onPremiumClick?.();
       return false;
     }
@@ -610,7 +610,7 @@ export default function SubjectQuizView({
 
                   <div className="space-y-1.5">
                     <label className="text-xs font-black text-slate-600 uppercase tracking-wider font-mono flex items-center gap-1.5">
-                      <Sparkles className="h-3.5 w-3.5 text-amber-500" /> Custom Topic Input (AI-Powered)
+                      <Sparkles className="h-3.5 w-3.5 text-amber-500" /> Custom Topic Input
                     </label>
                     <input
                       type="text"

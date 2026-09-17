@@ -398,9 +398,6 @@ export default function App() {
                 <h1 className="text-xl md:text-2xl font-black text-slate-900 tracking-tight font-display">
                   ASPIRES <span className="text-emerald-600">ACADEMY</span>
                 </h1>
-                <span className="text-[9px] uppercase font-black px-2 py-0.5 rounded-full bg-emerald-100/60 border border-emerald-200/50 text-emerald-800 font-mono tracking-wider">
-                  AI-Powered ⚡
-                </span>
               </div>
               <p className="text-xs text-slate-500 font-semibold mt-0.5 font-sans leading-none">
                 UPSC • TNPSC • SSC • RRB Prep & Automated Descriptive Evaluation
