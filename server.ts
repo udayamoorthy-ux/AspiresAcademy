@@ -1355,7 +1355,7 @@ ${qText}---
 ⚡ *Web Portal Features:*
 • ✍️ Full-Length Mock Tests & Daily 5 MCQ Drills
 • 📚 Reference Materials & Study Notes
-• 📅 AI Study Planner & Syllabus Tracker
+• 📅 Smart Study Planner & Syllabus Tracker
 • 📊 Performance Analytics & Score Predictor
 
 👥 *Join Official WhatsApp Group (${ch.groupName}):* ${groupUrl}
@@ -1389,7 +1389,7 @@ ${qText}---
 🌟 *Web Portal Features:*
 • ✍️ Full-Length Mock Tests for All Exam Categories
 • 📚 Reference Materials & Study Notes
-• 📅 AI Study Planner & Syllabus Tracker
+• 📅 Smart Study Planner & Syllabus Tracker
 • 📊 Performance Analytics & Score Predictor
 
 👥 *Join Official WhatsApp Group:* ${groupUrl}

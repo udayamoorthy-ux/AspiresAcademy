@@ -342,8 +342,8 @@ export default function App() {
 
   const tabDetails = [
     { id: 'syllabus', label: 'Official Syllabus', icon: Compass, component: SyllabusView },
-    { id: 'planner', label: 'AI Study Planner', icon: Calendar, component: PlannerView },
-    { id: 'notes', label: 'AI Notes Generator', icon: BrainCircuit, component: NotesGeneratorView },
+    { id: 'planner', label: 'Study Planner', icon: Calendar, component: PlannerView },
+    { id: 'notes', label: 'Notes Generator', icon: BrainCircuit, component: NotesGeneratorView },
     { id: 'materials', label: 'Reference Materials', icon: ShieldCheck, component: MaterialsLibraryView },
     { id: 'subjectQuiz', label: 'Topic Quizzes', icon: Sparkles, component: SubjectQuizView },
     { id: 'activeRecall', label: 'Recall Flashcards', icon: Layers, component: FlashcardsView },
@@ -856,17 +856,17 @@ export default function App() {
                       setOutreachSource('daily');
                     }}
                     className="text-xs font-bold text-emerald-800 hover:text-emerald-950 bg-emerald-50 hover:bg-emerald-100 px-3 py-1.5 rounded-xl border border-emerald-200 cursor-pointer active:scale-95 transition-all flex items-center gap-1"
-                    title="Load next daily set of questions"
+                    title="Load next non-repetitive set of real practice MCQs"
                   >
-                    🔄 Next Daily Set
+                    🔄 Next Set (Non-Repetitive)
                   </button>
                   <button
                     onClick={handleGenerateAIOutreach}
                     disabled={isGeneratingOutreach}
                     className={`text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 px-3 py-1.5 rounded-xl shadow-sm cursor-pointer active:scale-95 transition-all flex items-center gap-1 ${isGeneratingOutreach ? 'opacity-50 pointer-events-none' : ''}`}
-                    title="Generate 5 fresh questions with Gemini AI"
+                    title="Generate 5 fresh, non-repetitive real exam questions"
                   >
-                    {isGeneratingOutreach ? 'Generating...' : '✨ Gen AI Set'}
+                    {isGeneratingOutreach ? 'Generating...' : '✨ Fresh Dynamic Set'}
                   </button>
                 </div>
               </div>
@@ -916,7 +916,7 @@ export default function App() {
 
                       const groupLine = getGroupInviteLineForPost(examGroupName);
 
-                      const postText = `${heading}\n\n${questionsText}${groupLine}\n\n🚀 Practice on ASPIRES ACADEMY Web Portal: https://aspiresacademy.in\n⚡ Web Portal Features:\n• ✍️ Full-Length Mock Tests\n• 📚 Reference Materials & Study Notes\n• 📅 AI Study Planner & Syllabus Tracker\n• 📊 Performance Analytics & Score Predictor`;
+                      const postText = `${heading}\n\n${questionsText}${groupLine}\n\n🚀 Practice on ASPIRES ACADEMY Web Portal: https://aspiresacademy.in\n⚡ Web Portal Features:\n• ✍️ Full-Length Mock Tests\n• 📚 Reference Materials & Study Notes\n• 📅 Smart Study Planner & Syllabus Tracker\n• 📊 Performance Analytics & Score Predictor`;
                       window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(postText)}`, '_blank');
                     }}
                     className="bg-[#25D366] hover:bg-[#20ba5a] text-white font-extrabold text-xs px-3.5 py-2 rounded-xl flex items-center gap-1.5 transition-all shadow-sm active:scale-95 cursor-pointer"
@@ -982,7 +982,7 @@ export default function App() {
 
                       const groupLine = getGroupInviteLineForPost(examGroupName);
 
-                      const postText = `${heading}\n\n${questionsText}---\n🌐 PRACTICE ON ASPIRES ACADEMY WEB PORTAL: https://aspiresacademy.in\n📚 All 8 Exams Covered on Portal:\n1️⃣ UPSC Civil Services (IAS / IPS / IFS)\n2️⃣ TNPSC Group 1 (CCSE I Officers)\n3️⃣ TNPSC Group 2 & 2A (CCSE II)\n4️⃣ TNPSC Group 4 & VAO (CCSE IV)\n5️⃣ SSC CGL (Tier 1 & Tier 2)\n6️⃣ RRB NTPC & Group D (Railways)\n7️⃣ IIT JEE (Main & Advanced)\n8️⃣ NEET UG (Medical Entrance)\n\n⚡ Web Portal Features:\n• ✍️ Full-Length Mock Tests & Daily 5 MCQ Drills\n• 📚 Reference Materials & Study Notes\n• 📅 AI Study Planner & Syllabus Tracker\n• 📊 Performance Analytics & Score Predictor\n\n${groupLine}\n🎟️ SPECIAL ASPIRANT DISCOUNT: Use Coupon Code "ANNUAL87" to get the ASPIRES Elite Annual Pass for just ₹299/year (87% OFF)!\n🔗 Start Practice on Web Portal: https://aspiresacademy.in`;
+                      const postText = `${heading}\n\n${questionsText}---\n🌐 PRACTICE ON ASPIRES ACADEMY WEB PORTAL: https://aspiresacademy.in\n📚 All 8 Exams Covered on Portal:\n1️⃣ UPSC Civil Services (IAS / IPS / IFS)\n2️⃣ TNPSC Group 1 (CCSE I Officers)\n3️⃣ TNPSC Group 2 & 2A (CCSE II)\n4️⃣ TNPSC Group 4 & VAO (CCSE IV)\n5️⃣ SSC CGL (Tier 1 & Tier 2)\n6️⃣ RRB NTPC & Group D (Railways)\n7️⃣ IIT JEE (Main & Advanced)\n8️⃣ NEET UG (Medical Entrance)\n\n⚡ Web Portal Features:\n• ✍️ Full-Length Mock Tests & Daily 5 MCQ Drills\n• 📚 Reference Materials & Study Notes\n• 📅 Smart Study Planner & Syllabus Tracker\n• 📊 Performance Analytics & Score Predictor\n\n${groupLine}\n🎟️ SPECIAL ASPIRANT DISCOUNT: Use Coupon Code "ANNUAL87" to get the ASPIRES Elite Annual Pass for just ₹299/year (87% OFF)!\n🔗 Start Practice on Web Portal: https://aspiresacademy.in`;
 
                       navigator.clipboard.writeText(postText);
                       setCopiedPost(true);

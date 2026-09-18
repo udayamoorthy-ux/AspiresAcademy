@@ -199,7 +199,7 @@ ${qText}`;
 🌟 *Web Portal Features:*
 • ✍️ Full-Length Mock Tests & Daily 5 MCQ Drills
 • 📚 Reference Materials & Study Notes
-• 📅 AI Study Planner & Syllabus Tracker
+• 📅 Smart Study Planner & Syllabus Tracker
 • 📊 Performance Analytics & Score Predictor
 
 ${groupLine}
@@ -240,7 +240,7 @@ ${groupLine}
 🌟 *Web Portal Features:*
 • ✍️ Full-Length Mock Tests for All Exam Categories
 • 📚 Reference Materials & Study Notes
-• 📅 AI Study Planner & Tracker
+• 📅 Smart Study Planner & Tracker
 • 📊 Performance Analytics & Rank Predictor
 
 ${groupLine}
