@@ -30,7 +30,9 @@ import {
   Check,
   Volume2,
   Headphones,
-  Split
+  Split,
+  Search,
+  X
 } from 'lucide-react';
 
 interface QuizViewProps {
@@ -71,7 +73,8 @@ export default function QuizView({
   const [aiQuestionCount, setAiQuestionCount] = useState<number>(10);
   const [selectedAnswerIndex, setSelectedAnswerIndex] = useState<number | null>(null);
   const [hasAnswered, setHasAnswered] = useState<boolean>(false);
-  const [activePYQFilter, setActivePYQFilter] = useState<'ALL' | 'UPSC' | 'TNPSC' | 'SSC' | 'RRB' | 'IIT_JEE' | 'NEET' | 'IELTS'>('ALL');
+  const [activePYQFilter, setActivePYQFilter] = useState<'ALL' | 'TNPSC_G1' | 'TNPSC' | 'UPSC' | 'SSC' | 'RRB' | 'IIT_JEE' | 'NEET' | 'IELTS'>('ALL');
+  const [searchQuery, setSearchQuery] = useState<string>('');
 
   // Free Tier Usage Counting state for Mock Tests
   const [mockTestCount, setMockTestCount] = useState<number>(() => {
@@ -188,6 +191,8 @@ export default function QuizView({
       setActivePYQFilter('IIT_JEE');
     } else if (selectedExam === 'UPSC') {
       setActivePYQFilter('UPSC');
+    } else if (selectedExam === 'TNPSC_G1') {
+      setActivePYQFilter('TNPSC_G1');
     } else if (selectedExam.startsWith('TNPSC')) {
       setActivePYQFilter('TNPSC');
     } else if (selectedExam === 'SSC_CGL') {
@@ -309,7 +314,8 @@ export default function QuizView({
 
   // Filter practice tests based on toggle and selected exam
   const filteredTests = PREVIOUS_YEAR_PRACTICE_TESTS.filter(test => {
-    // Stage 1 filter: NEET/UPSC/TNPSC/SSC/RRB/IIT_JEE overall switch
+    // Stage 1 filter: Board switch
+    if (activePYQFilter === 'TNPSC_G1' && test.exam !== 'TNPSC_G1') return false;
     if (activePYQFilter === 'NEET' && test.exam !== 'NEET') return false;
     if (activePYQFilter === 'IIT_JEE' && test.exam !== 'IIT_JEE') return false;
     if (activePYQFilter === 'IELTS' && test.exam !== 'IELTS') return false;
@@ -317,6 +323,16 @@ export default function QuizView({
     if (activePYQFilter === 'TNPSC' && !test.exam.startsWith('TNPSC')) return false;
     if (activePYQFilter === 'SSC' && test.exam !== 'SSC_CGL') return false;
     if (activePYQFilter === 'RRB' && test.exam !== 'RRB_NTPC') return false;
+
+    // Stage 2 filter: Search query match
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase().trim();
+      const matchTitle = test.title.toLowerCase().includes(q);
+      const matchScope = test.subjectScope.toLowerCase().includes(q);
+      const matchYear = test.year.toString().includes(q);
+      const matchExam = test.exam.toLowerCase().includes(q);
+      if (!matchTitle && !matchScope && !matchYear && !matchExam) return false;
+    }
 
     return true;
   });
@@ -776,24 +792,53 @@ export default function QuizView({
             <div className="space-y-6" id="pyq-registry-panel">
               
               {/* Filter controls & Title */}
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white border border-slate-200 p-5 rounded-2xl shadow-sm">
-                <div>
-                  <h3 className="text-base font-extrabold text-slate-900 flex items-center gap-1.5">
-                    <ShieldCheck className="h-5 w-5 text-emerald-600" />
-                    Authorized Previous Year Question Papers ({PREVIOUS_YEAR_PRACTICE_TESTS.length} Sets)
-                  </h3>
-                  <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">
-                    Sourced directly from NTA (NEET / JEE), UPSC, TNPSC, SSC, and Railway boards. Play the representative question sets or download the official papers.
-                  </p>
+              <div className="flex flex-col gap-4 bg-white border border-slate-200 p-5 rounded-2xl shadow-sm">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
+                  <div>
+                    <h3 className="text-base font-extrabold text-slate-900 flex items-center gap-1.5">
+                      <ShieldCheck className="h-5 w-5 text-emerald-600" />
+                      Authorized Previous Year Question Papers & Mock Tests ({PREVIOUS_YEAR_PRACTICE_TESTS.length} Sets)
+                    </h3>
+                    <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">
+                      Sourced directly from TNPSC, UPSC, NTA (NEET / JEE), SSC, and Railway recruitment boards. Practice full-length authentic question sets with explanations or download official papers.
+                    </p>
+                  </div>
+                  <div className="text-[11px] font-mono text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-200 self-start md:self-auto font-bold">
+                    {filteredTests.length} Papers Available
+                  </div>
                 </div>
 
-                <div className="flex flex-wrap bg-slate-100 p-1 rounded-xl border border-slate-200 self-start md:self-auto gap-1">
+                {/* Search Bar */}
+                <div className="relative">
+                  <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder='Search question papers (e.g. "Group 1", "2024", "Unit 8", "Unit 9", "UPSC", "CSAT", "Polity")...'
+                    className="w-full bg-slate-50 border border-slate-200 focus:border-amber-500 rounded-xl pl-10 pr-10 py-2.5 text-xs text-slate-800 placeholder-slate-400 outline-none transition-all shadow-inner"
+                  />
+                  {searchQuery && (
+                    <button
+                      onClick={() => setSearchQuery('')}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 rounded-md"
+                      title="Clear search"
+                    >
+                      <X className="h-3.5 w-3.5" />
+                    </button>
+                  )}
+                </div>
+
+                {/* Filter Pills */}
+                <div className="flex flex-wrap bg-slate-100 p-1.5 rounded-xl border border-slate-200 gap-1 items-center">
+                  <span className="text-[10px] font-bold text-slate-400 px-2 uppercase tracking-wider hidden sm:inline">Board:</span>
                   {[
                     { id: 'ALL', label: 'All Boards' },
+                    { id: 'TNPSC_G1', label: '⭐ TNPSC Group 1' },
+                    { id: 'TNPSC', label: 'All TNPSC' },
+                    { id: 'UPSC', label: 'UPSC CSE' },
                     { id: 'NEET', label: 'NEET UG' },
                     { id: 'IIT_JEE', label: 'IIT JEE' },
-                    { id: 'UPSC', label: 'UPSC CSE' },
-                    { id: 'TNPSC', label: 'TNPSC Boards' },
                     { id: 'SSC', label: 'SSC CGL' },
                     { id: 'RRB', label: 'RRB NTPC' },
                     { id: 'IELTS', label: 'IELTS Band 8+' }
@@ -813,8 +858,28 @@ export default function QuizView({
                 </div>
               </div>
 
-              {/* Grid of 15 papers */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4" id="practice-test-grid-cards">
+              {/* Grid of papers or Empty state */}
+              {filteredTests.length === 0 ? (
+                <div className="text-center py-12 bg-white rounded-2xl border border-dashed border-slate-200 p-8 space-y-3 shadow-sm">
+                  <div className="mx-auto w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
+                    <Search className="h-6 w-6" />
+                  </div>
+                  <h4 className="font-extrabold text-sm text-slate-700">No question papers found</h4>
+                  <p className="text-xs text-slate-400 max-w-md mx-auto">
+                    No mock tests match your current search "{searchQuery}". Try searching for "Group 1", "2024", or select another board filter.
+                  </p>
+                  <button
+                    onClick={() => {
+                      setSearchQuery('');
+                      setActivePYQFilter('ALL');
+                    }}
+                    className="text-xs font-bold text-emerald-600 hover:text-emerald-700 underline cursor-pointer pt-1"
+                  >
+                    Reset filters and show all papers
+                  </button>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4" id="practice-test-grid-cards">
                 {filteredTests.map((test) => (
                   <div 
                     key={test.id}
@@ -925,6 +990,7 @@ export default function QuizView({
                   </div>
                 ))}
               </div>
+              )}
 
             </div>
           )}

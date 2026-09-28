@@ -9,7 +9,11 @@ import {
   AUTHENTIC_HISTORY_POOL, 
   AUTHENTIC_ECONOMY_POOL, 
   AUTHENTIC_TAMIL_POOL,
-  generateAptitudeQuestion 
+  generateAptitudeQuestion,
+  TNPSC_G1_QUESTION_POOL,
+  TNPSC_G2_QUESTION_POOL,
+  TNPSC_G4_QUESTION_POOL,
+  UPSC_QUESTION_POOL
 } from './utils/questionPool';
 
 export interface PracticeTest {
@@ -26,7 +30,17 @@ export interface PracticeTest {
 }
 
 // Deterministic question builder to populate exactly 100 high-fidelity questions
-function compile100Questions(testId: string, isUPSC: boolean, isTamilMediumIncluded: boolean, isSSC: boolean = false, isRRB: boolean = false, isJEE: boolean = false, isNEET: boolean = false, isIELTS: boolean = false): Question[] {
+function compile100Questions(
+  testId: string, 
+  isUPSC: boolean, 
+  isTamilMediumIncluded: boolean, 
+  isSSC: boolean = false, 
+  isRRB: boolean = false, 
+  isJEE: boolean = false, 
+  isNEET: boolean = false, 
+  isIELTS: boolean = false,
+  examType?: ExamType
+): Question[] {
   const list: Question[] = [];
   const addedIds = new Set<string>();
 
@@ -1049,10 +1063,43 @@ function compile100Questions(testId: string, isUPSC: boolean, isTamilMediumInclu
   }
 
   // 1. Add relevant static hand-crafted pool questions first
-  if (isUPSC) {
-    AUTHENTIC_POLITY_POOL.forEach(addQuestion);
-    AUTHENTIC_HISTORY_POOL.slice(0, 5).forEach(addQuestion);
-    AUTHENTIC_ECONOMY_POOL.slice(0, 3).forEach(addQuestion);
+  if (testId === 'pt-tnpsc-g1-aptitude-booster') {
+    for (let i = 0; i < 100; i++) {
+      addQuestion(generateAptitudeQuestion(baseSeed + i * 17));
+    }
+  } else if (testId === 'pt-tnpsc-g1-unit8-master') {
+    const unit8Questions = TNPSC_G1_QUESTION_POOL.filter(q => 
+      q.subject.includes('Unit 8') || q.subject.includes('Literature') || q.subject.includes('Thirukkural') || q.subject.includes('Heritage') || q.subject.includes('Culture') || q.subject.includes('Archaeology') || q.subject.includes('History')
+    );
+    unit8Questions.forEach(addQuestion);
+  } else if (testId === 'pt-tnpsc-g1-unit9-master') {
+    const unit9Questions = TNPSC_G1_QUESTION_POOL.filter(q => 
+      q.subject.includes('Unit 9') || q.subject.includes('Admin') || q.subject.includes('Governance') || q.subject.includes('Economy') || q.subject.includes('Geography')
+    );
+    unit9Questions.forEach(addQuestion);
+  } else if (examType === 'TNPSC_G1' || testId.includes('g1')) {
+    // Rotate pool based on test seed to guarantee distinct papers
+    const offset = Math.abs(baseSeed) % TNPSC_G1_QUESTION_POOL.length;
+    for (let i = 0; i < TNPSC_G1_QUESTION_POOL.length; i++) {
+      addQuestion(TNPSC_G1_QUESTION_POOL[(offset + i) % TNPSC_G1_QUESTION_POOL.length]);
+    }
+    // Also include selective authentic polity and economy questions
+    AUTHENTIC_POLITY_POOL.slice(0, 8).forEach(addQuestion);
+    AUTHENTIC_ECONOMY_POOL.slice(0, 5).forEach(addQuestion);
+  } else if (examType === 'TNPSC_G2' || testId.includes('g2')) {
+    TNPSC_G2_QUESTION_POOL.forEach(addQuestion);
+    AUTHENTIC_TAMIL_POOL.slice(0, 10).forEach(addQuestion);
+  } else if (examType === 'TNPSC_G4' || testId.includes('g4')) {
+    TNPSC_G4_QUESTION_POOL.forEach(addQuestion);
+    AUTHENTIC_TAMIL_POOL.forEach(addQuestion);
+  } else if (isUPSC) {
+    if (testId.includes('csat')) {
+      for (let i = 0; i < 80; i++) {
+        addQuestion(generateAptitudeQuestion(baseSeed + i * 19));
+      }
+    } else {
+      UPSC_QUESTION_POOL.forEach(addQuestion);
+    }
   } else {
     AUTHENTIC_TAMIL_POOL.forEach(addQuestion);
     AUTHENTIC_HISTORY_POOL.forEach(addQuestion);
@@ -1286,24 +1333,117 @@ export const PREVIOUS_YEAR_PRACTICE_TESTS: PracticeTest[] = [
   {
     id: 'pt-tnpsc-2024-g1',
     exam: 'TNPSC_G1',
-    title: 'TNPSC Group I Prelims Exam 2024 - General Studies',
+    title: 'TNPSC Group I Prelims Exam 2024 - General Studies (Official Session)',
     year: 2024,
     actualQuestionCount: 200,
     durationMinutes: 180,
-    subjectScope: 'Tamil History, Polity, Development Administration (Unit 9), Aptitude',
+    subjectScope: 'Tamil Heritage (Unit 8), Development Administration (Unit 9), Constitution, Contemporary Schemes & Aptitude',
     officialPaperUrl: 'https://www.tnpsc.gov.in/English/QP_Prelims.aspx',
-    questions: compile100Questions('pt-tnpsc-2024-g1', false, true)
+    officialAnswerKeyUrl: 'https://www.tnpsc.gov.in/English/tentative_keys.aspx',
+    questions: compile100Questions('pt-tnpsc-2024-g1', false, true, false, false, false, false, false, 'TNPSC_G1')
   },
   {
     id: 'pt-tnpsc-2023-g1',
     exam: 'TNPSC_G1',
-    title: 'TNPSC Group I Prelims Exam 2023 - General Studies',
+    title: 'TNPSC Group I Prelims Exam 2023 - General Studies (Official Session)',
     year: 2023,
     actualQuestionCount: 200,
     durationMinutes: 180,
-    subjectScope: 'Social Reform, Indian Constitution, Welfare Schemes, Mental Ability',
+    subjectScope: 'Social Justice, Dravidian Movement, Indian Polity, Science & Technology, Mental Ability',
     officialPaperUrl: 'https://www.tnpsc.gov.in/English/QP_Prelims.aspx',
-    questions: compile100Questions('pt-tnpsc-2023-g1', false, true)
+    officialAnswerKeyUrl: 'https://www.tnpsc.gov.in/English/tentative_keys.aspx',
+    questions: compile100Questions('pt-tnpsc-2023-g1', false, true, false, false, false, false, false, 'TNPSC_G1')
+  },
+  {
+    id: 'pt-tnpsc-2022-g1',
+    exam: 'TNPSC_G1',
+    title: 'TNPSC Group I Prelims Exam 2022 - General Studies (Official Paper)',
+    year: 2022,
+    actualQuestionCount: 200,
+    durationMinutes: 180,
+    subjectScope: 'Archaeological Discoveries (Keezhadi, Mayiladumparai), Thirukkural, Welfare Schemes, Economy & Aptitude',
+    officialPaperUrl: 'https://www.tnpsc.gov.in/English/QP_Prelims.aspx',
+    officialAnswerKeyUrl: 'https://www.tnpsc.gov.in/English/tentative_keys.aspx',
+    questions: compile100Questions('pt-tnpsc-2022-g1', false, true, false, false, false, false, false, 'TNPSC_G1')
+  },
+  {
+    id: 'pt-tnpsc-2021-g1',
+    exam: 'TNPSC_G1',
+    title: 'TNPSC Group I Prelims Exam 2021 - General Studies (Landmark Unit 8 & 9 Paper)',
+    year: 2021,
+    actualQuestionCount: 200,
+    durationMinutes: 180,
+    subjectScope: 'Pioneering New Syllabus Paper: Intensive Unit 8, Unit 9, Indian National Movement & Quantitative Aptitude',
+    officialPaperUrl: 'https://www.tnpsc.gov.in/English/QP_Prelims.aspx',
+    officialAnswerKeyUrl: 'https://www.tnpsc.gov.in/English/tentative_keys.aspx',
+    questions: compile100Questions('pt-tnpsc-2021-g1', false, true, false, false, false, false, false, 'TNPSC_G1')
+  },
+  {
+    id: 'pt-tnpsc-2019-g1',
+    exam: 'TNPSC_G1',
+    title: 'TNPSC Group I Prelims Exam 2019 - General Studies (Official Paper)',
+    year: 2019,
+    actualQuestionCount: 200,
+    durationMinutes: 180,
+    subjectScope: 'Core Indian Constitution, Modern History, National Movements in Tamil Nadu, Science & Mental Ability',
+    officialPaperUrl: 'https://www.tnpsc.gov.in/English/QP_Prelims.aspx',
+    officialAnswerKeyUrl: 'https://www.tnpsc.gov.in/English/tentative_keys.aspx',
+    questions: compile100Questions('pt-tnpsc-2019-g1', false, true, false, false, false, false, false, 'TNPSC_G1')
+  },
+  {
+    id: 'pt-tnpsc-2017-g1',
+    exam: 'TNPSC_G1',
+    title: 'TNPSC Group I Prelims Exam 2017 - General Studies (Official Paper)',
+    year: 2017,
+    actualQuestionCount: 200,
+    durationMinutes: 180,
+    subjectScope: 'General Studies, Indian Polity, Geography of Tamil Nadu, Indian National Movement, Mental Ability',
+    officialPaperUrl: 'https://www.tnpsc.gov.in/English/QP_Prelims.aspx',
+    questions: compile100Questions('pt-tnpsc-2017-g1', false, true, false, false, false, false, false, 'TNPSC_G1')
+  },
+  {
+    id: 'pt-tnpsc-2025-g1-model',
+    exam: 'TNPSC_G1',
+    title: 'TNPSC Group I 2025 All-Tamil Nadu State Benchmark Mock Exam',
+    year: 2025,
+    actualQuestionCount: 200,
+    durationMinutes: 180,
+    subjectScope: 'Latest 2025 Syllabus Blueprint: KMUT, Tamil Pudhalvan, Greenfield Corridors, Unit 8 & Unit 9 Full Simulation',
+    officialPaperUrl: 'https://www.tnpsc.gov.in',
+    questions: compile100Questions('pt-tnpsc-2025-g1-model', false, true, false, false, false, false, false, 'TNPSC_G1')
+  },
+  {
+    id: 'pt-tnpsc-g1-unit8-master',
+    exam: 'TNPSC_G1',
+    title: 'TNPSC Group I Unit 8 Master Test: Tamil Society, Heritage & Thirukkural',
+    year: 2025,
+    actualQuestionCount: 100,
+    durationMinutes: 120,
+    subjectScope: 'Intensive Unit 8 Mock: Sangam Texts, Keezhadi Excavations, Thirukkural Ethics, Self-Respect Movement & Reformers',
+    officialPaperUrl: 'https://www.tnpsc.gov.in',
+    questions: compile100Questions('pt-tnpsc-g1-unit8-master', false, true, false, false, false, false, false, 'TNPSC_G1')
+  },
+  {
+    id: 'pt-tnpsc-g1-unit9-master',
+    exam: 'TNPSC_G1',
+    title: 'TNPSC Group I Unit 9 Master Test: Development Administration & Social Justice',
+    year: 2025,
+    actualQuestionCount: 100,
+    durationMinutes: 120,
+    subjectScope: 'Intensive Unit 9 Mock: Welfare Schemes, Reservation Policy (69%), e-Governance (TNeGA), Public Health & HDI Indicators',
+    officialPaperUrl: 'https://www.tnpsc.gov.in',
+    questions: compile100Questions('pt-tnpsc-g1-unit9-master', false, true, false, false, false, false, false, 'TNPSC_G1')
+  },
+  {
+    id: 'pt-tnpsc-g1-aptitude-booster',
+    exam: 'TNPSC_G1',
+    title: 'TNPSC Group I Mental Ability & Quantitative Aptitude 25/25 Target Drill',
+    year: 2025,
+    actualQuestionCount: 50,
+    durationMinutes: 60,
+    subjectScope: 'High-Yield Aptitude: HCF/LCM, Simple & Compound Interest, Ratio-Proportions, Time-Work, Number Series',
+    officialPaperUrl: 'https://www.tnpsc.gov.in',
+    questions: compile100Questions('pt-tnpsc-g1-aptitude-booster', false, true, false, false, false, false, false, 'TNPSC_G1')
   },
   {
     id: 'pt-tnpsc-2024-g2',
@@ -1314,7 +1454,7 @@ export const PREVIOUS_YEAR_PRACTICE_TESTS: PracticeTest[] = [
     durationMinutes: 180,
     subjectScope: 'General Tamil, Tamil Heritage, Indian Constitution, Aptitude',
     officialPaperUrl: 'https://www.tnpsc.gov.in/English/QP_Prelims.aspx',
-    questions: compile100Questions('pt-tnpsc-2024-g2', false, true)
+    questions: compile100Questions('pt-tnpsc-2024-g2', false, true, false, false, false, false, false, 'TNPSC_G2')
   },
   {
     id: 'pt-tnpsc-2022-g2',
@@ -1325,7 +1465,18 @@ export const PREVIOUS_YEAR_PRACTICE_TESTS: PracticeTest[] = [
     durationMinutes: 180,
     subjectScope: 'Indian National Movement, Administration of Tamil Nadu, Quantitative Aptitude',
     officialPaperUrl: 'https://www.tnpsc.gov.in/English/QP_Prelims.aspx',
-    questions: compile100Questions('pt-tnpsc-2022-g2', false, true)
+    questions: compile100Questions('pt-tnpsc-2022-g2', false, true, false, false, false, false, false, 'TNPSC_G2')
+  },
+  {
+    id: 'pt-tnpsc-2025-g2-model',
+    exam: 'TNPSC_G2',
+    title: 'TNPSC Group II / IIA 2025 State Benchmark Full Practice Mock',
+    year: 2025,
+    actualQuestionCount: 200,
+    durationMinutes: 180,
+    subjectScope: 'General Tamil, General Studies, Unit 8, Unit 9 and Aptitude (Latest 2025 Pattern)',
+    officialPaperUrl: 'https://www.tnpsc.gov.in',
+    questions: compile100Questions('pt-tnpsc-2025-g2-model', false, true, false, false, false, false, false, 'TNPSC_G2')
   },
   {
     id: 'pt-tnpsc-2024-g4',
@@ -1336,7 +1487,7 @@ export const PREVIOUS_YEAR_PRACTICE_TESTS: PracticeTest[] = [
     durationMinutes: 180,
     subjectScope: 'Samacheer Kalvi General Tamil, Basic Indian Polity, Science, Aptitude',
     officialPaperUrl: 'https://www.tnpsc.gov.in/English/QP_Prelims.aspx',
-    questions: compile100Questions('pt-tnpsc-2024-g4', false, true)
+    questions: compile100Questions('pt-tnpsc-2024-g4', false, true, false, false, false, false, false, 'TNPSC_G4')
   },
   {
     id: 'pt-tnpsc-2022-g4',
@@ -1347,7 +1498,51 @@ export const PREVIOUS_YEAR_PRACTICE_TESTS: PracticeTest[] = [
     durationMinutes: 180,
     subjectScope: 'Tamil Scholars, State Board Math, Indian Constitution',
     officialPaperUrl: 'https://www.tnpsc.gov.in/English/QP_Prelims.aspx',
-    questions: compile100Questions('pt-tnpsc-2022-g4', false, true)
+    questions: compile100Questions('pt-tnpsc-2022-g4', false, true, false, false, false, false, false, 'TNPSC_G4')
+  },
+  {
+    id: 'pt-tnpsc-2019-g4',
+    exam: 'TNPSC_G4',
+    title: 'TNPSC Group IV Exam 2019 - General Studies & General Tamil',
+    year: 2019,
+    actualQuestionCount: 200,
+    durationMinutes: 180,
+    subjectScope: 'Official 2019 Group IV paper: Samacheer Tamil grammar, Indian Constitution, General Science & Mental Ability',
+    officialPaperUrl: 'https://www.tnpsc.gov.in/English/QP_Prelims.aspx',
+    questions: compile100Questions('pt-tnpsc-2019-g4', false, true, false, false, false, false, false, 'TNPSC_G4')
+  },
+  {
+    id: 'pt-tnpsc-2025-g4-model',
+    exam: 'TNPSC_G4',
+    title: 'TNPSC Group IV 2025 State Benchmark Full Mock Test',
+    year: 2025,
+    actualQuestionCount: 200,
+    durationMinutes: 180,
+    subjectScope: 'Latest Samacheer Kalvi Tamil, Current Affairs, Modern Indian History & Speed Aptitude',
+    officialPaperUrl: 'https://www.tnpsc.gov.in',
+    questions: compile100Questions('pt-tnpsc-2025-g4-model', false, true, false, false, false, false, false, 'TNPSC_G4')
+  },
+  {
+    id: 'pt-upsc-2025-model',
+    exam: 'UPSC',
+    title: 'UPSC Civil Services Prelims 2025 All-India Benchmark Mock Exam',
+    year: 2025,
+    actualQuestionCount: 100,
+    durationMinutes: 120,
+    subjectScope: 'Latest Multi-Statement Polity, International Treaties, Environmental Ecology & Macroeconomics',
+    officialPaperUrl: 'https://www.upsc.gov.in',
+    questions: compile100Questions('pt-upsc-2025-model', true, false, false, false, false, false, false, 'UPSC')
+  },
+  {
+    id: 'pt-upsc-2024-csat',
+    exam: 'UPSC',
+    title: 'UPSC Civil Services Prelims 2024 - CSAT Paper II (Official Paper)',
+    year: 2024,
+    actualQuestionCount: 80,
+    durationMinutes: 120,
+    subjectScope: 'Official 2024 CSAT: Reading Comprehension, Number Systems, Permutations, Data Sufficiency & Logical Puzzles',
+    officialPaperUrl: 'https://www.upsc.gov.in/examinations/previous-question-papers',
+    questions: compile100Questions('pt-upsc-2024-csat', true, false, false, false, false, false, false, 'UPSC')
   },
   {
     id: 'pt-upsc-csat-mega',
