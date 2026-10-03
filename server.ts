@@ -2245,8 +2245,16 @@ if (process.env.NODE_ENV !== "production") {
     app.use(vite.middlewares);
     
     // Fallback index.html for development
-    app.get('*', (req, res) => {
-      res.sendFile(path.resolve(process.cwd(), 'index.html'));
+    app.get('*', async (req, res, next) => {
+      try {
+        const url = req.originalUrl;
+        const htmlPath = path.resolve(process.cwd(), 'index.html');
+        let template = fs.readFileSync(htmlPath, 'utf-8');
+        template = await vite.transformIndexHtml(url, template);
+        res.status(200).set({ 'Content-Type': 'text/html' }).end(template);
+      } catch (e) {
+        next(e);
+      }
     });
 
     app.listen(PORT, '0.0.0.0', () => {

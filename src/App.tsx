@@ -35,6 +35,9 @@ import {
 import { STATIC_QUIZ_QUESTIONS } from './data';
 import { MultiExamWhatsAppBroadcaster } from './components/MultiExamWhatsAppBroadcaster';
 import { isOwnerEmail } from './utils/authUtils';
+import { PWAInstallPrompt } from './components/PWAInstallPrompt';
+import { MobileBottomNav } from './components/MobileBottomNav';
+import { OfflineIndicator } from './components/OfflineIndicator';
 
 import { 
   BookOpen, 
@@ -462,6 +465,8 @@ export default function App() {
                 </button>
               )}
 
+              <PWAInstallPrompt variant="button" />
+
               {isPremium ? (
                 <div className="flex items-center gap-1 bg-gradient-to-r from-amber-500/10 to-yellow-500/15 border border-amber-500/30 text-amber-900 font-extrabold text-[10.5px] px-3.5 py-2 rounded-xl shadow-sm">
                   <Crown className="h-3.5 w-3.5 text-amber-500 fill-amber-500 animate-pulse" />
@@ -519,8 +524,13 @@ export default function App() {
         </div>
       </div>
 
+      {/* Mobile App Install Prompt Banner */}
+      <div className="max-w-7xl mx-auto px-6 mt-4 md:hidden">
+        <PWAInstallPrompt variant="banner" />
+      </div>
+
       {/* Main Container */}
-      <main className="max-w-7xl mx-auto px-6 py-8 space-y-8" id="portal-main-stage">
+      <main className="max-w-7xl mx-auto px-6 py-8 space-y-8 pb-28 md:pb-12" id="portal-main-stage">
         
         {/* Exam Quick Select & Pitch Banner */}
         <div className="bg-white border border-slate-200/80 p-6 rounded-2xl flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 shadow-sm relative overflow-hidden" id="exam-pitch-banner">
@@ -1234,6 +1244,18 @@ export default function App() {
           </div>
         </div>
       )}
+      {/* Mobile Native Bottom Navigation Bar */}
+      <MobileBottomNav
+        currentTab={activeTab}
+        onTabChange={(tabId) => setActiveTab(tabId)}
+        selectedExam={selectedExam}
+        onExamChange={(newExam) => setSelectedExam(newExam)}
+        onPremiumClick={() => setIsSupportModalOpen(true)}
+        isPremium={isPremium}
+      />
+
+      {/* Real-time Offline Connectivity Status Toast */}
+      <OfflineIndicator />
     </div>
   );
 }

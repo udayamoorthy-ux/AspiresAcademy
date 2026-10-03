@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#1e293b" />
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fbbf24" />
+      <stop offset="100%" stop-color="#d97706" />
+    </linearGradient>
+  </defs>
+  <!-- Background -->
+  <rect width="512" height="512" rx="128" fill="url(#bgGrad)" />
+  <!-- Golden outer ring -->
+  <circle cx="256" cy="256" r="220" stroke="url(#goldGrad)" stroke-width="8" stroke-dasharray="16 8" opacity="0.6" />
+  <!-- Mortarboard Cap -->
+  <polygon points="256,120 420,180 256,240 92,180" fill="#ffffff" stroke="url(#goldGrad)" stroke-width="8" />
+  <path d="M160,225 L160,300 C160,335 352,335 352,300 L352,225" fill="#f1f5f9" stroke="url(#goldGrad)" stroke-width="6" />
+  <!-- Tassel -->
+  <path d="M400,185 L425,270 L410,270" stroke="url(#goldGrad)" stroke-width="6" stroke-linecap="round" />
+  <circle cx="417" cy="275" r="8" fill="url(#goldGrad)" />
+  <!-- Star / Torch Center -->
+  <circle cx="256" cy="285" r="28" fill="url(#goldGrad)" />
+  <polygon points="256,230 264,250 286,252 270,266 274,288 256,276 238,288 242,266 226,252 248,250" fill="#ffffff" />
+</svg>
