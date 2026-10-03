@@ -43,6 +43,8 @@ import { RealtimeLiveHeader } from './components/RealtimeLiveHeader';
 import { RealtimeActivityTicker } from './components/RealtimeActivityTicker';
 import { RealtimeLiveArena } from './components/RealtimeLiveArena';
 import { AppInstallationsAdminView } from './components/AppInstallationsAdminView';
+import { PaidAppPaywallModal } from './components/PaidAppPaywallModal';
+import { PaidAppAdminView } from './components/PaidAppAdminView';
 
 import { 
   BookOpen, 
@@ -73,7 +75,8 @@ import {
   ExternalLink,
   Flame,
   Radio,
-  Smartphone
+  Smartphone,
+  DollarSign
 } from 'lucide-react';
 
 const TICKER_HEADLINES: Record<ExamType, string[]> = {
@@ -126,6 +129,7 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<string>('daily-mcqs');
   const [isLiveArenaModalOpen, setIsLiveArenaModalOpen] = useState(false);
   const [isInstallationsModalOpen, setIsInstallationsModalOpen] = useState(false);
+  const [isPaidAppAdminOpen, setIsPaidAppAdminOpen] = useState(false);
 
   // Real-Time Nationwide WebSocket State & Live Events
   const realtime = useRealtimeSocket(selectedExam);
@@ -274,6 +278,32 @@ export default function App() {
     setPremiumPlan('');
   };
 
+  // Sync verified Pro subscription status with backend on mount & login
+  useEffect(() => {
+    const syncSubscriptionWithServer = async () => {
+      const email = userEmail || localStorage.getItem('aspires_logged_in_email') || '';
+      if (isOwnerEmail(email)) {
+        setIsPremium(true);
+        setPremiumPlan('lifetime');
+        return;
+      }
+      if (!email) return;
+      try {
+        const res = await fetch(`/api/subscriptions/check?email=${encodeURIComponent(email)}`);
+        const data = await res.json();
+        if (data.isPremium) {
+          setIsPremium(true);
+          setPremiumPlan(data.plan || 'annual');
+          localStorage.setItem('aspires_is_premium', 'true');
+          localStorage.setItem('aspires_premium_plan', data.plan || 'annual');
+        }
+      } catch (err) {
+        // Fallback to local cache
+      }
+    };
+    syncSubscriptionWithServer();
+  }, [userEmail]);
+
   // WhatsApp Group Link State & Handlers
   const DEFAULT_WHATSAPP_GROUP_URL = 'https://chat.whatsapp.com/KNkh3LnmULH7PHI1KfetnT';
 
@@ -384,8 +414,18 @@ export default function App() {
     );
   };
 
+  const PaidAppHubTabWrapper: React.FC<any> = () => {
+    return (
+      <PaidAppAdminView
+        userEmail={userEmail}
+        onClose={() => setActiveTab('daily-mcqs')}
+      />
+    );
+  };
+
   const tabDetails = [
     { id: 'live-arena', label: '🔥 Live Arena', icon: Flame, component: LiveArenaWrapper },
+    { id: 'paid-app-hub', label: '💰 Paid App & Revenue Hub', icon: DollarSign, component: PaidAppHubTabWrapper },
     { id: 'app-installations', label: '📱 App Installs Log', icon: Smartphone, component: AppInstallationsTabWrapper },
     { id: 'daily-mcqs', label: 'Daily MCQ Drills', icon: Sparkles, component: QuizView },
     { id: 'practice-tests', label: 'Mock Tests & PYQs', icon: Award, component: QuizView },
@@ -429,9 +469,9 @@ export default function App() {
       tabs: ['mainsSprints', 'essay']
     },
     {
-      title: isUserAdmin ? 'Admin & Telemetry 👑' : 'Support & Analytics',
+      title: isUserAdmin ? 'Admin & Revenue Hub 👑' : 'Support & Analytics',
       tabs: isUserAdmin 
-        ? ['app-installations', 'mentor', 'gk', 'notifications', 'analytics', 'reviews']
+        ? ['paid-app-hub', 'app-installations', 'mentor', 'gk', 'notifications', 'analytics', 'reviews']
         : ['mentor', 'gk', 'notifications', 'analytics', 'reviews']
     }
   ];
@@ -460,6 +500,7 @@ export default function App() {
         userEmail={userEmail}
         onAuthClick={() => setIsAuthModalOpen(true)}
         onOpenInstallations={() => setIsInstallationsModalOpen(true)}
+        onOpenPaidAppAdmin={() => setIsPaidAppAdminOpen(true)}
       />
 
       {/* Real-Time Nationwide Activity Stream */}
@@ -1051,20 +1092,11 @@ export default function App() {
             onClick={() => {
               setIsSupportModalOpen(true);
             }}
-            className="flex items-center gap-2 bg-gradient-to-r from-emerald-50 to-emerald-100/70 hover:from-emerald-100 hover:to-emerald-200/80 border border-emerald-200 px-4 py-2.5 rounded-2xl transition-all shadow-sm cursor-pointer group active:scale-95"
+            className="flex items-center gap-2 bg-gradient-to-r from-amber-500 via-orange-500 to-yellow-400 hover:brightness-105 text-slate-950 font-black px-5 py-2.5 rounded-2xl transition-all shadow-md shadow-amber-500/20 cursor-pointer group active:scale-95 text-xs"
             id="footer-support-gpay-trigger"
           >
-            <span className="text-[10px] font-extrabold text-slate-600 uppercase tracking-wider font-mono">Contribute via</span>
-            <span className="text-xs font-black tracking-tight flex items-center">
-              <span className="text-[#4285F4]">G</span>
-              <span className="text-[#EA4335]">P</span>
-              <span className="text-[#FBBC05]">a</span>
-              <span className="text-[#34A853]">y</span>
-            </span>
-            <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-ping shrink-0" />
-            <span className="text-xs font-extrabold text-slate-800 tracking-tight group-hover:text-emerald-950">
-              {isPremium ? 'Upgrade / Support' : 'Go Premium / Support'}
-            </span>
+            <Crown className="h-4 w-4 text-slate-950 fill-slate-950" />
+            <span>{isPremium ? '👑 ASPIRES Pro Member Active' : '⚡ Activate ASPIRES Pro Membership (₹199)'}</span>
           </button>
 
           <button
@@ -1107,12 +1139,14 @@ export default function App() {
         }} 
       />
 
-      {/* GPay Support Modal popup Window */}
-      <GPaySupportCard 
-        isOpen={isSupportModalOpen} 
-        onClose={() => setIsSupportModalOpen(false)} 
-        onVoicePlay={handleVoicePlay} 
+      {/* Paid App Pro Membership & Pricing Checkout Modal */}
+      <PaidAppPaywallModal
+        isOpen={isSupportModalOpen}
+        onClose={() => setIsSupportModalOpen(false)}
         isPremium={isPremium}
+        premiumPlan={premiumPlan}
+        userEmail={userEmail}
+        selectedExam={selectedExam}
         onSubscriptionSuccess={handleSubscriptionSuccess}
         onCancelSubscription={handleCancelSubscription}
       />
@@ -1261,6 +1295,24 @@ export default function App() {
             <AppInstallationsAdminView
               userEmail={userEmail}
               onClose={() => setIsInstallationsModalOpen(false)}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Paid App & Revenue Hub Admin Modal (Owner View) */}
+      {isPaidAppAdminOpen && (
+        <div 
+          className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 animate-fadeIn"
+          onClick={() => setIsPaidAppAdminOpen(false)}
+        >
+          <div 
+            className="w-full max-w-5xl max-h-[92vh] overflow-y-auto rounded-3xl relative animate-scaleUp shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <PaidAppAdminView
+              userEmail={userEmail}
+              onClose={() => setIsPaidAppAdminOpen(false)}
             />
           </div>
         </div>

@@ -147,3 +147,57 @@ export interface RealtimePomodoroState {
   statusMessage: string;
 }
 
+// ----------------------------------------------------
+// PAID APP, SUBSCRIPTIONS & LICENSE KEY TYPES
+// ----------------------------------------------------
+export type PaidPlanType = 'monthly' | 'annual' | 'lifetime';
+export type PaymentMethodType = 'upi_gpay' | 'upi_phonepe' | 'upi_paytm' | 'card_netbanking' | 'license_key' | 'admin_grant';
+
+export interface PaidSubscriptionRecord {
+  id: string;
+  email: string;
+  userName?: string;
+  phone?: string;
+  plan: PaidPlanType;
+  amount: number;
+  paymentMethod: PaymentMethodType;
+  utrRef?: string;
+  licenseKey?: string;
+  status: 'active' | 'expired' | 'pending';
+  activatedAt: string;
+  expiresAt: string;
+  invoiceNumber: string;
+  exam?: ExamType;
+  deviceId?: string;
+}
+
+export interface PaywallSettings {
+  mode: 'free_trial' | 'strict_paid';
+  trialLimits: {
+    evaluations: number;
+    quizzes: number;
+    notes: number;
+    chats: number;
+  };
+  prices: {
+    monthly: number;
+    annual: number;
+    lifetime: number;
+  };
+  upiId: string;
+  upiName: string;
+}
+
+export interface LicenseKeyRecord {
+  key: string;
+  plan: PaidPlanType;
+  discountPercent: number;
+  maxUses: number;
+  usedCount: number;
+  createdBy: string;
+  createdAt: string;
+  expiresAt: string;
+  active: boolean;
+  notes?: string;
+}
+

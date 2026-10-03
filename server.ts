@@ -11,7 +11,14 @@ import fs from 'fs';
 import { createServer as createViteServer } from 'vite';
 import { GoogleGenAI, Type } from '@google/genai';
 import { getQuestionsForExam } from './src/utils/questionPool';
-import { ExamType } from './src/types';
+import { 
+  ExamType, 
+  PaidPlanType, 
+  PaymentMethodType, 
+  PaidSubscriptionRecord, 
+  PaywallSettings, 
+  LicenseKeyRecord 
+} from './src/types';
 import { setupRealtimeServer } from './src/server/realtimeServer';
 
 dotenv.config();
@@ -457,6 +464,648 @@ app.post('/api/installations', (req, res) => {
   res.json({
     success: true,
     totalInstallations: globalInstallations.length
+  });
+});
+
+// ----------------------------------------------------
+// PAID APP, SUBSCRIPTION ENGINE & LICENSING
+// ----------------------------------------------------
+const SUBSCRIPTIONS_FILE = path.join(process.cwd(), 'paid_subscriptions.json');
+const LICENSE_KEYS_FILE = path.join(process.cwd(), 'license_keys.json');
+const PAYWALL_SETTINGS_FILE = path.join(process.cwd(), 'paywall_settings.json');
+
+const DEFAULT_PAYWALL_SETTINGS: PaywallSettings = {
+  mode: 'free_trial',
+  trialLimits: {
+    evaluations: 1,
+    quizzes: 5,
+    notes: 2,
+    chats: 3
+  },
+  prices: {
+    monthly: 199,
+    annual: 999,
+    lifetime: 1999
+  },
+  upiId: 'udayamoorthy@okaxis',
+  upiName: 'ASPIRES ACADEMY'
+};
+
+const INITIAL_PAID_SUBSCRIPTIONS: PaidSubscriptionRecord[] = [
+  {
+    id: 'sub-ord-101',
+    email: 'priya.dharshini@gmail.com',
+    userName: 'Priya Dharshini',
+    phone: '+91 98401 23456',
+    plan: 'annual',
+    amount: 999,
+    paymentMethod: 'upi_gpay',
+    utrRef: '429184029182',
+    status: 'active',
+    activatedAt: '2026-09-15 11:20',
+    expiresAt: '2027-09-15 11:20',
+    invoiceNumber: 'INV-2026-8812',
+    exam: 'TNPSC_G1'
+  },
+  {
+    id: 'sub-ord-102',
+    email: 'karthik.upsc@gmail.com',
+    userName: 'Karthik Raja S',
+    phone: '+91 94440 98765',
+    plan: 'annual',
+    amount: 999,
+    paymentMethod: 'upi_phonepe',
+    utrRef: '429201948271',
+    status: 'active',
+    activatedAt: '2026-09-18 14:45',
+    expiresAt: '2027-09-18 14:45',
+    invoiceNumber: 'INV-2026-8819',
+    exam: 'UPSC'
+  },
+  {
+    id: 'sub-ord-103',
+    email: 'amit.sharma.upsc@gmail.com',
+    userName: 'Amit Sharma',
+    phone: '+91 98110 54321',
+    plan: 'lifetime',
+    amount: 1999,
+    paymentMethod: 'card_netbanking',
+    utrRef: 'TXN-NETB-99812',
+    status: 'active',
+    activatedAt: '2026-09-22 09:15',
+    expiresAt: '2099-12-31 23:59',
+    invoiceNumber: 'INV-2026-9044',
+    exam: 'UPSC'
+  },
+  {
+    id: 'sub-ord-104',
+    email: 'nandhini.m@gmail.com',
+    userName: 'Nandhini Murugesan',
+    phone: '+91 97900 11223',
+    plan: 'monthly',
+    amount: 199,
+    paymentMethod: 'upi_paytm',
+    utrRef: '429401829104',
+    status: 'active',
+    activatedAt: '2026-10-01 16:30',
+    expiresAt: '2026-11-01 16:30',
+    invoiceNumber: 'INV-2026-9201',
+    exam: 'TNPSC_G2'
+  },
+  {
+    id: 'sub-ord-owner',
+    email: 'udayamoorthy@gmail.com',
+    userName: 'Udayamoorthy (Founder & Platform Lead)',
+    plan: 'lifetime',
+    amount: 0,
+    paymentMethod: 'admin_grant',
+    status: 'active',
+    activatedAt: '2026-01-01 00:00',
+    expiresAt: '2099-12-31 23:59',
+    invoiceNumber: 'INV-2026-0001',
+    exam: 'UPSC'
+  }
+];
+
+const INITIAL_LICENSE_KEYS: LicenseKeyRecord[] = [
+  {
+    key: 'ASPIRES-PRO-2026',
+    plan: 'annual',
+    discountPercent: 100,
+    maxUses: 500,
+    usedCount: 28,
+    createdBy: 'udayamoorthy@gmail.com',
+    createdAt: '2026-09-01 00:00',
+    expiresAt: '2027-12-31 23:59',
+    active: true,
+    notes: 'Official 2026 Annual Scholar Scholarship Pass'
+  },
+  {
+    key: 'TOPPER2026',
+    plan: 'annual',
+    discountPercent: 100,
+    maxUses: 100,
+    usedCount: 14,
+    createdBy: 'udayamoorthy@gmail.com',
+    createdAt: '2026-09-10 00:00',
+    expiresAt: '2027-12-31 23:59',
+    active: true,
+    notes: 'Merit Topper VIP Pass'
+  },
+  {
+    key: 'UPSC-SUCCESS',
+    plan: 'annual',
+    discountPercent: 100,
+    maxUses: 100,
+    usedCount: 32,
+    createdBy: 'udayamoorthy@gmail.com',
+    createdAt: '2026-09-15 00:00',
+    expiresAt: '2027-12-31 23:59',
+    active: true,
+    notes: 'Civil Services Prelims Sprint Pass'
+  },
+  {
+    key: 'TNPSC-PASS',
+    plan: 'annual',
+    discountPercent: 100,
+    maxUses: 100,
+    usedCount: 19,
+    createdBy: 'udayamoorthy@gmail.com',
+    createdAt: '2026-09-15 00:00',
+    expiresAt: '2027-12-31 23:59',
+    active: true,
+    notes: 'TNPSC CCSE Pass'
+  },
+  {
+    key: 'NEET-AIIMS',
+    plan: 'annual',
+    discountPercent: 100,
+    maxUses: 100,
+    usedCount: 11,
+    createdBy: 'udayamoorthy@gmail.com',
+    createdAt: '2026-09-20 00:00',
+    expiresAt: '2027-12-31 23:59',
+    active: true,
+    notes: 'Medical Entrance Pro'
+  },
+  {
+    key: 'LIFETIME-VIP',
+    plan: 'lifetime',
+    discountPercent: 100,
+    maxUses: 50,
+    usedCount: 7,
+    createdBy: 'udayamoorthy@gmail.com',
+    createdAt: '2026-09-01 00:00',
+    expiresAt: '2099-12-31 23:59',
+    active: true,
+    notes: 'Lifetime VIP Sponsor Code'
+  }
+];
+
+let globalPaidSubscriptions: PaidSubscriptionRecord[] = [];
+let globalLicenseKeys: LicenseKeyRecord[] = [];
+let globalPaywallSettings: PaywallSettings = { ...DEFAULT_PAYWALL_SETTINGS };
+
+// Load Subscriptions
+try {
+  if (fs.existsSync(SUBSCRIPTIONS_FILE)) {
+    const raw = fs.readFileSync(SUBSCRIPTIONS_FILE, 'utf8');
+    const parsed = JSON.parse(raw);
+    globalPaidSubscriptions = Array.isArray(parsed) ? parsed : [...INITIAL_PAID_SUBSCRIPTIONS];
+  } else {
+    globalPaidSubscriptions = [...INITIAL_PAID_SUBSCRIPTIONS];
+    fs.writeFileSync(SUBSCRIPTIONS_FILE, JSON.stringify(globalPaidSubscriptions, null, 2), 'utf8');
+  }
+} catch (e) {
+  globalPaidSubscriptions = [...INITIAL_PAID_SUBSCRIPTIONS];
+}
+
+// Load License Keys
+try {
+  if (fs.existsSync(LICENSE_KEYS_FILE)) {
+    const raw = fs.readFileSync(LICENSE_KEYS_FILE, 'utf8');
+    const parsed = JSON.parse(raw);
+    globalLicenseKeys = Array.isArray(parsed) ? parsed : [...INITIAL_LICENSE_KEYS];
+  } else {
+    globalLicenseKeys = [...INITIAL_LICENSE_KEYS];
+    fs.writeFileSync(LICENSE_KEYS_FILE, JSON.stringify(globalLicenseKeys, null, 2), 'utf8');
+  }
+} catch (e) {
+  globalLicenseKeys = [...INITIAL_LICENSE_KEYS];
+}
+
+// Load Paywall Settings
+try {
+  if (fs.existsSync(PAYWALL_SETTINGS_FILE)) {
+    const raw = fs.readFileSync(PAYWALL_SETTINGS_FILE, 'utf8');
+    const parsed = JSON.parse(raw);
+    globalPaywallSettings = { ...DEFAULT_PAYWALL_SETTINGS, ...parsed };
+  } else {
+    globalPaywallSettings = { ...DEFAULT_PAYWALL_SETTINGS };
+    fs.writeFileSync(PAYWALL_SETTINGS_FILE, JSON.stringify(globalPaywallSettings, null, 2), 'utf8');
+  }
+} catch (e) {
+  globalPaywallSettings = { ...DEFAULT_PAYWALL_SETTINGS };
+}
+
+// Public: GET /api/paywall/settings
+app.get('/api/paywall/settings', (req, res) => {
+  res.json({
+    success: true,
+    settings: globalPaywallSettings
+  });
+});
+
+// Check Subscription Status by Email or Device ID
+app.get('/api/subscriptions/check', (req, res) => {
+  const email = ((req.query.email as string) || '').trim().toLowerCase();
+  const deviceId = ((req.query.deviceId as string) || '').trim();
+
+  // Platform owner always has active lifetime access
+  if (isServerAdmin(email)) {
+    return res.json({
+      isPremium: true,
+      plan: 'lifetime',
+      status: 'active',
+      expiresAt: '2099-12-31 23:59',
+      invoiceNumber: 'INV-2026-0001',
+      isOwner: true
+    });
+  }
+
+  const now = new Date();
+  const activeRecord = globalPaidSubscriptions.find((sub) => {
+    const matchEmail = email && sub.email.toLowerCase() === email;
+    const matchDevice = deviceId && sub.deviceId === deviceId;
+    if (!matchEmail && !matchDevice) return false;
+    if (sub.status !== 'active') return false;
+    const exp = new Date(sub.expiresAt);
+    return isNaN(exp.getTime()) || exp > now;
+  });
+
+  if (activeRecord) {
+    const exp = new Date(activeRecord.expiresAt);
+    const diffMs = exp.getTime() - now.getTime();
+    const daysRemaining = isNaN(diffMs) ? 9999 : Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
+
+    return res.json({
+      isPremium: true,
+      plan: activeRecord.plan,
+      status: 'active',
+      expiresAt: activeRecord.expiresAt,
+      daysRemaining,
+      invoiceNumber: activeRecord.invoiceNumber,
+      record: activeRecord
+    });
+  }
+
+  res.json({
+    isPremium: false,
+    plan: null,
+    status: 'none'
+  });
+});
+
+// POST /api/subscriptions/subscribe: Purchase / Activate Paid Plan
+app.post('/api/subscriptions/subscribe', (req, res) => {
+  const { 
+    email, 
+    userName, 
+    phone, 
+    plan, 
+    amount, 
+    paymentMethod, 
+    utrRef, 
+    exam, 
+    deviceId 
+  } = req.body;
+
+  if (!email || typeof email !== 'string' || !email.includes('@')) {
+    return res.status(400).json({ error: 'Valid student email address is required.' });
+  }
+
+  const cleanEmail = email.trim().toLowerCase();
+  const validPlan: PaidPlanType = (['monthly', 'annual', 'lifetime'].includes(plan)) ? plan : 'annual';
+  const cleanMethod: PaymentMethodType = paymentMethod || 'upi_gpay';
+
+  const defaultPrice = globalPaywallSettings.prices[validPlan] || (validPlan === 'monthly' ? 199 : validPlan === 'lifetime' ? 1999 : 999);
+  const finalAmount = typeof amount === 'number' && amount > 0 ? amount : defaultPrice;
+
+  const now = new Date();
+  const nowStr = now.toISOString().replace('T', ' ').substring(0, 16);
+
+  let expiryDate = new Date(now);
+  if (validPlan === 'monthly') {
+    expiryDate.setDate(expiryDate.getDate() + 30);
+  } else if (validPlan === 'annual') {
+    expiryDate.setDate(expiryDate.getDate() + 365);
+  } else {
+    expiryDate.setFullYear(2099);
+  }
+  const expiresAtStr = expiryDate.toISOString().replace('T', ' ').substring(0, 16);
+
+  const invNum = `INV-${now.getFullYear()}-${Math.floor(10000 + Math.random() * 90000)}`;
+
+  const newRecord: PaidSubscriptionRecord = {
+    id: `sub-ord-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+    email: cleanEmail,
+    userName: userName && typeof userName === 'string' ? userName.trim() : cleanEmail.split('@')[0],
+    phone: phone && typeof phone === 'string' ? phone.trim() : undefined,
+    plan: validPlan,
+    amount: finalAmount,
+    paymentMethod: cleanMethod,
+    utrRef: utrRef && typeof utrRef === 'string' ? utrRef.trim() : undefined,
+    status: 'active',
+    activatedAt: nowStr,
+    expiresAt: expiresAtStr,
+    invoiceNumber: invNum,
+    exam: exam || 'UPSC',
+    deviceId: deviceId || undefined
+  };
+
+  // Upsert user subscription
+  const existingIdx = globalPaidSubscriptions.findIndex(s => s.email.toLowerCase() === cleanEmail);
+  if (existingIdx >= 0) {
+    globalPaidSubscriptions[existingIdx] = newRecord;
+  } else {
+    globalPaidSubscriptions.unshift(newRecord);
+  }
+
+  try {
+    fs.writeFileSync(SUBSCRIPTIONS_FILE, JSON.stringify(globalPaidSubscriptions, null, 2), 'utf8');
+  } catch (err) {
+    console.error("Failed to write to paid_subscriptions.json:", err);
+  }
+
+  res.json({
+    success: true,
+    message: `Congratulations! ${validPlan.toUpperCase()} Paid Membership is now active.`,
+    subscription: newRecord
+  });
+});
+
+// POST /api/subscriptions/redeem-key: Redeem License Voucher / Coupon
+app.post('/api/subscriptions/redeem-key', (req, res) => {
+  const { key, email, userName, phone, deviceId, exam } = req.body;
+
+  if (!key || typeof key !== 'string') {
+    return res.status(400).json({ error: 'License key is required.' });
+  }
+  if (!email || typeof email !== 'string' || !email.includes('@')) {
+    return res.status(400).json({ error: 'Valid student email address is required.' });
+  }
+
+  const cleanKey = key.trim().toUpperCase();
+  const cleanEmail = email.trim().toLowerCase();
+
+  const keyIndex = globalLicenseKeys.findIndex(k => k.key.toUpperCase() === cleanKey);
+  if (keyIndex === 0 && !globalLicenseKeys[keyIndex].active) {
+    return res.status(400).json({ error: 'This license key is no longer active.' });
+  }
+  if (keyIndex === -1) {
+    return res.status(404).json({ error: 'Invalid license key. Please check the code and retry.' });
+  }
+
+  const keyRecord = globalLicenseKeys[keyIndex];
+  if (!keyRecord.active) {
+    return res.status(400).json({ error: 'This license key has been deactivated.' });
+  }
+
+  if (keyRecord.usedCount >= keyRecord.maxUses) {
+    return res.status(400).json({ error: 'This license key has reached its maximum redemptions limit.' });
+  }
+
+  const now = new Date();
+  if (keyRecord.expiresAt && new Date(keyRecord.expiresAt) < now) {
+    return res.status(400).json({ error: 'This license key has expired.' });
+  }
+
+  // Increment usage count
+  keyRecord.usedCount = (keyRecord.usedCount || 0) + 1;
+
+  let expiryDate = new Date(now);
+  if (keyRecord.plan === 'monthly') {
+    expiryDate.setDate(expiryDate.getDate() + 30);
+  } else if (keyRecord.plan === 'annual') {
+    expiryDate.setDate(expiryDate.getDate() + 365);
+  } else {
+    expiryDate.setFullYear(2099);
+  }
+
+  const nowStr = now.toISOString().replace('T', ' ').substring(0, 16);
+  const expiresAtStr = expiryDate.toISOString().replace('T', ' ').substring(0, 16);
+  const invNum = `INV-LIC-${now.getFullYear()}-${Math.floor(10000 + Math.random() * 90000)}`;
+
+  const newRecord: PaidSubscriptionRecord = {
+    id: `sub-lic-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+    email: cleanEmail,
+    userName: userName && typeof userName === 'string' ? userName.trim() : cleanEmail.split('@')[0],
+    phone: phone && typeof phone === 'string' ? phone.trim() : undefined,
+    plan: keyRecord.plan,
+    amount: 0,
+    paymentMethod: 'license_key',
+    licenseKey: keyRecord.key,
+    status: 'active',
+    activatedAt: nowStr,
+    expiresAt: expiresAtStr,
+    invoiceNumber: invNum,
+    exam: exam || 'UPSC',
+    deviceId: deviceId || undefined
+  };
+
+  const existingIdx = globalPaidSubscriptions.findIndex(s => s.email.toLowerCase() === cleanEmail);
+  if (existingIdx >= 0) {
+    globalPaidSubscriptions[existingIdx] = newRecord;
+  } else {
+    globalPaidSubscriptions.unshift(newRecord);
+  }
+
+  try {
+    fs.writeFileSync(SUBSCRIPTIONS_FILE, JSON.stringify(globalPaidSubscriptions, null, 2), 'utf8');
+    fs.writeFileSync(LICENSE_KEYS_FILE, JSON.stringify(globalLicenseKeys, null, 2), 'utf8');
+  } catch (err) {
+    console.error("Failed to update licensing records:", err);
+  }
+
+  res.json({
+    success: true,
+    message: `License key verified! Unlocked ${keyRecord.plan.toUpperCase()} Pro access for ${cleanEmail}.`,
+    subscription: newRecord
+  });
+});
+
+// Admin: GET /api/admin/paid-app-stats
+app.get('/api/admin/paid-app-stats', (req, res) => {
+  const adminEmail = (req.headers['x-admin-email'] as string) || (req.query.adminEmail as string) || '';
+  if (!isServerAdmin(adminEmail)) {
+    return res.status(403).json({
+      error: 'Access Denied: Paid App management is reserved for platform administrators only.',
+      requiresAdmin: true
+    });
+  }
+
+  const now = new Date();
+  const activeSubs = globalPaidSubscriptions.filter((s) => {
+    if (s.status !== 'active') return false;
+    const exp = new Date(s.expiresAt);
+    return isNaN(exp.getTime()) || exp > now;
+  });
+
+  const totalRevenue = globalPaidSubscriptions.reduce((sum, s) => sum + (s.amount || 0), 0);
+
+  const planStats: Record<string, number> = {
+    monthly: 0,
+    annual: 0,
+    lifetime: 0
+  };
+  const methodStats: Record<string, number> = {};
+
+  globalPaidSubscriptions.forEach((s) => {
+    planStats[s.plan] = (planStats[s.plan] || 0) + 1;
+    methodStats[s.paymentMethod] = (methodStats[s.paymentMethod] || 0) + 1;
+  });
+
+  res.json({
+    success: true,
+    totalRevenue,
+    totalSubscribers: globalPaidSubscriptions.length,
+    activeSubscribers: activeSubs.length,
+    planStats,
+    methodStats,
+    subscriptions: globalPaidSubscriptions,
+    licenseKeys: globalLicenseKeys,
+    settings: globalPaywallSettings
+  });
+});
+
+// Admin: POST /api/admin/generate-license
+app.post('/api/admin/generate-license', (req, res) => {
+  const adminEmail = (req.headers['x-admin-email'] as string) || (req.body.adminEmail as string) || '';
+  if (!isServerAdmin(adminEmail)) {
+    return res.status(403).json({ error: 'Access Denied: Admin authorization required.' });
+  }
+
+  const { prefix, plan, count, discountPercent, maxUses, expiresDays, notes } = req.body;
+  const validPlan: PaidPlanType = (['monthly', 'annual', 'lifetime'].includes(plan)) ? plan : 'annual';
+  const numToGen = Math.min(Math.max(1, count || 1), 50);
+
+  const now = new Date();
+  const expDate = new Date(now);
+  expDate.setDate(expDate.getDate() + (expiresDays || 365));
+
+  const generated: LicenseKeyRecord[] = [];
+
+  for (let i = 0; i < numToGen; i++) {
+    const randomSuffix = Math.random().toString(36).substring(2, 7).toUpperCase();
+    const keyName = prefix 
+      ? `${prefix.trim().toUpperCase()}-${randomSuffix}` 
+      : `ASPIRES-${validPlan.toUpperCase().substring(0, 3)}-${randomSuffix}`;
+
+    const record: LicenseKeyRecord = {
+      key: keyName,
+      plan: validPlan,
+      discountPercent: discountPercent ?? 100,
+      maxUses: maxUses || 1,
+      usedCount: 0,
+      createdBy: adminEmail,
+      createdAt: now.toISOString().replace('T', ' ').substring(0, 16),
+      expiresAt: expDate.toISOString().replace('T', ' ').substring(0, 16),
+      active: true,
+      notes: notes || `Admin created on ${now.toISOString().substring(0, 10)}`
+    };
+
+    generated.push(record);
+    globalLicenseKeys.unshift(record);
+  }
+
+  try {
+    fs.writeFileSync(LICENSE_KEYS_FILE, JSON.stringify(globalLicenseKeys, null, 2), 'utf8');
+  } catch (err) {
+    console.error("Failed to write to license_keys.json:", err);
+  }
+
+  res.json({
+    success: true,
+    message: `Generated ${numToGen} new license keys.`,
+    keys: generated
+  });
+});
+
+// Admin: POST /api/admin/grant-pro
+app.post('/api/admin/grant-pro', (req, res) => {
+  const adminEmail = (req.headers['x-admin-email'] as string) || (req.body.adminEmail as string) || '';
+  if (!isServerAdmin(adminEmail)) {
+    return res.status(403).json({ error: 'Access Denied: Admin authorization required.' });
+  }
+
+  const { email, userName, plan, days } = req.body;
+  if (!email || !email.includes('@')) {
+    return res.status(400).json({ error: 'Valid student email required.' });
+  }
+
+  const cleanEmail = email.trim().toLowerCase();
+  const validPlan: PaidPlanType = plan || 'annual';
+  const now = new Date();
+  const expDate = new Date(now);
+  expDate.setDate(expDate.getDate() + (days || 365));
+
+  const newRecord: PaidSubscriptionRecord = {
+    id: `sub-adm-${Date.now()}`,
+    email: cleanEmail,
+    userName: userName || cleanEmail.split('@')[0],
+    plan: validPlan,
+    amount: 0,
+    paymentMethod: 'admin_grant',
+    status: 'active',
+    activatedAt: now.toISOString().replace('T', ' ').substring(0, 16),
+    expiresAt: expDate.toISOString().replace('T', ' ').substring(0, 16),
+    invoiceNumber: `INV-ADM-${now.getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`
+  };
+
+  const existingIdx = globalPaidSubscriptions.findIndex(s => s.email.toLowerCase() === cleanEmail);
+  if (existingIdx >= 0) {
+    globalPaidSubscriptions[existingIdx] = newRecord;
+  } else {
+    globalPaidSubscriptions.unshift(newRecord);
+  }
+
+  try {
+    fs.writeFileSync(SUBSCRIPTIONS_FILE, JSON.stringify(globalPaidSubscriptions, null, 2), 'utf8');
+  } catch (err) {
+    console.error("Failed to update subscriptions.json on admin grant:", err);
+  }
+
+  res.json({
+    success: true,
+    message: `Successfully granted ${validPlan.toUpperCase()} Pro access to ${cleanEmail}.`,
+    subscription: newRecord
+  });
+});
+
+// Admin: POST /api/admin/paywall-settings
+app.post('/api/admin/paywall-settings', (req, res) => {
+  const adminEmail = (req.headers['x-admin-email'] as string) || (req.body.adminEmail as string) || '';
+  if (!isServerAdmin(adminEmail)) {
+    return res.status(403).json({ error: 'Access Denied: Admin authorization required.' });
+  }
+
+  const { mode, prices, trialLimits, upiId, upiName } = req.body;
+
+  if (mode && (mode === 'free_trial' || mode === 'strict_paid')) {
+    globalPaywallSettings.mode = mode;
+  }
+  if (prices && typeof prices === 'object') {
+    globalPaywallSettings.prices = {
+      monthly: Number(prices.monthly) || globalPaywallSettings.prices.monthly,
+      annual: Number(prices.annual) || globalPaywallSettings.prices.annual,
+      lifetime: Number(prices.lifetime) || globalPaywallSettings.prices.lifetime
+    };
+  }
+  if (trialLimits && typeof trialLimits === 'object') {
+    globalPaywallSettings.trialLimits = {
+      evaluations: Number(trialLimits.evaluations) ?? globalPaywallSettings.trialLimits.evaluations,
+      quizzes: Number(trialLimits.quizzes) ?? globalPaywallSettings.trialLimits.quizzes,
+      notes: Number(trialLimits.notes) ?? globalPaywallSettings.trialLimits.notes,
+      chats: Number(trialLimits.chats) ?? globalPaywallSettings.trialLimits.chats
+    };
+  }
+  if (upiId && typeof upiId === 'string') {
+    globalPaywallSettings.upiId = upiId.trim();
+  }
+  if (upiName && typeof upiName === 'string') {
+    globalPaywallSettings.upiName = upiName.trim();
+  }
+
+  try {
+    fs.writeFileSync(PAYWALL_SETTINGS_FILE, JSON.stringify(globalPaywallSettings, null, 2), 'utf8');
+  } catch (err) {
+    console.error("Failed to write paywall_settings.json:", err);
+  }
+
+  res.json({
+    success: true,
+    message: 'Paywall configuration updated successfully.',
+    settings: globalPaywallSettings
   });
 });
 

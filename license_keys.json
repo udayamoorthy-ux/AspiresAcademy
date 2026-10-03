@@ -1,0 +1,74 @@
+[
+  {
+    "key": "ASPIRES-PRO-2026",
+    "plan": "annual",
+    "discountPercent": 100,
+    "maxUses": 500,
+    "usedCount": 29,
+    "createdBy": "udayamoorthy@gmail.com",
+    "createdAt": "2026-09-01 00:00",
+    "expiresAt": "2027-12-31 23:59",
+    "active": true,
+    "notes": "Official 2026 Annual Scholar Scholarship Pass"
+  },
+  {
+    "key": "TOPPER2026",
+    "plan": "annual",
+    "discountPercent": 100,
+    "maxUses": 100,
+    "usedCount": 14,
+    "createdBy": "udayamoorthy@gmail.com",
+    "createdAt": "2026-09-10 00:00",
+    "expiresAt": "2027-12-31 23:59",
+    "active": true,
+    "notes": "Merit Topper VIP Pass"
+  },
+  {
+    "key": "UPSC-SUCCESS",
+    "plan": "annual",
+    "discountPercent": 100,
+    "maxUses": 100,
+    "usedCount": 32,
+    "createdBy": "udayamoorthy@gmail.com",
+    "createdAt": "2026-09-15 00:00",
+    "expiresAt": "2027-12-31 23:59",
+    "active": true,
+    "notes": "Civil Services Prelims Sprint Pass"
+  },
+  {
+    "key": "TNPSC-PASS",
+    "plan": "annual",
+    "discountPercent": 100,
+    "maxUses": 100,
+    "usedCount": 19,
+    "createdBy": "udayamoorthy@gmail.com",
+    "createdAt": "2026-09-15 00:00",
+    "expiresAt": "2027-12-31 23:59",
+    "active": true,
+    "notes": "TNPSC CCSE Pass"
+  },
+  {
+    "key": "NEET-AIIMS",
+    "plan": "annual",
+    "discountPercent": 100,
+    "maxUses": 100,
+    "usedCount": 11,
+    "createdBy": "udayamoorthy@gmail.com",
+    "createdAt": "2026-09-20 00:00",
+    "expiresAt": "2027-12-31 23:59",
+    "active": true,
+    "notes": "Medical Entrance Pro"
+  },
+  {
+    "key": "LIFETIME-VIP",
+    "plan": "lifetime",
+    "discountPercent": 100,
+    "maxUses": 50,
+    "usedCount": 7,
+    "createdBy": "udayamoorthy@gmail.com",
+    "createdAt": "2026-09-01 00:00",
+    "expiresAt": "2099-12-31 23:59",
+    "active": true,
+    "notes": "Lifetime VIP Sponsor Code"
+  }
+]

@@ -27,7 +27,8 @@ import {
   Globe2,
   ShieldCheck,
   Check,
-  Download
+  Download,
+  DollarSign
 } from 'lucide-react';
 import { ExamType } from '../types';
 import { PWAInstallPrompt } from './PWAInstallPrompt';
@@ -160,6 +161,7 @@ interface RealtimeLiveHeaderProps {
   userEmail?: string;
   onAuthClick?: () => void;
   onOpenInstallations?: () => void;
+  onOpenPaidAppAdmin?: () => void;
 }
 
 export const RealtimeLiveHeader: React.FC<RealtimeLiveHeaderProps> = ({
@@ -176,7 +178,8 @@ export const RealtimeLiveHeader: React.FC<RealtimeLiveHeaderProps> = ({
   unreadCount = 0,
   userEmail = '',
   onAuthClick,
-  onOpenInstallations
+  onOpenInstallations,
+  onOpenPaidAppAdmin
 }) => {
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [categorySearchQuery, setCategorySearchQuery] = useState('');
@@ -277,6 +280,17 @@ export const RealtimeLiveHeader: React.FC<RealtimeLiveHeaderProps> = ({
 
           {/* Quick Triggers */}
           <div className="flex items-center gap-2">
+            {isUserOwner && onOpenPaidAppAdmin && (
+              <button
+                onClick={onOpenPaidAppAdmin}
+                className="flex items-center gap-1.5 text-amber-300 hover:text-amber-200 font-bold text-[10px] bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 px-2.5 py-0.5 rounded-full transition-all active:scale-95 cursor-pointer shadow-sm"
+                title="Paid App Revenue, Pricing & License Keys Manager"
+              >
+                <DollarSign className="h-3 w-3 text-amber-400" />
+                <span>💰 Paid App Hub</span>
+              </button>
+            )}
+
             {isUserOwner && onOpenInstallations && (
               <button
                 onClick={onOpenInstallations}
@@ -374,17 +388,17 @@ export const RealtimeLiveHeader: React.FC<RealtimeLiveHeaderProps> = ({
 
             <PWAInstallPrompt variant="button" />
 
-            {/* Premium Badge / Button */}
+            {/* Pro Membership Status / Upgrade CTA */}
             <button
               onClick={onPremiumClick}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-extrabold shadow-md transition-all active:scale-95 cursor-pointer ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black shadow-md transition-all active:scale-95 cursor-pointer ${
                 isPremium
-                  ? 'bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950'
-                  : 'bg-gradient-to-r from-amber-500/20 to-yellow-500/20 text-amber-300 border border-amber-500/40 hover:bg-amber-500/30'
+                  ? 'bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 shadow-amber-500/20'
+                  : 'bg-gradient-to-r from-amber-500 via-orange-500 to-yellow-400 text-slate-950 hover:brightness-105 shadow-amber-500/30'
               }`}
             >
-              <Crown className="h-3.5 w-3.5 text-amber-400 fill-amber-400" />
-              <span className="hidden sm:inline">{isPremium ? 'Premium Active' : 'Upgrade'}</span>
+              <Crown className="h-3.5 w-3.5 text-slate-950 fill-slate-950" />
+              <span>{isPremium ? 'PRO ACTIVE' : '⚡ GET PRO PASS'}</span>
             </button>
           </div>
         </div>

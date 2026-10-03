@@ -238,7 +238,7 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
               className="w-full py-3 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-400 to-yellow-500 text-slate-950 font-black text-xs shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2 active:scale-95 transition-all"
             >
               <Crown className="h-4 w-4" />
-              <span>{isPremium ? 'Premium Active — Support Server' : 'Unlock ASPIRES Premium'}</span>
+              <span>{isPremium ? '👑 PRO ACTIVE — View Membership' : '⚡ Get ASPIRES Pro Pass (From ₹199)'}</span>
             </button>
           </div>
         </div>
