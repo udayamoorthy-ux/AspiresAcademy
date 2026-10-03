@@ -24,7 +24,7 @@ export const ProFeatureLock: React.FC<ProFeatureLockProps> = ({
     'Live multiplayer speed battles and nationwide ranking'
   ],
   onOpenPaywall,
-  priceStartingFrom = 199
+  priceStartingFrom = 350
 }) => {
   return (
     <div className="bg-gradient-to-b from-slate-900 via-slate-850 to-slate-900 border border-amber-500/30 rounded-3xl p-6 sm:p-10 text-center shadow-2xl relative overflow-hidden my-6 max-w-2xl mx-auto">
@@ -71,7 +71,7 @@ export const ProFeatureLock: React.FC<ProFeatureLockProps> = ({
           className="w-full sm:w-auto flex-1 bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-400 hover:to-yellow-300 text-slate-950 font-black py-3 px-6 rounded-xl text-xs shadow-lg shadow-amber-500/20 transition-all active:scale-95 cursor-pointer flex items-center justify-center gap-2"
         >
           <Crown className="h-4 w-4 text-slate-950 fill-slate-950" />
-          <span>Unlock Pro Pass (From ₹{priceStartingFrom})</span>
+          <span>Unlock Annual Pass — ₹{priceStartingFrom} (50% OFF)</span>
           <ArrowRight className="h-4 w-4 text-slate-950" />
         </button>
 

@@ -1096,7 +1096,7 @@ export default function App() {
             id="footer-support-gpay-trigger"
           >
             <Crown className="h-4 w-4 text-slate-950 fill-slate-950" />
-            <span>{isPremium ? '👑 ASPIRES Pro Member Active' : '⚡ Activate ASPIRES Pro Membership (₹199)'}</span>
+            <span>{isPremium ? '👑 ASPIRES Pro Member Active' : '⚡ Activate Annual Pass — ₹350 (50% OFF from ₹700)'}</span>
           </button>
 
           <button

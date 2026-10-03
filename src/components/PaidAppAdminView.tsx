@@ -47,7 +47,8 @@ export const PaidAppAdminView: React.FC<PaidAppAdminViewProps> = ({ userEmail, o
   const [settings, setSettings] = useState<PaywallSettings>({
     mode: 'free_trial',
     trialLimits: { evaluations: 1, quizzes: 5, notes: 2, chats: 3 },
-    prices: { monthly: 199, annual: 999, lifetime: 1999 },
+    prices: { monthly: 350, annual: 350, lifetime: 350 },
+    originalAnnualPrice: 700,
     upiId: 'udayamoorthy@okaxis',
     upiName: 'ASPIRES ACADEMY'
   });
@@ -75,9 +76,9 @@ export const PaidAppAdminView: React.FC<PaidAppAdminViewProps> = ({ userEmail, o
 
   // Settings Form State
   const [tempMode, setTempMode] = useState<'free_trial' | 'strict_paid'>('free_trial');
-  const [tempMonthlyPrice, setTempMonthlyPrice] = useState(199);
-  const [tempAnnualPrice, setTempAnnualPrice] = useState(999);
-  const [tempLifetimePrice, setTempLifetimePrice] = useState(1999);
+  const [tempMonthlyPrice, setTempMonthlyPrice] = useState(350);
+  const [tempAnnualPrice, setTempAnnualPrice] = useState(350);
+  const [tempLifetimePrice, setTempLifetimePrice] = useState(350);
   const [tempUpiId, setTempUpiId] = useState('udayamoorthy@okaxis');
   const [isSavingSettings, setIsSavingSettings] = useState(false);
 

@@ -56,7 +56,8 @@ export const PaidAppPaywallModal: React.FC<PaidAppPaywallModalProps> = ({
   initialSelectedPlan = 'annual',
   featureTriggerName
 }) => {
-  const [selectedPlan, setSelectedPlan] = useState<PaidPlanType>(initialSelectedPlan);
+  // Only Annual Pass is offered as requested
+  const selectedPlan: PaidPlanType = 'annual';
   const [paymentTab, setPaymentTab] = useState<'upi' | 'card' | 'key'>('upi');
   
   // Student Details
@@ -85,7 +86,8 @@ export const PaidAppPaywallModal: React.FC<PaidAppPaywallModalProps> = ({
   const [settings, setSettings] = useState<PaywallSettings>({
     mode: 'free_trial',
     trialLimits: { evaluations: 1, quizzes: 5, notes: 2, chats: 3 },
-    prices: { monthly: 199, annual: 999, lifetime: 1999 },
+    prices: { monthly: 350, annual: 350, lifetime: 350 },
+    originalAnnualPrice: 700,
     upiId: 'udayamoorthy@okaxis',
     upiName: 'ASPIRES ACADEMY'
   });
@@ -107,11 +109,11 @@ export const PaidAppPaywallModal: React.FC<PaidAppPaywallModalProps> = ({
       .catch(() => {});
   }, []);
 
-  const prices = settings.prices;
-  const currentPrice = prices[selectedPlan] || (selectedPlan === 'monthly' ? 199 : selectedPlan === 'lifetime' ? 1999 : 999);
+  const currentPrice = settings.prices.annual || 350;
+  const originalPrice = settings.originalAnnualPrice || 700;
 
   // Dynamic UPI Link & QR Code
-  const upiNote = `ASPIRES ${selectedPlan.toUpperCase()} Pass for ${studentEmail.trim() || 'Student'}`;
+  const upiNote = `ASPIRES Annual Pass for ${studentEmail.trim() || 'Student'}`;
   const upiDeepLink = `upi://pay?pa=${encodeURIComponent(settings.upiId)}&pn=${encodeURIComponent(settings.upiName)}&am=${currentPrice}&cu=INR&tn=${encodeURIComponent(upiNote)}`;
   const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiDeepLink)}&margin=10`;
 
@@ -426,165 +428,78 @@ export const PaidAppPaywallModal: React.FC<PaidAppPaywallModalProps> = ({
             </div>
           )}
 
-          {/* Plan Selection Cards */}
+          {/* Plan Selection Cards: Single Annual Pass Only */}
           {(!isPremium || successRecord === null) && (
             <>
-              <div>
-                <div className="text-center max-w-lg mx-auto mb-5 space-y-1">
-                  <h4 className="text-lg font-black text-white font-sans">
-                    Choose Your Preparation Pass
-                  </h4>
-                  <p className="text-xs text-slate-400">
-                    Transparent pricing. Zero hidden charges. Cancel anytime.
-                  </p>
+              {/* Annual Pass Only Promotion Box (Discounted from ₹700 to ₹350) */}
+              <div className="bg-gradient-to-b from-slate-850 via-slate-900 to-slate-850 border-2 border-amber-400 rounded-3xl p-6 sm:p-8 shadow-2xl shadow-amber-500/10 relative overflow-hidden">
+                {/* Glow & Badge */}
+                <div className="absolute top-0 right-0 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+                <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
+                  <div className="flex items-center gap-2">
+                    <span className="bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 font-black text-xs px-3.5 py-1 rounded-full uppercase tracking-wider shadow-md font-mono flex items-center gap-1.5">
+                      <Crown className="h-3.5 w-3.5 fill-slate-950" />
+                      <span>ANNUAL SCHOLAR PASS</span>
+                    </span>
+                    <span className="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-bold px-2.5 py-0.5 rounded-full font-mono">
+                      50% OFF LIMITED OFFER
+                    </span>
+                  </div>
+                  <span className="text-xs font-mono text-slate-400 font-bold">
+                    Validity: 365 Days (1 Full Year)
+                  </span>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {/* Monthly Pass */}
-                  <div
-                    onClick={() => setSelectedPlan('monthly')}
-                    className={`rounded-2xl p-5 border transition-all cursor-pointer relative flex flex-col justify-between ${
-                      selectedPlan === 'monthly'
-                        ? 'bg-slate-850 border-amber-500 shadow-lg shadow-amber-500/10'
-                        : 'bg-slate-900 border-slate-800 hover:border-slate-700'
-                    }`}
-                  >
-                    <div>
-                      <div className="flex justify-between items-center mb-2">
-                        <span className="text-xs font-bold text-slate-300 uppercase tracking-wider font-mono">Sprint Pass</span>
-                      </div>
-                      <div className="flex items-baseline gap-1 my-2">
-                        <span className="text-2xl font-black text-white">₹{prices.monthly}</span>
-                        <span className="text-xs text-slate-400">/ 30 days</span>
-                      </div>
-                      <p className="text-[11px] text-slate-400 mb-4">
-                        Ideal for last-minute revision before Prelims or Tier 1 exams.
-                      </p>
-                      <ul className="text-xs space-y-2 text-slate-300">
-                        <li className="flex items-center gap-2">
-                          <Check className="h-3.5 w-3.5 text-emerald-400" />
-                          <span>All 8 Exams Unlocked</span>
-                        </li>
-                        <li className="flex items-center gap-2">
-                          <Check className="h-3.5 w-3.5 text-emerald-400" />
-                          <span>AI Essay Evaluator</span>
-                        </li>
-                        <li className="flex items-center gap-2">
-                          <Check className="h-3.5 w-3.5 text-emerald-400" />
-                          <span>Topic-wise Mock Tests</span>
-                        </li>
-                      </ul>
-                    </div>
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+                  <div className="md:col-span-6 space-y-3">
+                    <h4 className="text-xl sm:text-2xl font-black text-white font-sans tracking-tight">
+                      All-Inclusive 1-Year National Exam Preparation Pass
+                    </h4>
+                    <p className="text-xs text-slate-300 leading-relaxed">
+                      One single pass unlocks everything: All 8 competitive exams, unlimited AI Mains evaluations, AI voice teacher, 10,000+ MCQs, and offline PWA mode.
+                    </p>
 
-                    <button className={`w-full mt-5 py-2 rounded-xl text-xs font-bold transition-all ${
-                      selectedPlan === 'monthly'
-                        ? 'bg-amber-500 text-slate-950 font-black'
-                        : 'bg-slate-800 text-slate-300'
-                    }`}>
-                      {selectedPlan === 'monthly' ? 'Selected' : 'Select'}
-                    </button>
+                    <div className="flex items-baseline gap-3 pt-2">
+                      <span className="text-4xl sm:text-5xl font-black text-white font-sans">
+                        ₹350
+                      </span>
+                      <div className="space-y-0.5">
+                        <span className="text-sm sm:text-base text-slate-400 line-through font-mono">
+                          ₹700
+                        </span>
+                        <div className="text-[11px] font-bold text-emerald-400 font-mono">
+                          Flat 50% Discount (Save ₹350 • ~₹0.96 / day)
+                        </div>
+                      </div>
+                    </div>
                   </div>
 
-                  {/* Annual Pro Pass (Highlighted Best Value) */}
-                  <div
-                    onClick={() => setSelectedPlan('annual')}
-                    className={`rounded-2xl p-5 border transition-all cursor-pointer relative flex flex-col justify-between ${
-                      selectedPlan === 'annual'
-                        ? 'bg-gradient-to-b from-slate-850 to-slate-900 border-amber-400 shadow-xl shadow-amber-500/20 ring-2 ring-amber-400/40'
-                        : 'bg-slate-900 border-slate-800 hover:border-slate-700'
-                    }`}
-                  >
-                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 font-black text-[9px] px-3 py-0.5 rounded-full uppercase tracking-wider shadow-md">
-                      MOST POPULAR • 60% SAVINGS
+                  <div className="md:col-span-6 bg-slate-950/70 border border-slate-800 rounded-2xl p-4 sm:p-5 space-y-2.5">
+                    <span className="text-[11px] font-mono font-bold text-slate-400 uppercase tracking-wider block">
+                      Everything Included for 365 Days:
+                    </span>
+                    <div className="space-y-2 text-xs text-slate-200">
+                      <div className="flex items-center gap-2">
+                        <Check className="h-4 w-4 text-emerald-400 shrink-0" />
+                        <span className="font-bold text-white">Unlimited Mains Answer &amp; Essay Evaluations</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Check className="h-4 w-4 text-emerald-400 shrink-0" />
+                        <span>All 8 Exams (UPSC, TNPSC, SSC, RRB, JEE, NEET, IELTS)</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Check className="h-4 w-4 text-emerald-400 shrink-0" />
+                        <span>AI Voice Teacher with Audio Policy Brief Summaries</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Check className="h-4 w-4 text-emerald-400 shrink-0" />
+                        <span>10,000+ Topic Mock Quizzes with Model Answers</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Check className="h-4 w-4 text-emerald-400 shrink-0" />
+                        <span>Live Multiplayer Speed Battle Arena &amp; Study Lounge</span>
+                      </div>
                     </div>
-
-                    <div>
-                      <div className="flex justify-between items-center mb-2 mt-1">
-                        <span className="text-xs font-bold text-amber-400 uppercase tracking-wider font-mono">Annual Pro Pass</span>
-                      </div>
-                      <div className="flex items-baseline gap-1 my-2">
-                        <span className="text-3xl font-black text-white">₹{prices.annual}</span>
-                        <span className="text-xs text-slate-400">/ 365 days</span>
-                      </div>
-                      <p className="text-[11px] text-slate-400 mb-4">
-                        Just ₹83/month. Complete comprehensive preparation for the full academic cycle.
-                      </p>
-                      <ul className="text-xs space-y-2 text-slate-200">
-                        <li className="flex items-center gap-2">
-                          <Check className="h-3.5 w-3.5 text-emerald-400" />
-                          <span className="font-bold text-white">Unlimited Mains Essay Evaluations</span>
-                        </li>
-                        <li className="flex items-center gap-2">
-                          <Check className="h-3.5 w-3.5 text-emerald-400" />
-                          <span>Voice AI Teacher & Audio Briefs</span>
-                        </li>
-                        <li className="flex items-center gap-2">
-                          <Check className="h-3.5 w-3.5 text-emerald-400" />
-                          <span>Live Speed Battle & Study Lounge</span>
-                        </li>
-                        <li className="flex items-center gap-2">
-                          <Check className="h-3.5 w-3.5 text-emerald-400" />
-                          <span>Adaptive Study Planner</span>
-                        </li>
-                        <li className="flex items-center gap-2">
-                          <Check className="h-3.5 w-3.5 text-emerald-400" />
-                          <span>Offline PWA App Access</span>
-                        </li>
-                      </ul>
-                    </div>
-
-                    <button className={`w-full mt-5 py-2.5 rounded-xl text-xs transition-all shadow-md ${
-                      selectedPlan === 'annual'
-                        ? 'bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 font-black'
-                        : 'bg-slate-800 text-slate-300 font-bold'
-                    }`}>
-                      {selectedPlan === 'annual' ? 'Selected • Best Value' : 'Select'}
-                    </button>
-                  </div>
-
-                  {/* Lifetime Pass */}
-                  <div
-                    onClick={() => setSelectedPlan('lifetime')}
-                    className={`rounded-2xl p-5 border transition-all cursor-pointer relative flex flex-col justify-between ${
-                      selectedPlan === 'lifetime'
-                        ? 'bg-slate-850 border-purple-500 shadow-lg shadow-purple-500/10'
-                        : 'bg-slate-900 border-slate-800 hover:border-slate-700'
-                    }`}
-                  >
-                    <div>
-                      <div className="flex justify-between items-center mb-2">
-                        <span className="text-xs font-bold text-purple-400 uppercase tracking-wider font-mono">Lifetime Ranker</span>
-                      </div>
-                      <div className="flex items-baseline gap-1 my-2">
-                        <span className="text-2xl font-black text-white">₹{prices.lifetime}</span>
-                        <span className="text-xs text-slate-400">one-time</span>
-                      </div>
-                      <p className="text-[11px] text-slate-400 mb-4">
-                        Pay once, learn forever. Covers UPSC, TNPSC, SSC, RRB, JEE, NEET & IELTS.
-                      </p>
-                      <ul className="text-xs space-y-2 text-slate-300">
-                        <li className="flex items-center gap-2">
-                          <Check className="h-3.5 w-3.5 text-emerald-400" />
-                          <span className="font-bold text-white">Lifetime Unlimited Access</span>
-                        </li>
-                        <li className="flex items-center gap-2">
-                          <Check className="h-3.5 w-3.5 text-emerald-400" />
-                          <span>All Future Exam Modules Free</span>
-                        </li>
-                        <li className="flex items-center gap-2">
-                          <Check className="h-3.5 w-3.5 text-emerald-400" />
-                          <span>Direct Mentor Priority Support</span>
-                        </li>
-                      </ul>
-                    </div>
-
-                    <button className={`w-full mt-5 py-2 rounded-xl text-xs font-bold transition-all ${
-                      selectedPlan === 'lifetime'
-                        ? 'bg-purple-600 text-white font-black'
-                        : 'bg-slate-800 text-slate-300'
-                    }`}>
-                      {selectedPlan === 'lifetime' ? 'Selected' : 'Select'}
-                    </button>
                   </div>
                 </div>
               </div>

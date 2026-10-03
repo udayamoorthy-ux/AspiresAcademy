@@ -1,0 +1,17 @@
+{
+  "mode": "free_trial",
+  "trialLimits": {
+    "evaluations": 1,
+    "quizzes": 5,
+    "notes": 2,
+    "chats": 3
+  },
+  "prices": {
+    "monthly": 350,
+    "annual": 350,
+    "lifetime": 350
+  },
+  "originalAnnualPrice": 700,
+  "upiId": "udayamoorthy@okaxis",
+  "upiName": "ASPIRES ACADEMY"
+}

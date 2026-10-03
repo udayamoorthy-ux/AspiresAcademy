@@ -398,7 +398,7 @@ export const RealtimeLiveHeader: React.FC<RealtimeLiveHeaderProps> = ({
               }`}
             >
               <Crown className="h-3.5 w-3.5 text-slate-950 fill-slate-950" />
-              <span>{isPremium ? 'PRO ACTIVE' : '⚡ GET PRO PASS'}</span>
+              <span>{isPremium ? 'PRO ACTIVE' : '⚡ ANNUAL PASS ₹350'}</span>
             </button>
           </div>
         </div>

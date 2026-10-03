@@ -483,10 +483,11 @@ const DEFAULT_PAYWALL_SETTINGS: PaywallSettings = {
     chats: 3
   },
   prices: {
-    monthly: 199,
-    annual: 999,
-    lifetime: 1999
+    monthly: 350,
+    annual: 350,
+    lifetime: 350
   },
+  originalAnnualPrice: 700,
   upiId: 'udayamoorthy@okaxis',
   upiName: 'ASPIRES ACADEMY'
 };

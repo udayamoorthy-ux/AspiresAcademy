@@ -184,6 +184,7 @@ export interface PaywallSettings {
     annual: number;
     lifetime: number;
   };
+  originalAnnualPrice?: number;
   upiId: string;
   upiName: string;
 }
