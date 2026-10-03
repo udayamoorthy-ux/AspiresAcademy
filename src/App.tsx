@@ -42,6 +42,7 @@ import { useRealtimeSocket } from './hooks/useRealtimeSocket';
 import { RealtimeLiveHeader } from './components/RealtimeLiveHeader';
 import { RealtimeActivityTicker } from './components/RealtimeActivityTicker';
 import { RealtimeLiveArena } from './components/RealtimeLiveArena';
+import { AppInstallationsAdminView } from './components/AppInstallationsAdminView';
 
 import { 
   BookOpen, 
@@ -71,7 +72,8 @@ import {
   X,
   ExternalLink,
   Flame,
-  Radio
+  Radio,
+  Smartphone
 } from 'lucide-react';
 
 const TICKER_HEADLINES: Record<ExamType, string[]> = {
@@ -123,6 +125,7 @@ export default function App() {
   const [selectedExam, setSelectedExam] = useState<ExamType>('UPSC');
   const [activeTab, setActiveTab] = useState<string>('daily-mcqs');
   const [isLiveArenaModalOpen, setIsLiveArenaModalOpen] = useState(false);
+  const [isInstallationsModalOpen, setIsInstallationsModalOpen] = useState(false);
 
   // Real-Time Nationwide WebSocket State & Live Events
   const realtime = useRealtimeSocket(selectedExam);
@@ -372,8 +375,18 @@ export default function App() {
     );
   };
 
+  const AppInstallationsTabWrapper: React.FC<any> = () => {
+    return (
+      <AppInstallationsAdminView
+        userEmail={userEmail}
+        onClose={() => setActiveTab('daily-mcqs')}
+      />
+    );
+  };
+
   const tabDetails = [
     { id: 'live-arena', label: '🔥 Live Arena', icon: Flame, component: LiveArenaWrapper },
+    { id: 'app-installations', label: '📱 App Installs Log', icon: Smartphone, component: AppInstallationsTabWrapper },
     { id: 'daily-mcqs', label: 'Daily MCQ Drills', icon: Sparkles, component: QuizView },
     { id: 'practice-tests', label: 'Mock Tests & PYQs', icon: Award, component: QuizView },
     { id: 'syllabus', label: 'Official Syllabus', icon: Compass, component: SyllabusView },
@@ -416,8 +429,10 @@ export default function App() {
       tabs: ['mainsSprints', 'essay']
     },
     {
-      title: 'Support & Analytics',
-      tabs: ['mentor', 'gk', 'notifications', 'analytics', 'reviews']
+      title: isUserAdmin ? 'Admin & Telemetry 👑' : 'Support & Analytics',
+      tabs: isUserAdmin 
+        ? ['app-installations', 'mentor', 'gk', 'notifications', 'analytics', 'reviews']
+        : ['mentor', 'gk', 'notifications', 'analytics', 'reviews']
     }
   ];
 
@@ -444,6 +459,7 @@ export default function App() {
         }}
         userEmail={userEmail}
         onAuthClick={() => setIsAuthModalOpen(true)}
+        onOpenInstallations={() => setIsInstallationsModalOpen(true)}
       />
 
       {/* Real-Time Nationwide Activity Stream */}
@@ -1227,6 +1243,24 @@ export default function App() {
               onVoteBattle={realtime.voteBattle}
               onPublishActivity={realtime.publishActivity}
               onClose={() => setIsLiveArenaModalOpen(false)}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* App Installations Registry Admin Modal (Owner View & CSV Export) */}
+      {isInstallationsModalOpen && (
+        <div 
+          className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 animate-fadeIn"
+          onClick={() => setIsInstallationsModalOpen(false)}
+        >
+          <div 
+            className="w-full max-w-5xl max-h-[92vh] overflow-y-auto rounded-3xl relative animate-scaleUp shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <AppInstallationsAdminView
+              userEmail={userEmail}
+              onClose={() => setIsInstallationsModalOpen(false)}
             />
           </div>
         </div>

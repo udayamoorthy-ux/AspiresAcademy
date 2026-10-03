@@ -252,6 +252,214 @@ app.delete('/api/subscribers/:id', (req, res) => {
   });
 });
 
+// ----------------------------------------------------
+// APP INSTALLATIONS REGISTRY (Admin Telemetry & User List)
+// ----------------------------------------------------
+interface AppInstallationRecord {
+  id: string;
+  deviceId: string;
+  email?: string;
+  userName?: string;
+  exam: string;
+  platform: 'Android' | 'iOS' | 'Windows' | 'Mac' | 'Linux' | 'Other';
+  browser?: string;
+  screen?: string;
+  installedAt: string;
+  lastOpenedAt: string;
+  launchCount: number;
+  isStandalone: boolean;
+}
+
+const INSTALLATIONS_FILE = path.join(process.cwd(), 'app_installations.json');
+
+const INITIAL_INSTALLATIONS: AppInstallationRecord[] = [
+  {
+    id: 'inst-1',
+    deviceId: 'dev-9a8b7c-android',
+    email: 'selvi.tnpsc@gmail.com',
+    userName: 'Selvi M.',
+    exam: 'TNPSC_G1',
+    platform: 'Android',
+    browser: 'Chrome Mobile',
+    screen: '412x915',
+    installedAt: '2026-09-28 10:24',
+    lastOpenedAt: '2026-10-02 22:15',
+    launchCount: 14,
+    isStandalone: true
+  },
+  {
+    id: 'inst-2',
+    deviceId: 'dev-1f2e3d-ios',
+    email: 'karthik.upsc@gmail.com',
+    userName: 'Karthik Raja',
+    exam: 'UPSC',
+    platform: 'iOS',
+    browser: 'Mobile Safari',
+    screen: '390x844',
+    installedAt: '2026-09-29 14:40',
+    lastOpenedAt: '2026-10-02 23:05',
+    launchCount: 18,
+    isStandalone: true
+  },
+  {
+    id: 'inst-3',
+    deviceId: 'dev-4b5c6d-android',
+    email: 'arun.neet26@gmail.com',
+    userName: 'Arun K.',
+    exam: 'NEET',
+    platform: 'Android',
+    browser: 'Samsung Internet',
+    screen: '360x800',
+    installedAt: '2026-09-30 08:12',
+    lastOpenedAt: '2026-10-02 21:48',
+    launchCount: 9,
+    isStandalone: true
+  },
+  {
+    id: 'inst-4',
+    deviceId: 'dev-7e8f9a-win',
+    email: 'priya.jee.prep@gmail.com',
+    userName: 'Priya S.',
+    exam: 'IIT_JEE',
+    platform: 'Windows',
+    browser: 'Edge',
+    screen: '1920x1080',
+    installedAt: '2026-10-01 11:30',
+    lastOpenedAt: '2026-10-02 20:10',
+    launchCount: 6,
+    isStandalone: true
+  },
+  {
+    id: 'inst-5',
+    deviceId: 'dev-3d2c1b-android',
+    email: 'saravanan.rrb@gmail.com',
+    userName: 'Saravanan P.',
+    exam: 'RRB_NTPC',
+    platform: 'Android',
+    browser: 'Chrome Mobile',
+    screen: '393x873',
+    installedAt: '2026-10-01 16:55',
+    lastOpenedAt: '2026-10-02 19:22',
+    launchCount: 5,
+    isStandalone: true
+  },
+  {
+    id: 'inst-6',
+    deviceId: 'dev-6f5e4d-ios',
+    email: 'ananya.ielts@gmail.com',
+    userName: 'Ananya S.',
+    exam: 'IELTS',
+    platform: 'iOS',
+    browser: 'Mobile Safari',
+    screen: '428x926',
+    installedAt: '2026-10-02 09:18',
+    lastOpenedAt: '2026-10-02 22:45',
+    launchCount: 4,
+    isStandalone: true
+  }
+];
+
+let globalInstallations: AppInstallationRecord[] = [];
+
+try {
+  if (fs.existsSync(INSTALLATIONS_FILE)) {
+    const raw = fs.readFileSync(INSTALLATIONS_FILE, 'utf8');
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(parsed)) {
+      globalInstallations = parsed;
+    } else {
+      globalInstallations = [...INITIAL_INSTALLATIONS];
+    }
+  } else {
+    globalInstallations = [...INITIAL_INSTALLATIONS];
+    fs.writeFileSync(INSTALLATIONS_FILE, JSON.stringify(globalInstallations, null, 2), 'utf8');
+  }
+} catch (err) {
+  globalInstallations = [...INITIAL_INSTALLATIONS];
+}
+
+// GET /api/installations: Restricted to Admin/Owner
+app.get('/api/installations', (req, res) => {
+  const adminEmail = (req.headers['x-admin-email'] as string) || (req.query.adminEmail as string) || '';
+  if (!isServerAdmin(adminEmail)) {
+    return res.status(403).json({
+      error: 'Access Denied: App installations registry is reserved for authorized platform administrators only.',
+      requiresAdmin: true
+    });
+  }
+
+  const platformStats: Record<string, number> = {
+    Android: 0,
+    iOS: 0,
+    Windows: 0,
+    Mac: 0,
+    Other: 0
+  };
+  const examStats: Record<string, number> = {};
+
+  globalInstallations.forEach((item) => {
+    platformStats[item.platform] = (platformStats[item.platform] || 0) + 1;
+    examStats[item.exam] = (examStats[item.exam] || 0) + 1;
+  });
+
+  res.json({
+    installations: globalInstallations,
+    total: globalInstallations.length,
+    activeStandaloneCount: globalInstallations.filter((i) => i.isStandalone).length,
+    platformStats,
+    examStats
+  });
+});
+
+// POST /api/installations: Register installation event or standalone launch
+app.post('/api/installations', (req, res) => {
+  const { deviceId, email, userName, exam, platform, browser, screen, isStandalone } = req.body;
+  if (!deviceId || typeof deviceId !== 'string') {
+    return res.status(400).json({ error: 'Device identifier is required' });
+  }
+
+  const cleanDeviceId = deviceId.trim();
+  const nowStr = new Date().toISOString().replace('T', ' ').substring(0, 16);
+  const existingIdx = globalInstallations.findIndex((i) => i.deviceId === cleanDeviceId);
+
+  if (existingIdx >= 0) {
+    const existing = globalInstallations[existingIdx];
+    existing.lastOpenedAt = nowStr;
+    existing.launchCount = (existing.launchCount || 1) + 1;
+    if (email && typeof email === 'string' && email.includes('@')) existing.email = email.trim().toLowerCase();
+    if (userName && typeof userName === 'string') existing.userName = userName.trim();
+    if (exam && typeof exam === 'string') existing.exam = exam.trim();
+    if (typeof isStandalone === 'boolean') existing.isStandalone = isStandalone;
+  } else {
+    const newRecord: AppInstallationRecord = {
+      id: `inst-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+      deviceId: cleanDeviceId,
+      email: email && typeof email === 'string' && email.includes('@') ? email.trim().toLowerCase() : undefined,
+      userName: userName && typeof userName === 'string' ? userName.trim() : undefined,
+      exam: exam && typeof exam === 'string' ? exam.trim() : 'UPSC',
+      platform: platform || 'Android',
+      browser: browser || 'Unknown',
+      screen: screen || undefined,
+      installedAt: nowStr,
+      lastOpenedAt: nowStr,
+      launchCount: 1,
+      isStandalone: isStandalone ?? true
+    };
+    globalInstallations.unshift(newRecord);
+  }
+
+  try {
+    fs.writeFileSync(INSTALLATIONS_FILE, JSON.stringify(globalInstallations, null, 2), 'utf8');
+  } catch (err) {
+    console.error("Failed to write to app_installations.json:", err);
+  }
+
+  res.json({
+    success: true,
+    totalInstallations: globalInstallations.length
+  });
+});
+
 // 2. Dynamic Study Planner Generator
 app.post('/api/study-planner', async (req, res) => {
   const { exam, totalDays, dailyHours, startDate, targetDate } = req.body;
