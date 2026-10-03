@@ -38,6 +38,10 @@ import { isOwnerEmail } from './utils/authUtils';
 import { PWAInstallPrompt } from './components/PWAInstallPrompt';
 import { MobileBottomNav } from './components/MobileBottomNav';
 import { OfflineIndicator } from './components/OfflineIndicator';
+import { useRealtimeSocket } from './hooks/useRealtimeSocket';
+import { RealtimeLiveHeader } from './components/RealtimeLiveHeader';
+import { RealtimeActivityTicker } from './components/RealtimeActivityTicker';
+import { RealtimeLiveArena } from './components/RealtimeLiveArena';
 
 import { 
   BookOpen, 
@@ -65,7 +69,9 @@ import {
   Send,
   Settings,
   X,
-  ExternalLink
+  ExternalLink,
+  Flame,
+  Radio
 } from 'lucide-react';
 
 const TICKER_HEADLINES: Record<ExamType, string[]> = {
@@ -115,7 +121,12 @@ const TICKER_HEADLINES: Record<ExamType, string[]> = {
 
 export default function App() {
   const [selectedExam, setSelectedExam] = useState<ExamType>('UPSC');
-  const [activeTab, setActiveTab] = useState<'syllabus' | 'planner' | 'quiz' | 'subjectQuiz' | 'activeRecall' | 'mainsSprints' | 'essay' | 'gk' | 'mentor' | 'materials' | 'notifications' | 'notes' | 'analytics' | 'reviews'>('syllabus');
+  const [activeTab, setActiveTab] = useState<string>('daily-mcqs');
+  const [isLiveArenaModalOpen, setIsLiveArenaModalOpen] = useState(false);
+
+  // Real-Time Nationwide WebSocket State & Live Events
+  const realtime = useRealtimeSocket(selectedExam);
+
   const [tickerIndex, setTickerIndex] = useState(0);
   const [voiceText, setVoiceText] = useState('');
   const [voiceTitle, setVoiceTitle] = useState('');
@@ -250,6 +261,7 @@ export default function App() {
     localStorage.setItem('aspires_premium_plan', plan);
     setIsPremium(true);
     setPremiumPlan(plan);
+    realtime.publishActivity('Upgraded to ASPIRES Elite', `Activated ${plan.toUpperCase()} premium plan with unlimited evaluators`);
   };
 
   const handleCancelSubscription = () => {
@@ -343,7 +355,27 @@ export default function App() {
     setVoiceTitle(title);
   };
 
+  const LiveArenaWrapper: React.FC<any> = (props) => {
+    return (
+      <RealtimeLiveArena
+        exam={props.selectedExam || selectedExam}
+        messages={realtime.messages}
+        battle={realtime.battle}
+        pomodoro={realtime.pomodoro}
+        activeCount={realtime.activeCount}
+        onlineUsers={realtime.onlineUsers}
+        onSendMessage={realtime.sendMessage}
+        onLikeMessage={realtime.likeMessage}
+        onVoteBattle={realtime.voteBattle}
+        onPublishActivity={realtime.publishActivity}
+      />
+    );
+  };
+
   const tabDetails = [
+    { id: 'live-arena', label: '🔥 Live Arena', icon: Flame, component: LiveArenaWrapper },
+    { id: 'daily-mcqs', label: 'Daily MCQ Drills', icon: Sparkles, component: QuizView },
+    { id: 'practice-tests', label: 'Mock Tests & PYQs', icon: Award, component: QuizView },
     { id: 'syllabus', label: 'Official Syllabus', icon: Compass, component: SyllabusView },
     { id: 'planner', label: 'Study Planner', icon: Calendar, component: PlannerView },
     { id: 'notes', label: 'Notes Generator', icon: BrainCircuit, component: NotesGeneratorView },
@@ -364,9 +396,13 @@ export default function App() {
     setSelectedExam(exam);
   };
 
-  const ActiveComponent = tabDetails.find(tab => tab.id === activeTab)?.component || SyllabusView;
+  const ActiveComponent = tabDetails.find(tab => tab.id === activeTab)?.component || QuizView;
 
   const NAVIGATION_GROUPS = [
+    {
+      title: 'Real-Time Arena 🟢',
+      tabs: ['live-arena', 'practice-tests', 'daily-mcqs']
+    },
     {
       title: 'Study Planning',
       tabs: ['syllabus', 'planner', 'notes', 'materials']
@@ -387,120 +423,37 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 via-slate-100 to-slate-50 font-sans selection:bg-emerald-600 selection:text-white text-slate-800 antialiased" id="portal-app-root">
-      {/* Top Floating Navigation Header */}
-      <header className="border-b border-slate-200/60 bg-white/90 backdrop-blur-md sticky top-0 z-50 px-6 py-4 transition-all duration-300" id="portal-header">
-        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-          
-          {/* Logo & Headline */}
-          <div className="flex items-center gap-4">
-            <div className="flex-shrink-0 transition-transform duration-300 hover:scale-105">
-              <AspiresLogo size={50} showText={false} className="rounded-xl bg-white border border-slate-150 p-1 shadow-sm" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-xl md:text-2xl font-black text-slate-900 tracking-tight font-display">
-                  ASPIRES <span className="text-emerald-600">ACADEMY</span>
-                </h1>
-              </div>
-              <p className="text-xs text-slate-500 font-semibold mt-0.5 font-sans leading-none">
-                UPSC • TNPSC • SSC • RRB Prep & Automated Descriptive Evaluation
-              </p>
-            </div>
-          </div>
+      {/* Native Real-Time App Header & Multi-User Status Bar */}
+      <RealtimeLiveHeader
+        selectedExam={selectedExam}
+        onExamChange={handleSelectExam}
+        activeTab={activeTab}
+        onTabChange={(tabId) => {
+          setActiveTab(tabId as any);
+          if (window.innerWidth < 1024) {
+            document.getElementById('portal-main-stage')?.scrollIntoView({ behavior: 'smooth' });
+          }
+        }}
+        socketStatus={realtime.status}
+        pingMs={realtime.pingMs}
+        activeCount={realtime.activeCount}
+        isPremium={isPremium}
+        onPremiumClick={() => setIsSupportModalOpen(true)}
+        onOpenLiveArena={() => {
+          setIsLiveArenaModalOpen(true);
+        }}
+        userEmail={userEmail}
+        onAuthClick={() => setIsAuthModalOpen(true)}
+      />
 
-          {/* Quick Info Bar & Premium Controls */}
-          <div className="flex items-center gap-3.5 flex-wrap justify-between lg:justify-end w-full lg:w-auto" id="header-quick-info">
-            
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => {
-                  const el = document.getElementById('share-card');
-                  if (el) {
-                    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    setHighlightShareCard(true);
-                    setTimeout(() => setHighlightShareCard(false), 2500);
-                  }
-                }}
-                className="bg-emerald-50/50 hover:bg-emerald-100/80 border border-emerald-200/60 text-emerald-800 font-extrabold text-xs px-3.5 py-2.5 rounded-xl flex items-center gap-2 transition-all cursor-pointer active:scale-95 shadow-sm hover:shadow"
-                id="header-share-btn"
-              >
-                <Share2 className="h-3.5 w-3.5 text-emerald-600" />
-                <span className="hidden sm:inline">Invite Buddies</span>
-              </button>
-
-              <button 
-                onClick={() => setIsContactModalOpen(true)}
-                className="bg-slate-50 hover:bg-slate-100 border border-slate-200/80 text-slate-700 font-extrabold text-xs px-3.5 py-2.5 rounded-xl flex items-center gap-2 transition-all cursor-pointer active:scale-95 shadow-sm hover:shadow"
-                id="header-support-btn"
-              >
-                <MessageSquare className="h-3.5 w-3.5 text-slate-500" />
-                <span className="hidden sm:inline">Support Desk</span>
-              </button>
-            </div>
-
-            <span className="h-5 w-px bg-slate-200 hidden lg:inline" />
-
-            <div className="flex items-center gap-3">
-              {userEmail ? (
-                <button 
-                  onClick={() => setIsAuthModalOpen(true)}
-                  className="flex items-center gap-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 px-3 py-1.5 rounded-xl cursor-pointer transition-all active:scale-95 shadow-sm hover:shadow"
-                  id="header-user-profile-btn"
-                >
-                  <div className="h-5.5 w-5.5 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-600 text-white font-extrabold text-[10px] flex items-center justify-center shadow-sm">
-                    {userEmail.charAt(0).toUpperCase()}
-                  </div>
-                  <span className="text-xs font-bold text-slate-700 truncate max-w-[100px]" title={userEmail}>
-                    {userEmail.split('@')[0]}
-                  </span>
-                </button>
-              ) : (
-                <button 
-                  onClick={() => setIsAuthModalOpen(true)}
-                  className="border border-slate-200 hover:bg-slate-50 text-slate-700 font-extrabold text-xs px-3.5 py-2.5 rounded-xl flex items-center gap-2 transition-all active:scale-95 cursor-pointer shadow-sm hover:shadow"
-                  id="header-sign-in-btn"
-                >
-                  <UserCheck className="h-3.5 w-3.5 text-slate-500" />
-                  <span>Login</span>
-                </button>
-              )}
-
-              <PWAInstallPrompt variant="button" />
-
-              {isPremium ? (
-                <div className="flex items-center gap-1 bg-gradient-to-r from-amber-500/10 to-yellow-500/15 border border-amber-500/30 text-amber-900 font-extrabold text-[10.5px] px-3.5 py-2 rounded-xl shadow-sm">
-                  <Crown className="h-3.5 w-3.5 text-amber-500 fill-amber-500 animate-pulse" />
-                  <span className="font-display">PREMIUM ACTIVE</span>
-                  <button
-                    onClick={() => setIsSupportModalOpen(true)}
-                    className="text-[9.5px] text-amber-800 hover:text-amber-950 font-mono underline ml-1.5 cursor-pointer"
-                  >
-                    Manage
-                  </button>
-                </div>
-              ) : (
-                <button
-                  onClick={() => setIsSupportModalOpen(true)}
-                  className="bg-gradient-to-r from-slate-900 to-slate-950 hover:from-slate-850 hover:to-slate-900 text-white font-extrabold text-xs px-4.5 py-2.5 rounded-xl flex items-center gap-2 shadow-sm hover:shadow transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer group"
-                  id="header-upgrade-btn"
-                >
-                  <Crown className="h-3.5 w-3.5 text-amber-400 group-hover:rotate-12 transition-transform" />
-                  <span>Upgrade</span>
-                </button>
-              )}
-            </div>
-
-            <span className="h-5 w-px bg-slate-200 hidden lg:inline" />
-
-            <div className="flex items-center gap-2 text-xs md:text-sm font-semibold text-slate-600">
-              <span className="text-slate-700 flex items-center gap-1.5">
-                Goal: <strong className="text-emerald-700 font-black bg-emerald-50 border border-emerald-100 px-2.5 py-1 rounded-lg">{selectedExam}</strong>
-              </span>
-            </div>
-          </div>
-
-        </div>
-      </header>
+      {/* Real-Time Nationwide Activity Stream */}
+      <RealtimeActivityTicker
+        activities={realtime.activities}
+        activeCount={realtime.activeCount}
+        onOpenArena={() => {
+          setIsLiveArenaModalOpen(true);
+        }}
+      />
 
       {/* Live Government Notification Ticker */}
       <div className="max-w-7xl mx-auto px-6 mt-6" id="live-announcement-ticker-container">
@@ -1244,6 +1197,41 @@ export default function App() {
           </div>
         </div>
       )}
+
+      {/* Realtime Live Arena Modal (Instant Nationwide MCQ Battle & Study Lounge) */}
+      {isLiveArenaModalOpen && (
+        <div 
+          className="fixed inset-0 z-50 bg-black/75 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 animate-fadeIn"
+          onClick={() => setIsLiveArenaModalOpen(false)}
+        >
+          <div 
+            className="w-full max-w-4xl max-h-[92vh] overflow-y-auto rounded-3xl relative animate-scaleUp shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setIsLiveArenaModalOpen(false)}
+              className="absolute top-4 right-4 z-20 p-2 rounded-xl bg-slate-800/90 hover:bg-slate-700 text-slate-400 hover:text-white transition-colors cursor-pointer border border-slate-700 shadow-lg"
+              title="Close Live Arena"
+            >
+              <X className="h-5 w-5" />
+            </button>
+            <RealtimeLiveArena
+              exam={selectedExam}
+              messages={realtime.messages}
+              battle={realtime.battle}
+              pomodoro={realtime.pomodoro}
+              activeCount={realtime.activeCount}
+              onlineUsers={realtime.onlineUsers}
+              onSendMessage={realtime.sendMessage}
+              onLikeMessage={realtime.likeMessage}
+              onVoteBattle={realtime.voteBattle}
+              onPublishActivity={realtime.publishActivity}
+              onClose={() => setIsLiveArenaModalOpen(false)}
+            />
+          </div>
+        </div>
+      )}
+
       {/* Mobile Native Bottom Navigation Bar */}
       <MobileBottomNav
         currentTab={activeTab}

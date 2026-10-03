@@ -86,3 +86,64 @@ export interface GKArticle {
   content: string;
   analysis?: string; // AI generated dynamic analysis
 }
+
+// ----------------------------------------------------
+// REAL-TIME MULTI-USER & COLLABORATION TYPES
+// ----------------------------------------------------
+export interface RealtimePresenceUser {
+  id: string;
+  name: string;
+  exam: ExamType;
+  status: 'studying' | 'mock_test' | 'quiz_battle' | 'discussing';
+  currentTopic?: string;
+  joinedAt: number;
+  color: string;
+}
+
+export interface RealtimeRoomMessage {
+  id: string;
+  channel: 'general' | 'doubts' | 'exam_specific' | 'study_lounge';
+  senderId: string;
+  senderName: string;
+  senderExam: ExamType;
+  senderColor: string;
+  text: string;
+  timestamp: string;
+  likes?: number;
+  isMentor?: boolean;
+}
+
+export interface RealtimeActivityItem {
+  id: string;
+  userName: string;
+  userColor: string;
+  exam: ExamType;
+  action: string;
+  detail: string;
+  timestamp: string;
+  score?: string;
+}
+
+export interface RealtimeLiveBattle {
+  id: string;
+  questionText: string;
+  options: string[];
+  correctAnswerIndex: number;
+  explanation: string;
+  subject: string;
+  exam: ExamType;
+  endsAt: number;
+  totalAnswers: number;
+  stats: [number, number, number, number]; // Percentage distribution
+  rawCounts: [number, number, number, number];
+}
+
+export interface RealtimePomodoroState {
+  mode: 'focus' | 'break';
+  remainingSeconds: number;
+  totalSeconds: number;
+  cycle: number;
+  activeLearnersCount: number;
+  statusMessage: string;
+}
+

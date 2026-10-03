@@ -1,0 +1,62 @@
+[
+  {
+    "id": "msg-seed-1",
+    "channel": "general",
+    "senderId": "mentor-1",
+    "senderName": "Dr. S. Sundaram (Mentor)",
+    "senderExam": "TNPSC_G1",
+    "senderColor": "#f59e0b",
+    "text": "Good morning aspirants! Daily morning unit drill is live. Focus today on Tamil Heritage (Unit 8) & Modern History.",
+    "timestamp": "08:30 AM",
+    "likes": 14,
+    "isMentor": true
+  },
+  {
+    "id": "msg-seed-2",
+    "channel": "doubts",
+    "senderId": "user-p1",
+    "senderName": "Karthik Raja",
+    "senderExam": "UPSC",
+    "senderColor": "#3b82f6",
+    "text": "Quick doubt: Does Article 368 allow amending the Preamble without violating Basic Structure?",
+    "timestamp": "08:34 AM",
+    "likes": 5,
+    "isMentor": false
+  },
+  {
+    "id": "msg-seed-3",
+    "channel": "doubts",
+    "senderId": "mentor-2",
+    "senderName": "V. Ramanathan (IAS Academy Faculty)",
+    "senderExam": "UPSC",
+    "senderColor": "#10b981",
+    "text": "Yes! In Kesavananda Bharati (1973), the Supreme Court clarified the Preamble is an integral part of the Constitution and can be amended under Art 368, provided the Basic Structure remains intact.",
+    "timestamp": "08:37 AM",
+    "likes": 22,
+    "isMentor": true
+  },
+  {
+    "id": "msg-seed-4",
+    "channel": "general",
+    "senderId": "user-p2",
+    "senderName": "Deepa V.",
+    "senderExam": "NEET",
+    "senderColor": "#ec4899",
+    "text": "Just solved 45 Botany questions on Genetics with 96% accuracy! The timer in the mock test helped pace myself.",
+    "timestamp": "08:42 AM",
+    "likes": 8,
+    "isMentor": false
+  },
+  {
+    "id": "msg-1791009709892-200",
+    "channel": "general",
+    "senderId": "user-1791009709385-360",
+    "senderName": "Aspirant #-360",
+    "senderExam": "UPSC",
+    "senderColor": "#8b5cf6",
+    "text": "Realtime test ping!",
+    "timestamp": "06:41 AM",
+    "likes": 0,
+    "isMentor": false
+  }
+]

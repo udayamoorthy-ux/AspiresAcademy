@@ -20,7 +20,9 @@ import {
   CheckCircle2, 
   Sparkles,
   ExternalLink,
-  Smartphone
+  Smartphone,
+  Flame,
+  Radio
 } from 'lucide-react';
 import { ExamType } from '../types';
 import { PWAInstallPrompt } from './PWAInstallPrompt';
@@ -44,9 +46,10 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
 }) => {
   const [showDrawer, setShowDrawer] = useState<boolean>(false);
 
-  // Primary 4 tabs on mobile bottom bar + Menu
+  // Primary 5 tabs on mobile bottom bar + Menu
   const primaryTabs = [
     { id: 'daily-mcqs', label: 'Drills', icon: Home },
+    { id: 'live-arena', label: 'Live Arena', icon: Flame, isLive: true },
     { id: 'practice-tests', label: 'Mocks', icon: FileText },
     { id: 'notes', label: 'Notes', icon: BookOpen },
     { id: 'planner', label: 'Planner', icon: Calendar },
@@ -85,7 +88,7 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
         className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-slate-200 dark:border-slate-800 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] safe-area-bottom select-none"
         aria-label="Mobile Navigation"
       >
-        <div className="grid grid-cols-5 h-16 max-w-lg mx-auto px-1">
+        <div className="grid grid-cols-6 h-16 max-w-lg mx-auto px-0.5">
           {primaryTabs.map((tab) => {
             const Icon = tab.icon;
             const isActive = currentTab === tab.id;
@@ -103,11 +106,14 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
                   isActive ? 'bg-amber-500/10' : ''
                 }`}>
                   <Icon className="h-5 w-5" />
+                  {(tab as any).isLive && (
+                    <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                  )}
                   {isActive && (
                     <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-amber-500" />
                   )}
                 </div>
-                <span className="text-[10px] tracking-tight mt-0.5">{tab.label}</span>
+                <span className="text-[9.5px] tracking-tight mt-0.5 truncate max-w-[50px]">{tab.label}</span>
               </button>
             );
           })}

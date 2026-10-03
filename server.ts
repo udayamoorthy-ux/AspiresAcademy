@@ -4,6 +4,7 @@
  */
 
 import express from 'express';
+import http from 'http';
 import path from 'path';
 import dotenv from 'dotenv';
 import fs from 'fs';
@@ -11,6 +12,7 @@ import { createServer as createViteServer } from 'vite';
 import { GoogleGenAI, Type } from '@google/genai';
 import { getQuestionsForExam } from './src/utils/questionPool';
 import { ExamType } from './src/types';
+import { setupRealtimeServer } from './src/server/realtimeServer';
 
 dotenv.config();
 
@@ -2235,6 +2237,12 @@ function generateFallbackQuiz(subject: string, topic: string, exam: string) {
 }
 
 // ----------------------------------------------------
+// HTTP SERVER & REALTIME WEBSOCKET INITIALIZATION
+// ----------------------------------------------------
+const httpServer = http.createServer(app);
+setupRealtimeServer(httpServer);
+
+// ----------------------------------------------------
 // VITE OR STATIC SERVING MIDDLEWARE
 // ----------------------------------------------------
 if (process.env.NODE_ENV !== "production") {
@@ -2257,8 +2265,8 @@ if (process.env.NODE_ENV !== "production") {
       }
     });
 
-    app.listen(PORT, '0.0.0.0', () => {
-      console.log(`Development server running at http://localhost:${PORT}`);
+    httpServer.listen(PORT, '0.0.0.0', () => {
+      console.log(`Realtime Development server running at http://localhost:${PORT}`);
     });
   });
 } else {
@@ -2269,7 +2277,7 @@ if (process.env.NODE_ENV !== "production") {
     res.sendFile(path.join(distPath, 'index.html'));
   });
 
-  app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Production server running at http://localhost:${PORT}`);
+  httpServer.listen(PORT, '0.0.0.0', () => {
+    console.log(`Realtime Production server running at http://localhost:${PORT}`);
   });
 }
