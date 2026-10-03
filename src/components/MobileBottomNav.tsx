@@ -26,6 +26,7 @@ import {
 } from 'lucide-react';
 import { ExamType } from '../types';
 import { PWAInstallPrompt } from './PWAInstallPrompt';
+import { DailyLearningStreak } from './DailyLearningStreak';
 
 interface MobileBottomNavProps {
   currentTab: string;
@@ -169,11 +170,17 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
               </div>
               <button
                 onClick={() => setShowDrawer(false)}
-                className="p-1.5 text-slate-400 hover:text-slate-600 rounded-xl"
+                className="p-1.5 text-slate-400 hover:text-slate-600 rounded-xl cursor-pointer"
               >
                 <X className="h-5 w-5" />
               </button>
             </div>
+
+            {/* Daily Learning Streak Counter in Mobile Drawer */}
+            <DailyLearningStreak 
+              onExploreDailyDrills={() => handleSelectTab('daily-mcqs')}
+              selectedExam={selectedExam}
+            />
 
             {/* Active Exam Switcher */}
             <div className="space-y-2">
