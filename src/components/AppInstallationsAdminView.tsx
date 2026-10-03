@@ -170,7 +170,7 @@ export const AppInstallationsAdminView: React.FC<AppInstallationsAdminViewProps>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap sm:flex-nowrap items-center gap-2">
           <button
             onClick={fetchInstallations}
             disabled={isLoading}

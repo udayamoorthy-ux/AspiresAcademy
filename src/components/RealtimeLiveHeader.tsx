@@ -206,12 +206,23 @@ export const RealtimeLiveHeader: React.FC<RealtimeLiveHeaderProps> = ({
     { id: 'daily-mcqs', label: 'Daily Drills' },
     { id: 'practice-tests', label: 'Mock Tests & PYQs' },
     { id: 'live-arena', label: '🔥 Live Arena', highlight: true },
-    { id: 'subject-quiz', label: 'Topic Drill Arena' },
-    { id: 'notes', label: 'Smart Study Notes' },
-    { id: 'planner', label: 'AI Study Planner' },
-    { id: 'evaluator', label: 'Mains Evaluator' },
-    { id: 'mentor', label: 'AI Mentor Chat' },
-    { id: 'flashcards', label: 'Flashcards' }
+    { id: 'subjectQuiz', label: 'Topic Quizzes' },
+    { id: 'activeRecall', label: 'Recall Flashcards' },
+    { id: 'notes', label: 'Smart Notes' },
+    { id: 'planner', label: 'AI Planner' },
+    { id: 'mainsSprints', label: 'Daily Sprints' },
+    { id: 'essay', label: 'Mains Evaluator' },
+    { id: 'syllabus', label: 'Official Syllabus' },
+    { id: 'materials', label: 'Study Materials' },
+    { id: 'mentor', label: 'AI Coach' },
+    { id: 'gk', label: 'Current Affairs' },
+    { id: 'notifications', label: 'Board Desk' },
+    { id: 'analytics', label: 'Performance' },
+    { id: 'reviews', label: 'Reviews' },
+    ...(isUserOwner ? [
+      { id: 'paid-app-hub', label: '💰 Paid App Hub', highlight: true },
+      { id: 'app-installations', label: '📱 App Installs' }
+    ] : [])
   ];
 
   // Filtered categories for the selection modal
@@ -248,171 +259,176 @@ export const RealtimeLiveHeader: React.FC<RealtimeLiveHeaderProps> = ({
     <>
       <header className="sticky top-0 z-40 bg-slate-900/95 backdrop-blur-md border-b border-slate-800 text-white select-none shadow-md">
         {/* Realtime Live Connectivity Top Bar */}
-        <div className="bg-slate-950/90 border-b border-slate-800/80 px-4 py-1 text-[11px] font-mono flex items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
+        <div className="bg-slate-950/90 border-b border-slate-800/80 px-3 sm:px-4 py-1 text-[11px] font-mono flex items-center justify-between gap-2 overflow-x-auto scrollbar-none">
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
             {socketStatus === 'connected' ? (
               <span className="flex items-center gap-1.5 text-emerald-400 font-semibold">
                 <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
                 </span>
-                <span>LIVE NETWORK</span>
+                <span className="text-[10px] sm:text-[11px]">LIVE NETWORK</span>
               </span>
             ) : socketStatus === 'connecting' || socketStatus === 'reconnecting' ? (
               <span className="flex items-center gap-1.5 text-amber-400 font-semibold">
                 <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
-                <span>SYNCING...</span>
+                <span className="text-[10px] sm:text-[11px]">SYNCING...</span>
               </span>
             ) : (
               <span className="flex items-center gap-1.5 text-rose-400 font-semibold">
                 <WifiOff className="h-3 w-3" />
-                <span>OFFLINE (CACHED)</span>
+                <span className="text-[10px] sm:text-[11px]">OFFLINE</span>
               </span>
             )}
 
             <span className="text-slate-500 hidden sm:inline">&bull;</span>
             <span className="text-slate-400 hidden sm:inline">
-              <strong className="text-white">{activeCount}</strong> active aspirants nationwide
+              <strong className="text-white">{activeCount}</strong> active aspirants
             </span>
             <span className="text-slate-500 hidden md:inline">&bull;</span>
             <span className="text-slate-500 hidden md:inline">Latency: {pingMs}ms</span>
           </div>
 
           {/* Quick Triggers */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
             {isUserOwner && onOpenPaidAppAdmin && (
               <button
                 onClick={onOpenPaidAppAdmin}
-                className="flex items-center gap-1.5 text-amber-300 hover:text-amber-200 font-bold text-[10px] bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 px-2.5 py-0.5 rounded-full transition-all active:scale-95 cursor-pointer shadow-sm"
+                className="flex items-center gap-1 text-amber-300 hover:text-amber-200 font-bold text-[10px] bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 px-2 py-0.5 rounded-full transition-all active:scale-95 cursor-pointer shadow-sm shrink-0"
                 title="Paid App Revenue, Pricing & License Keys Manager"
               >
                 <DollarSign className="h-3 w-3 text-amber-400" />
-                <span>💰 Paid App Hub</span>
+                <span className="hidden sm:inline">💰 Paid App Hub</span>
+                <span className="sm:hidden">💰 Hub</span>
               </button>
             )}
 
             {isUserOwner && onOpenInstallations && (
               <button
                 onClick={onOpenInstallations}
-                className="flex items-center gap-1.5 text-emerald-400 hover:text-emerald-300 font-bold text-[10px] bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 px-2 py-0.5 rounded-full transition-all active:scale-95 cursor-pointer"
+                className="flex items-center gap-1 text-emerald-400 hover:text-emerald-300 font-bold text-[10px] bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 px-2 py-0.5 rounded-full transition-all active:scale-95 cursor-pointer shrink-0"
                 title="View list of people who installed the app"
               >
                 <Smartphone className="h-3 w-3" />
-                <span>📱 App Installs Log</span>
+                <span className="hidden sm:inline">📱 App Installs</span>
+                <span className="sm:hidden">📱 Installs</span>
               </button>
             )}
 
             <button
               onClick={onOpenLiveArena}
-              className="flex items-center gap-1.5 text-amber-400 hover:text-amber-300 font-bold text-[10px] bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 px-2 py-0.5 rounded-full transition-all active:scale-95 cursor-pointer"
+              className="flex items-center gap-1 text-amber-400 hover:text-amber-300 font-bold text-[10px] bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 px-2 py-0.5 rounded-full transition-all active:scale-95 cursor-pointer shrink-0"
             >
               <Flame className="h-3 w-3 fill-amber-400" />
-              <span>Live MCQ Battle &amp; Lounge</span>
+              <span>Live Arena</span>
             </button>
           </div>
         </div>
 
         {/* Main App Navigation Bar */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3 sm:gap-4">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 h-15 sm:h-16 flex items-center justify-between gap-2 sm:gap-4">
           {/* Brand & Logo */}
-          <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
-            <div className="h-10 w-10 rounded-2xl bg-gradient-to-tr from-amber-500 to-yellow-400 flex items-center justify-center text-slate-950 font-black shadow-lg shadow-amber-500/20 shrink-0">
-              <GraduationCap className="h-6 w-6 text-slate-950" />
+          <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
+            <div className="h-9 w-9 sm:h-10 sm:w-10 rounded-2xl bg-gradient-to-tr from-amber-500 to-yellow-400 flex items-center justify-center text-slate-950 font-black shadow-lg shadow-amber-500/20 shrink-0">
+              <GraduationCap className="h-5 w-5 sm:h-6 sm:w-6 text-slate-950" />
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <span className="font-black text-base sm:text-lg tracking-tight text-white font-sans">
+              <div className="flex items-center gap-1 sm:gap-1.5">
+                <span className="font-black text-sm sm:text-base md:text-lg tracking-tight text-white font-sans">
                   ASPIRES
                 </span>
-                <span className="text-[10px] font-black uppercase tracking-wider text-amber-400 bg-amber-500/20 px-1.5 py-0.2 rounded border border-amber-500/30">
+                <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-amber-400 bg-amber-500/20 px-1 sm:px-1.5 py-0.2 rounded border border-amber-500/30">
                   PORTAL
                 </span>
               </div>
-              <p className="text-[10px] text-slate-400 -mt-0.5 hidden sm:block">
-                All India Competitive Examination Portal
+              <p className="text-[9px] text-slate-400 -mt-0.5 hidden md:block">
+                All India Exam Portal
               </p>
             </div>
           </div>
 
           {/* Categorized Exam Target Selector Trigger Button */}
-          <div className="flex-1 max-w-xs sm:max-w-md">
+          <div className="flex-1 min-w-0 max-w-[200px] xs:max-w-xs sm:max-w-sm md:max-w-md">
             <button
               onClick={() => setShowCategoryModal(true)}
-              className="w-full flex items-center justify-between gap-2 bg-gradient-to-r from-slate-800 to-slate-850 hover:from-slate-750 hover:to-slate-800 border border-slate-700 hover:border-amber-500/60 rounded-2xl px-3 sm:px-4 py-1.5 text-xs font-bold transition-all active:scale-[0.99] cursor-pointer shadow-md group text-left"
+              className="w-full flex items-center justify-between gap-1.5 sm:gap-2 bg-gradient-to-r from-slate-800 to-slate-850 hover:from-slate-750 hover:to-slate-800 border border-slate-700 hover:border-amber-500/60 rounded-xl sm:rounded-2xl px-2 sm:px-3.5 py-1.5 text-xs font-bold transition-all active:scale-[0.99] cursor-pointer shadow-md group text-left min-w-0"
               title="Click to change Exam Target & Category"
             >
-              <div className="flex items-center gap-2 min-w-0">
-                <span className="text-base shrink-0">{currentCategoryIcon}</span>
-                <div className="min-w-0">
-                  <div className="text-[9px] uppercase tracking-wider text-amber-400 font-mono font-black truncate">
-                    Category: {currentCategoryName}
+              <div className="flex items-center gap-1.5 sm:gap-2 min-w-0 flex-1">
+                <span className="text-sm sm:text-base shrink-0">{currentCategoryIcon}</span>
+                <div className="min-w-0 flex-1">
+                  <div className="text-[8px] sm:text-[9px] uppercase tracking-wider text-amber-400 font-mono font-black truncate">
+                    {currentCategoryName}
                   </div>
-                  <div className="text-white font-extrabold text-xs sm:text-sm truncate">
+                  <div className="text-white font-extrabold text-[11px] sm:text-xs md:text-sm truncate">
                     {currentExamName}
                   </div>
                 </div>
               </div>
 
-              <div className="flex items-center gap-1 shrink-0 text-slate-400 group-hover:text-amber-400 transition-colors">
-                <span className="text-[10px] hidden md:inline font-mono">Change</span>
-                <ChevronDown className="h-4 w-4" />
+              <div className="flex items-center gap-0.5 shrink-0 text-slate-400 group-hover:text-amber-400 transition-colors">
+                <span className="text-[9px] hidden lg:inline font-mono">Change</span>
+                <ChevronDown className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               </div>
             </button>
           </div>
 
           {/* Header Right Actions */}
-          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+          <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
             {onAuthClick && (
               userEmail ? (
                 <button 
                   onClick={onAuthClick}
-                  className="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-750 border border-slate-700 px-2.5 py-1.5 rounded-xl cursor-pointer transition-all active:scale-95 shadow-sm"
+                  className="flex items-center gap-1 bg-slate-800 hover:bg-slate-750 border border-slate-700 px-2 py-1.5 rounded-xl cursor-pointer transition-all active:scale-95 shadow-sm shrink-0"
                   title={userEmail}
                 >
-                  <div className="h-5 w-5 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-500 text-slate-950 font-black text-[10px] flex items-center justify-center">
+                  <div className="h-5 w-5 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-500 text-slate-950 font-black text-[10px] flex items-center justify-center shrink-0">
                     {userEmail.charAt(0).toUpperCase()}
                   </div>
-                  <span className="text-xs font-bold text-slate-200 truncate max-w-[80px] hidden sm:inline">
+                  <span className="text-xs font-bold text-slate-200 truncate max-w-[70px] hidden md:inline">
                     {userEmail.split('@')[0]}
                   </span>
                 </button>
               ) : (
                 <button 
                   onClick={onAuthClick}
-                  className="border border-slate-700 hover:bg-slate-800 text-slate-200 font-bold text-xs px-2.5 py-1.5 rounded-xl transition-all active:scale-95 cursor-pointer"
+                  className="border border-slate-700 hover:bg-slate-800 text-slate-200 font-bold text-xs px-2 sm:px-2.5 py-1.5 rounded-xl transition-all active:scale-95 cursor-pointer shrink-0"
                 >
                   Login
                 </button>
               )
             )}
 
-            <PWAInstallPrompt variant="button" />
+            <div className="hidden md:block shrink-0">
+              <PWAInstallPrompt variant="button" />
+            </div>
 
             {/* Pro Membership Status / Upgrade CTA */}
             <button
               onClick={onPremiumClick}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black shadow-md transition-all active:scale-95 cursor-pointer ${
+              className={`flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 rounded-xl text-xs font-black shadow-md transition-all active:scale-95 cursor-pointer shrink-0 ${
                 isPremium
                   ? 'bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 shadow-amber-500/20'
                   : 'bg-gradient-to-r from-amber-500 via-orange-500 to-yellow-400 text-slate-950 hover:brightness-105 shadow-amber-500/30'
               }`}
             >
-              <Crown className="h-3.5 w-3.5 text-slate-950 fill-slate-950" />
-              <span>{isPremium ? 'PRO ACTIVE' : '⚡ ANNUAL PASS ₹350'}</span>
+              <Crown className="h-3.5 w-3.5 text-slate-950 fill-slate-950 shrink-0" />
+              <span className="hidden sm:inline">{isPremium ? 'PRO ACTIVE' : '⚡ ANNUAL PASS ₹350'}</span>
+              <span className="sm:hidden">{isPremium ? 'PRO' : '₹350'}</span>
             </button>
           </div>
         </div>
 
         {/* Horizontal Scrollable Native App Navigation Tabs */}
-        <div className="bg-slate-900/90 border-t border-slate-800 px-4 sm:px-6 overflow-x-auto scrollbar-none">
-          <div className="max-w-7xl mx-auto flex items-center gap-2 py-2">
+        <div className="bg-slate-900/90 border-t border-slate-800 px-2 sm:px-4">
+          <div className="max-w-7xl mx-auto flex items-center gap-1.5 sm:gap-2 py-2 overflow-x-auto scrollbar-thin scrollbar-thumb-slate-700 scroll-smooth">
             {tabs.map((tab) => {
               const isActive = activeTab === tab.id;
               return (
                 <button
                   key={tab.id}
                   onClick={() => onTabChange(tab.id)}
-                  className={`whitespace-nowrap px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 cursor-pointer active:scale-95 ${
+                  className={`whitespace-nowrap px-3 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 cursor-pointer active:scale-95 ${
                     isActive
                       ? 'bg-amber-500 text-slate-950 shadow-md font-black'
                       : tab.highlight

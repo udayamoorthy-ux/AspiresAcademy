@@ -57,11 +57,17 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
 
   // Secondary tabs inside the More drawer
   const drawerTabs = [
-    { id: 'subject-quiz', label: 'Topic Drill Arena', icon: Award, desc: 'Subject & chapter quizzes' },
-    { id: 'mentor', label: 'Ask AI Mentor', icon: MessageSquare, desc: 'Syllabus doubt clearing' },
-    { id: 'evaluator', label: 'Mains Essay Evaluator', icon: BrainCircuit, desc: 'Automated descriptive scoring' },
-    { id: 'flashcards', label: 'Active Recall Flashcards', icon: Sparkles, desc: 'Quick memory retention cards' },
-    { id: 'analytics', label: 'Syllabus Tracker', icon: CheckCircle2, desc: 'Topic completion & progress' },
+    { id: 'subjectQuiz', label: 'Topic Drill Quizzes', icon: Award, desc: 'Subject & chapter-wise MCQ drills' },
+    { id: 'activeRecall', label: 'Active Recall Flashcards', icon: Sparkles, desc: 'Quick memory retention cards' },
+    { id: 'mainsSprints', label: 'Daily Mains Sprints', icon: FileText, desc: 'Micro timed answer outlines' },
+    { id: 'essay', label: 'Mains Essay Evaluator', icon: BrainCircuit, desc: 'Automated descriptive AI scoring' },
+    { id: 'syllabus', label: 'Official Syllabus', icon: BookOpen, desc: 'Comprehensive exam curriculum' },
+    { id: 'materials', label: 'Reference Materials', icon: FileText, desc: 'Curated standard notes & references' },
+    { id: 'mentor', label: 'Ask AI Mentor', icon: MessageSquare, desc: 'Syllabus doubt clearing & guidance' },
+    { id: 'gk', label: 'Current Affairs Feed', icon: Home, desc: 'Daily national & state updates' },
+    { id: 'notifications', label: 'Board Notification Desk', icon: Calendar, desc: 'Official examination announcements' },
+    { id: 'analytics', label: 'Performance Tracker', icon: CheckCircle2, desc: 'Topic completion & mock accuracy' },
+    { id: 'reviews', label: 'Reviews & Feedback', icon: Award, desc: 'Student ratings & community review' },
   ];
 
   const exams: { id: ExamType; label: string; tag: string }[] = [
@@ -173,7 +179,7 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
             <div className="space-y-2">
               <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Switch Exam Target</span>
               <div className="grid grid-cols-2 gap-2">
-                {exams.slice(0, 6).map((e) => (
+                {exams.map((e) => (
                   <button
                     key={e.id}
                     onClick={() => {

@@ -76,9 +76,8 @@ export const PaidAppAdminView: React.FC<PaidAppAdminViewProps> = ({ userEmail, o
 
   // Settings Form State
   const [tempMode, setTempMode] = useState<'free_trial' | 'strict_paid'>('free_trial');
-  const [tempMonthlyPrice, setTempMonthlyPrice] = useState(350);
   const [tempAnnualPrice, setTempAnnualPrice] = useState(350);
-  const [tempLifetimePrice, setTempLifetimePrice] = useState(350);
+  const [tempOriginalPrice, setTempOriginalPrice] = useState(700);
   const [tempUpiId, setTempUpiId] = useState('udayamoorthy@okaxis');
   const [isSavingSettings, setIsSavingSettings] = useState(false);
 
@@ -105,10 +104,9 @@ export const PaidAppAdminView: React.FC<PaidAppAdminViewProps> = ({ userEmail, o
       if (data.settings) {
         setSettings(data.settings);
         setTempMode(data.settings.mode);
-        setTempMonthlyPrice(data.settings.prices.monthly);
-        setTempAnnualPrice(data.settings.prices.annual);
-        setTempLifetimePrice(data.settings.prices.lifetime);
-        setTempUpiId(data.settings.upiId);
+        setTempAnnualPrice(data.settings.prices?.annual || 350);
+        setTempOriginalPrice(data.settings.originalAnnualPrice || 700);
+        setTempUpiId(data.settings.upiId || 'udayamoorthy@okaxis');
       }
     } catch (err: any) {
       setError(err.message || 'Error connecting to admin subscriptions service');
@@ -211,10 +209,11 @@ export const PaidAppAdminView: React.FC<PaidAppAdminViewProps> = ({ userEmail, o
           adminEmail: userEmail,
           mode: tempMode,
           prices: {
-            monthly: tempMonthlyPrice,
+            monthly: tempAnnualPrice,
             annual: tempAnnualPrice,
-            lifetime: tempLifetimePrice
+            lifetime: tempAnnualPrice
           },
+          originalAnnualPrice: tempOriginalPrice,
           upiId: tempUpiId
         })
       });
@@ -323,7 +322,7 @@ export const PaidAppAdminView: React.FC<PaidAppAdminViewProps> = ({ userEmail, o
       </div>
 
       {/* Nav Tabs */}
-      <div className="px-6 border-b border-slate-800 bg-slate-950/50 flex items-center gap-2 shrink-0 overflow-x-auto">
+      <div className="px-3 sm:px-6 border-b border-slate-800 bg-slate-950/50 flex items-center gap-1 sm:gap-2 shrink-0 overflow-x-auto scrollbar-thin scrollbar-thumb-slate-700">
         <button
           onClick={() => setActiveTab('overview')}
           className={`px-4 py-3 text-xs font-bold transition-all border-b-2 cursor-pointer ${
@@ -422,10 +421,10 @@ export const PaidAppAdminView: React.FC<PaidAppAdminViewProps> = ({ userEmail, o
               <div className="bg-slate-850 border border-slate-800 p-5 rounded-2xl space-y-1">
                 <span className="text-[10.5px] font-mono text-slate-400 uppercase tracking-wider font-bold">Annual Pass Price</span>
                 <div className="text-2xl font-black text-emerald-400 font-sans">
-                  ₹{settings.prices.annual}
+                  ₹{settings.prices.annual || 350}
                 </div>
-                <div className="text-[11px] text-slate-400">
-                  Monthly: ₹{settings.prices.monthly} • Lifetime: ₹{settings.prices.lifetime}
+                <div className="text-[11px] text-emerald-400 font-mono">
+                  50% Off (Discounted from ₹{settings.originalAnnualPrice || 700})
                 </div>
               </div>
             </div>
@@ -433,47 +432,36 @@ export const PaidAppAdminView: React.FC<PaidAppAdminViewProps> = ({ userEmail, o
             {/* Plan Breakdown */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="bg-slate-850 border border-slate-800 p-5 rounded-2xl space-y-4">
-                <h4 className="text-xs font-bold text-white uppercase tracking-wider font-mono">
-                  Subscription Tier Distribution
-                </h4>
+                <div className="flex items-center justify-between">
+                  <h4 className="text-xs font-bold text-white uppercase tracking-wider font-mono">
+                    Subscription Tier Distribution
+                  </h4>
+                  <span className="text-[10px] font-bold text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-full border border-amber-500/20 font-mono">
+                    Annual Pass Only
+                  </span>
+                </div>
                 <div className="space-y-3">
                   <div>
                     <div className="flex justify-between text-xs mb-1">
-                      <span className="text-amber-400 font-bold">Annual Pro Pass (₹{settings.prices.annual})</span>
-                      <span className="text-slate-300 font-mono">{planStats.annual || 0} students</span>
+                      <span className="text-amber-400 font-bold">Annual Pro Pass (₹{settings.prices.annual || 350})</span>
+                      <span className="text-slate-300 font-mono">{planStats.annual || activeSubscribers || 0} students</span>
                     </div>
                     <div className="w-full h-2 bg-slate-900 rounded-full overflow-hidden">
                       <div 
                         className="h-full bg-amber-500 rounded-full" 
-                        style={{ width: `${totalSubscribers ? ((planStats.annual || 0) / totalSubscribers) * 100 : 0}%` }}
+                        style={{ width: `100%` }}
                       />
                     </div>
                   </div>
 
-                  <div>
-                    <div className="flex justify-between text-xs mb-1">
-                      <span className="text-purple-400 font-bold">Lifetime Ranker (₹{settings.prices.lifetime})</span>
-                      <span className="text-slate-300 font-mono">{planStats.lifetime || 0} students</span>
-                    </div>
-                    <div className="w-full h-2 bg-slate-900 rounded-full overflow-hidden">
-                      <div 
-                        className="h-full bg-purple-500 rounded-full" 
-                        style={{ width: `${totalSubscribers ? ((planStats.lifetime || 0) / totalSubscribers) * 100 : 0}%` }}
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className="flex justify-between text-xs mb-1">
-                      <span className="text-sky-400 font-bold">Monthly Sprint (₹{settings.prices.monthly})</span>
-                      <span className="text-slate-300 font-mono">{planStats.monthly || 0} students</span>
-                    </div>
-                    <div className="w-full h-2 bg-slate-900 rounded-full overflow-hidden">
-                      <div 
-                        className="h-full bg-sky-500 rounded-full" 
-                        style={{ width: `${totalSubscribers ? ((planStats.monthly || 0) / totalSubscribers) * 100 : 0}%` }}
-                      />
-                    </div>
+                  <div className="p-3 bg-slate-900/70 rounded-xl border border-slate-800/80 text-[11px] text-slate-300 leading-relaxed space-y-1">
+                    <p className="font-semibold text-white flex items-center gap-1.5">
+                      <Check className="h-3.5 w-3.5 text-emerald-400" />
+                      Single-Tier Simplified Pricing Active
+                    </p>
+                    <p className="text-slate-400">
+                      Only the 1-Year Annual Pass (₹350 after discount from ₹700) is accessible to students. Sprint Pass and Lifetime Ranker plans have been removed.
+                    </p>
                   </div>
                 </div>
               </div>
@@ -503,9 +491,7 @@ export const PaidAppAdminView: React.FC<PaidAppAdminViewProps> = ({ userEmail, o
                       onChange={(e) => setGrantPlan(e.target.value as any)}
                       className="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500"
                     >
-                      <option value="monthly">Monthly Pass</option>
-                      <option value="annual">Annual Pass</option>
-                      <option value="lifetime">Lifetime Pass</option>
+                      <option value="annual">Annual Pass (365 Days)</option>
                     </select>
                     <button
                       type="submit"
@@ -516,7 +502,7 @@ export const PaidAppAdminView: React.FC<PaidAppAdminViewProps> = ({ userEmail, o
                     </button>
                   </div>
                   <p className="text-[10px] text-slate-400">
-                    Manually activate Pro for scholarship recipients, offline academy students, or top performers.
+                    Manually activate 365-day Annual Pro Pass for scholarship recipients, offline academy students, or top performers.
                   </p>
                 </form>
               </div>
@@ -542,12 +528,10 @@ export const PaidAppAdminView: React.FC<PaidAppAdminViewProps> = ({ userEmail, o
                 <select
                   value={planFilter}
                   onChange={(e) => setPlanFilter(e.target.value)}
-                  className="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500"
+                  className="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500 font-sans"
                 >
-                  <option value="ALL">All Plans</option>
-                  <option value="monthly">Monthly</option>
-                  <option value="annual">Annual</option>
-                  <option value="lifetime">Lifetime</option>
+                  <option value="ALL">All Subscribers</option>
+                  <option value="annual">Annual Pass</option>
                 </select>
               </div>
 
@@ -653,11 +637,9 @@ export const PaidAppAdminView: React.FC<PaidAppAdminViewProps> = ({ userEmail, o
                   <select
                     value={licensePlan}
                     onChange={(e) => setLicensePlan(e.target.value as any)}
-                    className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500"
+                    className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500 font-sans"
                   >
-                    <option value="annual">Annual Pass</option>
-                    <option value="lifetime">Lifetime Pass</option>
-                    <option value="monthly">Monthly Pass</option>
+                    <option value="annual">Annual Pass (365 Days)</option>
                   </select>
                 </div>
                 <div>
@@ -801,38 +783,39 @@ export const PaidAppAdminView: React.FC<PaidAppAdminViewProps> = ({ userEmail, o
                 </div>
               </div>
 
-              {/* Price Editors */}
+              {/* Price Editors - Annual Pass Only */}
               <div className="space-y-3 border-b border-slate-800 pb-5">
-                <label className="text-xs font-bold text-slate-300 block">Plan Pricing (₹ INR)</label>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-bold text-slate-300 block">Annual Pass Pricing (₹ INR)</label>
+                  <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20 font-bold">
+                    Sole Active Plan
+                  </span>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label className="text-[10.5px] font-bold text-slate-400 block mb-1">Monthly Pass (₹)</label>
-                    <input
-                      type="number"
-                      value={tempMonthlyPrice}
-                      onChange={(e) => setTempMonthlyPrice(Number(e.target.value))}
-                      className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500 font-mono font-bold"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-[10.5px] font-bold text-slate-400 block mb-1">Annual Pass (₹)</label>
+                    <label className="text-[10.5px] font-bold text-slate-400 block mb-1">Discounted Offer Price (₹)</label>
                     <input
                       type="number"
                       value={tempAnnualPrice}
                       onChange={(e) => setTempAnnualPrice(Number(e.target.value))}
-                      className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500 font-mono font-bold"
+                      className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-emerald-400 focus:outline-none focus:border-amber-500 font-mono font-bold"
                     />
+                    <span className="text-[10px] text-slate-500 mt-1 block">Active price charged to students (₹350)</span>
                   </div>
                   <div>
-                    <label className="text-[10.5px] font-bold text-slate-400 block mb-1">Lifetime Pass (₹)</label>
+                    <label className="text-[10.5px] font-bold text-slate-400 block mb-1">Original Price Before Discount (₹)</label>
                     <input
                       type="number"
-                      value={tempLifetimePrice}
-                      onChange={(e) => setTempLifetimePrice(Number(e.target.value))}
-                      className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500 font-mono font-bold"
+                      value={tempOriginalPrice}
+                      onChange={(e) => setTempOriginalPrice(Number(e.target.value))}
+                      className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-300 focus:outline-none focus:border-amber-500 font-mono font-bold"
                     />
+                    <span className="text-[10px] text-slate-500 mt-1 block">Crossed-out reference price shown to students (₹700)</span>
                   </div>
                 </div>
+                <p className="text-[10.5px] text-slate-400">
+                  Note: Sprint Pass and Lifetime Ranker plans have been removed. Only this 365-day Annual Scholar Pass is offered across the entire platform.
+                </p>
               </div>
 
               {/* Merchant UPI ID */}

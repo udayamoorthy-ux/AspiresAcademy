@@ -543,7 +543,7 @@ export default function App() {
       <main className="max-w-7xl mx-auto px-6 py-8 space-y-8 pb-28 md:pb-12" id="portal-main-stage">
         
         {/* Exam Quick Select & Pitch Banner */}
-        <div className="bg-white border border-slate-200/80 p-6 rounded-2xl flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 shadow-sm relative overflow-hidden" id="exam-pitch-banner">
+        <div className="bg-white border border-slate-200/80 p-5 sm:p-6 rounded-2xl flex flex-col xl:flex-row justify-between items-start xl:items-center gap-5 shadow-sm relative overflow-hidden" id="exam-pitch-banner">
           <div className="absolute right-0 top-0 w-80 h-80 bg-emerald-500/5 rounded-full blur-3xl pointer-events-none" />
           <div className="space-y-1.5 max-w-xl relative z-10">
             <div className="inline-flex items-center gap-1.5 bg-emerald-50 border border-emerald-100 px-3 py-1 rounded-full text-[10px] font-bold text-emerald-800 uppercase tracking-wider font-mono">
@@ -559,7 +559,7 @@ export default function App() {
           </div>
 
           {/* Selector Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 xl:grid-cols-9 gap-2 w-full lg:w-auto relative z-10" id="exam-selector-buttons">
+          <div className="flex flex-wrap gap-2 w-full xl:w-auto relative z-10" id="exam-selector-buttons">
             {[
               { id: 'UPSC', label: 'UPSC IAS/IPS' },
               { id: 'TNPSC_G1', label: 'TNPSC Group 1' },
@@ -577,7 +577,7 @@ export default function App() {
                   key={examItem.id}
                   id={`btn-select-exam-${examItem.id}`}
                   onClick={() => handleSelectExam(examItem.id as ExamType)}
-                  className={`px-3.5 py-2.5 rounded-xl text-xs font-extrabold transition-all cursor-pointer ${
+                  className={`px-3 py-2 rounded-xl text-xs font-extrabold transition-all cursor-pointer whitespace-nowrap ${
                     isActive
                       ? 'bg-emerald-600 border border-emerald-500 text-white shadow-sm'
                       : 'bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 hover:text-slate-950'
@@ -628,14 +628,14 @@ export default function App() {
                                 document.getElementById('active-work-area')?.scrollIntoView({ behavior: 'smooth' });
                               }
                             }}
-                            className={`w-full text-left px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-2.5 transition-all cursor-pointer ${
+                            className={`w-full text-left px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-2.5 transition-all cursor-pointer min-w-0 ${
                               isActive
                                 ? 'bg-emerald-600 text-white shadow-sm font-extrabold'
                                 : 'bg-transparent hover:bg-slate-50 text-slate-650 hover:text-slate-900'
                             }`}
                           >
                             <Icon className={`h-4 w-4 shrink-0 ${isActive ? 'text-white' : 'text-slate-400'}`} />
-                            <span>{tab.label}</span>
+                            <span className="truncate">{tab.label}</span>
                           </button>
                         );
                       })}

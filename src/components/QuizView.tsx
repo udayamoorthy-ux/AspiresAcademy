@@ -364,20 +364,20 @@ export default function QuizView({
             <span className="font-extrabold text-sm text-slate-850">Practice Exam Center</span>
           </div>
 
-          <div className="flex bg-slate-100 p-1 rounded-xl border border-slate-200">
+          <div className="flex flex-wrap sm:flex-nowrap bg-slate-100 p-1 rounded-xl border border-slate-200 overflow-x-auto scrollbar-none gap-1">
             <button
               onClick={() => setActiveTab('pyqs')}
-              className={`px-4 py-2 text-xs font-bold rounded-lg transition-all ${
+              className={`px-3 sm:px-4 py-2 text-xs font-bold rounded-lg transition-all whitespace-nowrap ${
                 activeTab === 'pyqs'
                   ? 'bg-white text-slate-900 shadow-sm border border-slate-200'
-                  : 'text-slate-500 hover:text-slate-855'
+                  : 'text-slate-500 hover:text-slate-850'
               }`}
             >
-              Official PYQ Practice Tests ({PREVIOUS_YEAR_PRACTICE_TESTS.length})
+              Official PYQs ({PREVIOUS_YEAR_PRACTICE_TESTS.length})
             </button>
             <button
               onClick={() => setActiveTab('ai-compiler')}
-              className={`px-4 py-2 text-xs font-bold rounded-lg transition-all ${
+              className={`px-3 sm:px-4 py-2 text-xs font-bold rounded-lg transition-all whitespace-nowrap ${
                 activeTab === 'ai-compiler'
                   ? 'bg-white text-slate-900 shadow-sm border border-slate-200'
                   : 'text-slate-500 hover:text-slate-850'
@@ -391,7 +391,7 @@ export default function QuizView({
                 setActiveTab('diagnostics');
                 startStaticQuiz();
               }}
-              className={`px-4 py-2 text-xs font-bold rounded-lg transition-all ${
+              className={`px-3 sm:px-4 py-2 text-xs font-bold rounded-lg transition-all whitespace-nowrap ${
                 activeTab === 'diagnostics'
                   ? 'bg-white text-slate-900 shadow-sm border border-slate-200'
                   : 'text-slate-500 hover:text-slate-850'
