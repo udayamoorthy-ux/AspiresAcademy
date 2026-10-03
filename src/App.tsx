@@ -45,7 +45,7 @@ import { RealtimeLiveArena } from './components/RealtimeLiveArena';
 import { AppInstallationsAdminView } from './components/AppInstallationsAdminView';
 import { PaidAppPaywallModal } from './components/PaidAppPaywallModal';
 import { PaidAppAdminView } from './components/PaidAppAdminView';
-import { DailyLearningStreak } from './components/DailyLearningStreak';
+import { DailyEveningSprint } from './components/DailyEveningSprint';
 
 import { 
   BookOpen, 
@@ -596,15 +596,10 @@ export default function App() {
           
           {/* Navigation Sidebar */}
           <div className="lg:col-span-3 space-y-6" id="navigation-sidebar-column">
-            {/* Daily Learning Streak Counter Widget */}
-            <DailyLearningStreak 
-              onExploreDailyDrills={() => {
-                setActiveTab('daily-mcqs');
-                if (window.innerWidth < 1024) {
-                  document.getElementById('active-work-area')?.scrollIntoView({ behavior: 'smooth' });
-                }
-              }}
+            {/* Daily Evening Sprint Widget */}
+            <DailyEveningSprint 
               selectedExam={selectedExam}
+              onOpenLiveArena={() => setIsLiveArenaModalOpen(true)}
             />
 
             <div className="bg-white border border-slate-200/80 p-5 rounded-2xl shadow-sm space-y-6" id="navigation-card-container">

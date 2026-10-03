@@ -26,7 +26,7 @@ import {
 } from 'lucide-react';
 import { ExamType } from '../types';
 import { PWAInstallPrompt } from './PWAInstallPrompt';
-import { DailyLearningStreak } from './DailyLearningStreak';
+import { DailyEveningSprint } from './DailyEveningSprint';
 
 interface MobileBottomNavProps {
   currentTab: string;
@@ -176,11 +176,8 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
               </button>
             </div>
 
-            {/* Daily Learning Streak Counter in Mobile Drawer */}
-            <DailyLearningStreak 
-              onExploreDailyDrills={() => handleSelectTab('daily-mcqs')}
-              selectedExam={selectedExam}
-            />
+            {/* Daily Evening Sprint Widget in Mobile Drawer */}
+            <DailyEveningSprint selectedExam={selectedExam} />
 
             {/* Active Exam Switcher */}
             <div className="space-y-2">
