@@ -244,6 +244,23 @@ export default function App() {
     localStorage.setItem('aspires_logged_in_email', email);
     setUserEmail(email);
     
+    // Sync email to installation record if device was already registered
+    try {
+      const deviceId = localStorage.getItem('aspires_device_id');
+      if (deviceId) {
+        fetch('/api/installations', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            deviceId,
+            email,
+            exam: selectedExam,
+            isStandalone: window.matchMedia('(display-mode: standalone)').matches
+          })
+        }).catch(() => {});
+      }
+    } catch (e) {}
+
     if (isOwnerEmail(email)) {
       localStorage.setItem('aspires_is_premium', 'true');
       localStorage.setItem('aspires_premium_plan', 'annual');
