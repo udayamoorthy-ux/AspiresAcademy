@@ -22,15 +22,19 @@ import {
   Smartphone, 
   Flame, 
   HelpCircle,
-  X
+  X,
+  Volume2
 } from 'lucide-react';
 import { ExamType, Question } from '../types';
 import { EXAM_QUESTION_POOLS } from '../utils/questionPool';
+import { useSprintAlarm, SprintAlarmState } from '../hooks/useSprintAlarm';
+import { SprintAlarmSettingsModal } from './SprintAlarmSettingsModal';
 
 interface DailyEveningSprintProps {
   selectedExam: ExamType;
   onOpenLiveArena?: () => void;
   className?: string;
+  alarm?: SprintAlarmState;
 }
 
 interface SprintResult {
@@ -46,8 +50,13 @@ interface SprintResult {
 export const DailyEveningSprint: React.FC<DailyEveningSprintProps> = ({
   selectedExam,
   onOpenLiveArena,
-  className = ''
+  className = '',
+  alarm
 }) => {
+  const internalAlarm = useSprintAlarm();
+  const activeAlarm = alarm || internalAlarm;
+  const [isAlarmSettingsOpen, setIsAlarmSettingsOpen] = useState(false);
+
   // Sprint state: 'idle' | 'active' | 'completed'
   const [sprintState, setSprintState] = useState<'idle' | 'active' | 'completed'>('idle');
   const [currentQIndex, setCurrentQIndex] = useState(0);
@@ -56,12 +65,18 @@ export const DailyEveningSprint: React.FC<DailyEveningSprintProps> = ({
   const [isAnswerSubmitted, setIsAnswerSubmitted] = useState(false);
   const [questionTimer, setQuestionTimer] = useState(45);
   const [totalTimer, setTotalTimer] = useState(0);
-  const [reminderEnabled, setReminderEnabled] = useState<boolean>(() => {
-    return localStorage.getItem('aspires_sprint_reminder') === 'true';
-  });
   const [reminderToast, setReminderToast] = useState<string | null>(null);
   const [testResult, setTestResult] = useState<SprintResult | null>(null);
   const [showExplanationModal, setShowExplanationModal] = useState(false);
+
+  // Listen for custom trigger to start sprint from ringing alarm modal
+  useEffect(() => {
+    const handler = () => {
+      handleStartSprint();
+    };
+    window.addEventListener('aspires-start-sprint', handler);
+    return () => window.removeEventListener('aspires-start-sprint', handler);
+  }, []);
 
   // Time tracking for 8:00 PM IST
   const [istTimeStr, setIstTimeStr] = useState('');
@@ -257,45 +272,18 @@ export const DailyEveningSprint: React.FC<DailyEveningSprintProps> = ({
     localStorage.setItem(`aspires_sprint_completed_${todayKey}_${selectedExam}`, JSON.stringify(result));
   };
 
-  // Notification toggle handler
+  // Notification & Alarm toggle handler
   const handleToggleReminder = async () => {
-    if (reminderEnabled) {
-      setReminderEnabled(false);
-      localStorage.setItem('aspires_sprint_reminder', 'false');
-      setReminderToast('Evening Sprint reminder turned off.');
+    if (activeAlarm.isAlarmEnabled) {
+      activeAlarm.toggleAlarm(false);
+      setReminderToast('Evening Sprint alarm turned off.');
       setTimeout(() => setReminderToast(null), 3000);
       return;
     }
 
-    // Request notification permission if supported
-    if ('Notification' in window) {
-      try {
-        const permission = await Notification.requestPermission();
-        if (permission === 'granted') {
-          setReminderEnabled(true);
-          localStorage.setItem('aspires_sprint_reminder', 'true');
-          setReminderToast('🔔 Reminder active! Your phone will alert you at 7:55 PM IST.');
-          // Fire a sample immediate test notification
-          new Notification('⚡ ASPIRES Evening Sprint Reminder Set', {
-            body: 'You will receive an alert at 7:55 PM IST every evening for the 10-Question Blitz!',
-            icon: '/favicon.ico'
-          });
-        } else {
-          setReminderEnabled(true);
-          localStorage.setItem('aspires_sprint_reminder', 'true');
-          setReminderToast('Daily 8:00 PM reminder logged for your installed app.');
-        }
-      } catch (err) {
-        setReminderEnabled(true);
-        localStorage.setItem('aspires_sprint_reminder', 'true');
-        setReminderToast('Evening 8:00 PM reminder enabled!');
-      }
-    } else {
-      setReminderEnabled(true);
-      localStorage.setItem('aspires_sprint_reminder', 'true');
-      setReminderToast('Evening 8:00 PM reminder enabled on this device.');
-    }
-
+    // Turn alarm on
+    activeAlarm.toggleAlarm(true);
+    setReminderToast('🔔 Alarm active! Your phone will alert you at 8:00 PM IST with sound.');
     setTimeout(() => setReminderToast(null), 4000);
   };
 
@@ -335,25 +323,41 @@ export const DailyEveningSprint: React.FC<DailyEveningSprintProps> = ({
           </div>
         </div>
 
-        {/* Reminder Toggle Button */}
-        <button
-          onClick={handleToggleReminder}
-          className={`p-2 rounded-xl border text-xs font-bold transition-all cursor-pointer flex items-center gap-1 ${
-            reminderEnabled
-              ? 'bg-amber-500/20 border-amber-500/40 text-amber-300'
-              : 'bg-slate-800/80 border-slate-700 text-slate-400 hover:text-white hover:bg-slate-800'
-          }`}
-          title={reminderEnabled ? 'Reminder is ON for 8:00 PM' : 'Enable 7:55 PM Sprint Reminder'}
-        >
-          {reminderEnabled ? (
-            <BellRing className="h-3.5 w-3.5 text-amber-400" />
-          ) : (
-            <Bell className="h-3.5 w-3.5" />
-          )}
-          <span className="text-[10.5px] hidden sm:inline">
-            {reminderEnabled ? 'Alert On' : 'Remind'}
-          </span>
-        </button>
+        {/* Alarm Controls Button Group */}
+        <div className="flex items-center gap-1.5">
+          <button
+            onClick={() => setIsAlarmSettingsOpen(true)}
+            className={`p-2 rounded-xl border text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+              activeAlarm.isAlarmEnabled
+                ? 'bg-amber-500/20 border-amber-500/50 text-amber-300 shadow-sm shadow-amber-500/20'
+                : 'bg-slate-800/80 border-slate-700 text-slate-400 hover:text-white hover:bg-slate-800'
+            }`}
+            title="Configure 8:00 PM Sprint Alarm & Sound"
+          >
+            {activeAlarm.isAlarmEnabled ? (
+              <>
+                <BellRing className="h-3.5 w-3.5 text-amber-400 animate-pulse" />
+                <span className="text-[11px] font-extrabold text-amber-300">
+                  Alarm 8 PM ON
+                </span>
+              </>
+            ) : (
+              <>
+                <Bell className="h-3.5 w-3.5" />
+                <span className="text-[11px]">Alarm Off</span>
+              </>
+            )}
+          </button>
+
+          <button
+            onClick={activeAlarm.triggerTestAlarm}
+            className="p-2 rounded-xl border border-slate-700 bg-slate-800/80 hover:bg-slate-800 hover:text-white text-slate-300 text-xs font-bold transition-all cursor-pointer flex items-center gap-1"
+            title="Test Alarm Sound & Alert Now"
+          >
+            <Volume2 className="h-3.5 w-3.5 text-amber-400" />
+            <span className="text-[11px] hidden sm:inline">Test Sound</span>
+          </button>
+        </div>
       </div>
 
       {/* Reminder Toast Alert */}
@@ -401,6 +405,33 @@ export const DailyEveningSprint: React.FC<DailyEveningSprintProps> = ({
               <span className="text-[9.5px] text-center sm:text-right text-slate-400">
                 ⚡ Takes under 5 mins &bull; Instant national rank
               </span>
+            </div>
+          </div>
+
+          {/* Active Alarm Status Line */}
+          <div className="bg-slate-950/70 border border-slate-800 rounded-xl px-3 py-2 flex flex-wrap items-center justify-between gap-2 text-[10.5px]">
+            <div className="flex items-center gap-1.5 text-amber-300 font-semibold">
+              <BellRing className="h-3.5 w-3.5 text-amber-400 shrink-0" />
+              <span>
+                {activeAlarm.isAlarmEnabled 
+                  ? `Sprint Alarm Active for 8:00 PM IST (${activeAlarm.alarmOffset === 'both' ? '7:55 PM prep & 8:00 PM live' : activeAlarm.alarmOffset === '5min' ? '7:55 PM prep' : 'exact 8:00 PM'})` 
+                  : 'Alarm is currently disabled'}
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={activeAlarm.triggerTestAlarm}
+                className="text-amber-400 hover:text-amber-300 font-bold underline cursor-pointer"
+              >
+                Test Sound
+              </button>
+              <span className="text-slate-600">&bull;</span>
+              <button
+                onClick={() => setIsAlarmSettingsOpen(true)}
+                className="text-slate-400 hover:text-white font-medium cursor-pointer"
+              >
+                Change Settings
+              </button>
             </div>
           </div>
 
@@ -635,6 +666,21 @@ export const DailyEveningSprint: React.FC<DailyEveningSprintProps> = ({
           </div>
         </div>
       )}
+
+      {/* Alarm Settings Modal */}
+      <SprintAlarmSettingsModal
+        isOpen={isAlarmSettingsOpen}
+        onClose={() => setIsAlarmSettingsOpen(false)}
+        isAlarmEnabled={activeAlarm.isAlarmEnabled}
+        alarmOffset={activeAlarm.alarmOffset}
+        alarmSound={activeAlarm.alarmSound}
+        permissionStatus={activeAlarm.permissionStatus}
+        onToggleAlarm={activeAlarm.toggleAlarm}
+        onSetAlarmOffset={activeAlarm.setAlarmOffset}
+        onSetAlarmSound={activeAlarm.setAlarmSound}
+        onRequestPermission={activeAlarm.requestNotificationPermission}
+        onTriggerTestAlarm={activeAlarm.triggerTestAlarm}
+      />
     </div>
   );
 };

@@ -46,6 +46,8 @@ import { AppInstallationsAdminView } from './components/AppInstallationsAdminVie
 import { PaidAppPaywallModal } from './components/PaidAppPaywallModal';
 import { PaidAppAdminView } from './components/PaidAppAdminView';
 import { DailyEveningSprint } from './components/DailyEveningSprint';
+import { useSprintAlarm } from './hooks/useSprintAlarm';
+import { SprintAlarmAlertModal } from './components/SprintAlarmAlertModal';
 
 import { 
   BookOpen, 
@@ -134,6 +136,9 @@ export default function App() {
 
   // Real-Time Nationwide WebSocket State & Live Events
   const realtime = useRealtimeSocket(selectedExam);
+
+  // 8:00 PM Daily Sprint Alarm & Alert Manager
+  const sprintAlarm = useSprintAlarm();
 
   const [tickerIndex, setTickerIndex] = useState(0);
   const [voiceText, setVoiceText] = useState('');
@@ -617,6 +622,7 @@ export default function App() {
             <DailyEveningSprint 
               selectedExam={selectedExam}
               onOpenLiveArena={() => setIsLiveArenaModalOpen(true)}
+              alarm={sprintAlarm}
             />
 
             <div className="bg-white border border-slate-200/80 p-5 rounded-2xl shadow-sm space-y-6" id="navigation-card-container">
@@ -1341,6 +1347,24 @@ export default function App() {
           </div>
         </div>
       )}
+
+      {/* 8:00 PM Sprint Alarm & Alert Modal */}
+      <SprintAlarmAlertModal
+        isOpen={sprintAlarm.isAlarmTriggered}
+        reason={sprintAlarm.alarmTriggerReason}
+        isMuted={sprintAlarm.isMuted}
+        onStartSprint={() => {
+          sprintAlarm.dismissAlarm();
+          const el = document.getElementById('daily-evening-sprint-widget');
+          if (el) {
+            el.scrollIntoView({ behavior: 'smooth' });
+          }
+          window.dispatchEvent(new CustomEvent('aspires-start-sprint'));
+        }}
+        onDismiss={sprintAlarm.dismissAlarm}
+        onSnooze={() => sprintAlarm.snoozeAlarm(5)}
+        onToggleMute={sprintAlarm.toggleMute}
+      />
 
       {/* Mobile Native Bottom Navigation Bar */}
       <MobileBottomNav
