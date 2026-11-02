@@ -1005,6 +1005,23 @@ export default function App() {
                     <span>Post on Facebook</span>
                   </button>
 
+                  {/* LinkedIn Direct Post Button */}
+                  <button
+                    onClick={() => {
+                      const examName = selectedExam === 'NEET' ? 'NEET UG' : selectedExam === 'IIT_JEE' ? 'IIT JEE' : selectedExam === 'SSC_CGL' ? 'SSC CGL' : selectedExam === 'RRB_NTPC' ? 'RRB NTPC' : selectedExam.startsWith('TNPSC') ? 'TNPSC' : 'UPSC CSE';
+                      const portalUrl = typeof window !== 'undefined' ? window.location.origin : 'https://aspiresacademy.in';
+                      const postText = `🚀 Excited to share ASPIRES ACADEMY — a next-generation competitive examination prep portal for ${examName}, TNPSC, UPSC, SSC, NEET & IIT JEE aspirants.\n\n✨ Key Highlights:\n• ✍️ Daily 8:00 PM Live MCQ Blitz & National Leaderboards\n• 📝 Automated Essay/Mains Answer Evaluation with Rubric Scoring\n• 📚 Interactive Syllabus Trackers & Audio Notes\n• 📱 Installable PWA with offline revision support\n\nTry it free here: ${portalUrl}\n\n#EdTech #CompetitiveExams #UPSC #TNPSC #NEET #IITJEE #Learning`;
+                      
+                      // Open LinkedIn share dialog with prefilled text
+                      window.open(`https://www.linkedin.com/feed/?shareActive=true&text=${encodeURIComponent(postText)}`, '_blank');
+                    }}
+                    className="bg-[#0A66C2] hover:bg-[#084e96] text-white font-extrabold text-xs px-3.5 py-2 rounded-xl flex items-center gap-1.5 transition-all shadow-sm active:scale-95 cursor-pointer"
+                    id="btn-post-outreach-linkedin"
+                  >
+                    <Share2 className="h-3.5 w-3.5" />
+                    <span>Post on LinkedIn</span>
+                  </button>
+
                   {/* Copy Complete Post Text */}
                   <button
                     onClick={() => {
