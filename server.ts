@@ -2188,6 +2188,10 @@ app.get('/api/daily-broadcast-payload', (req, res) => {
 
   let combinedFormattedText = `=========================================\n🎯 *ASPIRES ACADEMY - ALL 7 EXAM GROUPS DAILY MCQs*\n📅 *Date:* ${todayStr}\n=========================================\n\n`;
 
+  const host = req.get('host') || 'aspiresacademy.in';
+  const proto = req.get('x-forwarded-proto') || (req.secure ? 'https' : 'http');
+  const currentSiteUrl = `${proto}://${host}`;
+
   const broadcasts = targetChannels.map((ch, chIdx) => {
     const qList = getQuestionsForExam((ch.id as ExamType), dateSeed + chIdx * 10, 5, globalUsedIds);
     let qText = '';
@@ -2202,7 +2206,7 @@ app.get('/api/daily-broadcast-payload', (req, res) => {
 📍 *Group:* ${ch.groupName}
 
 ${qText}---
-🌐 *PRACTICE ON ASPIRES ACADEMY WEB PORTAL:* https://aspiresacademy.in
+🌐 *PRACTICE ON ASPIRES ACADEMY WEB PORTAL:* ${currentSiteUrl}
 📚 *Exams Available on Portal:*
 • 🏛️ UPSC Civil Services (IAS / IPS / IFS)
 • 🏆 TNPSC Group 1 (CCSE I Officers)
@@ -2219,7 +2223,7 @@ ${qText}---
 • 📊 Performance Analytics & Score Predictor
 
 👥 *Join Official WhatsApp Group (${ch.groupName}):* ${groupUrl}
-🔗 *Start Free Practice:* https://aspiresacademy.in
+🔗 *Start Free Practice:* ${currentSiteUrl}
 🎟️ *SPECIAL DISCOUNT:* Coupon *ANNUAL87* for Annual Pass @ ₹299/year (87% OFF)`;
 
     // Append to combined without repeating footer
@@ -2236,7 +2240,7 @@ ${qText}---
 
   // Master ending broadcast notice for combined text
   combinedFormattedText += `=========================================
-🚀 *PRACTICE ALL EXAMS ON ASPIRES ACADEMY PORTAL:* https://aspiresacademy.in
+🚀 *PRACTICE ALL EXAMS ON ASPIRES ACADEMY PORTAL:* ${currentSiteUrl}
 📚 *All 7 Exams Covered on Portal:*
 1️⃣ 🏛️ UPSC Civil Services (IAS / IPS / IFS)
 2️⃣ 🏆 TNPSC Group 1 (CCSE I Officers)
@@ -2253,14 +2257,14 @@ ${qText}---
 • 📊 Performance Analytics & Score Predictor
 
 👥 *Join Official WhatsApp Group:* ${groupUrl}
-🔗 *Start Free Practice:* https://aspiresacademy.in
+🔗 *Start Free Practice:* ${currentSiteUrl}
 🎟️ *SPECIAL DISCOUNT:* Coupon *ANNUAL87* for Annual Pass @ ₹299/year (87% OFF)
 =========================================`;
 
   res.json({
     status: 'success',
     date: todayStr,
-    website: 'https://aspiresacademy.in',
+    website: currentSiteUrl,
     coupon: 'ANNUAL87',
     broadcastCount: broadcasts.length,
     combinedFormattedText,

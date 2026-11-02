@@ -183,9 +183,10 @@ ${qText}`;
     }
 
     const groupLine = getValidGroupUrlLine(whatsappGroupLink, examInfo.groupName);
+    const livePortalUrl = typeof window !== 'undefined' && window.location.origin ? window.location.origin : 'https://aspiresacademy.in';
 
     return `${headerAndQuestions}---
-🚀 *PRACTICE ON ASPIRES ACADEMY WEB PORTAL:* https://aspiresacademy.in
+🚀 *PRACTICE ON ASPIRES ACADEMY WEB PORTAL:* ${livePortalUrl}
 📚 *Exams Available on Portal:*
 • 🏛️ UPSC Civil Services (IAS / IPS / IFS)
 • 🏆 TNPSC Group 1 (CCSE I Officers)
@@ -203,7 +204,7 @@ ${qText}`;
 • 📊 Performance Analytics & Score Predictor
 
 ${groupLine}
-🔗 *Start Free Practice:* https://aspiresacademy.in
+🔗 *Start Free Practice:* ${livePortalUrl}
 🎟️ *SPECIAL DISCOUNT:* Coupon *ANNUAL87* for Annual Pass @ ₹299/year (87% OFF)`;
   };
 
@@ -224,9 +225,10 @@ ${groupLine}
     });
 
     const groupLine = getValidGroupUrlLine(whatsappGroupLink, 'ASPIRES All 8 Exams');
+    const livePortalUrl = typeof window !== 'undefined' && window.location.origin ? window.location.origin : 'https://aspiresacademy.in';
 
     combinedText += `=========================================
-🚀 *PRACTICE ALL EXAMS ON ASPIRES ACADEMY PORTAL:* https://aspiresacademy.in
+🚀 *PRACTICE ALL EXAMS ON ASPIRES ACADEMY PORTAL:* ${livePortalUrl}
 📚 *All 8 Exams Covered on Portal:*
 1️⃣ 🏛️ UPSC Civil Services (IAS / IPS / IFS)
 2️⃣ 🏆 TNPSC Group 1 (CCSE I Officers)
@@ -244,7 +246,7 @@ ${groupLine}
 • 📊 Performance Analytics & Rank Predictor
 
 ${groupLine}
-🔗 *Start Free Practice:* https://aspiresacademy.in
+🔗 *Start Free Practice:* ${livePortalUrl}
 🎟️ *SPECIAL DISCOUNT:* Coupon *ANNUAL87* for Annual Pass @ ₹299/year (87% OFF)
 =========================================`;
 

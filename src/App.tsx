@@ -784,7 +784,7 @@ export default function App() {
                 {/* Share WhatsApp Group & Site Link */}
                 <a
                   href={`https://api.whatsapp.com/send?text=${encodeURIComponent(
-                    `Join official ASPIRES ACADEMY WhatsApp Study Group for Daily 5 High-Yield MCQs, AI Voice Lessons & Mock Tests!\n\n👥 Join Official WhatsApp Group: ${getActiveWhatsAppGroupUrl()}\n🌐 Practice Web Portal: https://aspiresacademy.in`
+                    `Join official ASPIRES ACADEMY WhatsApp Study Group for Daily 5 High-Yield MCQs, AI Voice Lessons & Mock Tests!\n\n👥 Join Official WhatsApp Group: ${getActiveWhatsAppGroupUrl()}\n🌐 Practice Web Portal: ${typeof window !== 'undefined' ? window.location.origin : 'https://aspiresacademy.in'}`
                   )}`}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -798,8 +798,9 @@ export default function App() {
                 <div className="flex items-center gap-2 pt-1">
                   <button
                     onClick={() => {
+                      const portalUrl = typeof window !== 'undefined' ? window.location.origin : 'https://aspiresacademy.in';
                       const groupLine = getGroupInviteLineForPost('ASPIRES ACADEMY Study Group');
-                      const shareText = `Hey! Join official ASPIRES ACADEMY WhatsApp Study Group & Portal for Daily 5 High-Yield MCQs (UPSC, TNPSC, SSC, RRB & IIT JEE), AI Voice Lessons, Essay Evaluation & Mock Tests!\n\n${groupLine}\n🌐 Practice Web Portal: https://aspiresacademy.in`;
+                      const shareText = `Hey! Join official ASPIRES ACADEMY WhatsApp Study Group & Portal for Daily 5 High-Yield MCQs (UPSC, TNPSC, SSC, RRB & IIT JEE), AI Voice Lessons, Essay Evaluation & Mock Tests!\n\n${groupLine}\n🌐 Practice Web Portal: ${portalUrl}`;
                       navigator.clipboard.writeText(shareText);
                       setCopiedLink(true);
                       setTimeout(() => setCopiedLink(false), 2000);
@@ -965,8 +966,9 @@ export default function App() {
                         'ASPIRES ACADEMY Study Group';
 
                       const groupLine = getGroupInviteLineForPost(examGroupName);
+                      const portalUrl = typeof window !== 'undefined' ? window.location.origin : 'https://aspiresacademy.in';
 
-                      const postText = `${heading}\n\n${questionsText}${groupLine}\n\n🚀 Practice on ASPIRES ACADEMY Web Portal: https://aspiresacademy.in\n⚡ Web Portal Features:\n• ✍️ Full-Length Mock Tests\n• 📚 Reference Materials & Study Notes\n• 📅 Smart Study Planner & Syllabus Tracker\n• 📊 Performance Analytics & Score Predictor`;
+                      const postText = `${heading}\n\n${questionsText}${groupLine}\n\n🚀 Practice on ASPIRES ACADEMY Web Portal: ${portalUrl}\n⚡ Web Portal Features:\n• ✍️ Full-Length Mock Tests\n• 📚 Reference Materials & Study Notes\n• 📅 Smart Study Planner & Syllabus Tracker\n• 📊 Performance Analytics & Score Predictor`;
                       window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(postText)}`, '_blank');
                     }}
                     className="bg-[#25D366] hover:bg-[#20ba5a] text-white font-extrabold text-xs px-3.5 py-2 rounded-xl flex items-center gap-1.5 transition-all shadow-sm active:scale-95 cursor-pointer"
@@ -992,8 +994,9 @@ export default function App() {
                         const optionsText = q.options.map((opt, oIdx) => `${String.fromCharCode(65 + oIdx)}) ${opt}`).join('\n');
                         questionsText += `${index + 1}️⃣ ${q.subject || (selectedExam === 'NEET' ? 'NEET UG' : selectedExam === 'IIT_JEE' ? 'IIT JEE' : 'GENERAL STUDIES')}: ${q.text}\n${optionsText}\n👉 Answer: ${String.fromCharCode(65 + q.correctAnswerIndex)}\n\n`;
                       });
-                      const postText = `${heading}\n\n${questionsText}🔗 Practice on ASPIRES ACADEMY: https://aspiresacademy.in`;
-                      window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent('https://aspiresacademy.in')}&quote=${encodeURIComponent(postText)}`, '_blank');
+                      const portalUrl = typeof window !== 'undefined' ? window.location.origin : 'https://aspiresacademy.in';
+                      const postText = `${heading}\n\n${questionsText}🔗 Practice on ASPIRES ACADEMY: ${portalUrl}`;
+                      window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(portalUrl)}&quote=${encodeURIComponent(postText)}`, '_blank');
                     }}
                     className="bg-[#1877F2] hover:bg-[#166fe5] text-white font-extrabold text-xs px-3.5 py-2 rounded-xl flex items-center gap-1.5 transition-all shadow-sm active:scale-95 cursor-pointer"
                     id="btn-post-outreach-facebook"
@@ -1031,8 +1034,9 @@ export default function App() {
                         'ASPIRES ACADEMY Study Group';
 
                       const groupLine = getGroupInviteLineForPost(examGroupName);
+                      const portalUrl = typeof window !== 'undefined' ? window.location.origin : 'https://aspiresacademy.in';
 
-                      const postText = `${heading}\n\n${questionsText}---\n🌐 PRACTICE ON ASPIRES ACADEMY WEB PORTAL: https://aspiresacademy.in\n📚 All 8 Exams Covered on Portal:\n1️⃣ UPSC Civil Services (IAS / IPS / IFS)\n2️⃣ TNPSC Group 1 (CCSE I Officers)\n3️⃣ TNPSC Group 2 & 2A (CCSE II)\n4️⃣ TNPSC Group 4 & VAO (CCSE IV)\n5️⃣ SSC CGL (Tier 1 & Tier 2)\n6️⃣ RRB NTPC & Group D (Railways)\n7️⃣ IIT JEE (Main & Advanced)\n8️⃣ NEET UG (Medical Entrance)\n\n⚡ Web Portal Features:\n• ✍️ Full-Length Mock Tests & Daily 5 MCQ Drills\n• 📚 Reference Materials & Study Notes\n• 📅 Smart Study Planner & Syllabus Tracker\n• 📊 Performance Analytics & Score Predictor\n\n${groupLine}\n🎟️ SPECIAL ASPIRANT DISCOUNT: Use Coupon Code "ANNUAL87" to get the ASPIRES Elite Annual Pass for just ₹299/year (87% OFF)!\n🔗 Start Practice on Web Portal: https://aspiresacademy.in`;
+                      const postText = `${heading}\n\n${questionsText}---\n🌐 PRACTICE ON ASPIRES ACADEMY WEB PORTAL: ${portalUrl}\n📚 All 8 Exams Covered on Portal:\n1️⃣ UPSC Civil Services (IAS / IPS / IFS)\n2️⃣ TNPSC Group 1 (CCSE I Officers)\n3️⃣ TNPSC Group 2 & 2A (CCSE II)\n4️⃣ TNPSC Group 4 & VAO (CCSE IV)\n5️⃣ SSC CGL (Tier 1 & Tier 2)\n6️⃣ RRB NTPC & Group D (Railways)\n7️⃣ IIT JEE (Main & Advanced)\n8️⃣ NEET UG (Medical Entrance)\n\n⚡ Web Portal Features:\n• ✍️ Full-Length Mock Tests & Daily 5 MCQ Drills\n• 📚 Reference Materials & Study Notes\n• 📅 Smart Study Planner & Syllabus Tracker\n• 📊 Performance Analytics & Score Predictor\n\n${groupLine}\n🎟️ SPECIAL ASPIRANT DISCOUNT: Use Coupon Code "ANNUAL87" to get the ASPIRES Elite Annual Pass for just ₹299/year (87% OFF)!\n🔗 Start Practice on Web Portal: ${portalUrl}`;
 
                       navigator.clipboard.writeText(postText);
                       setCopiedPost(true);
